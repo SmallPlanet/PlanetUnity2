@@ -52,7 +52,7 @@ public class PUSimpleTableCell : PUTableCell {
 	public static bool TestForVisibility(float cellPosY, float cellHeight, RectTransform tableTransform, RectTransform tableContentTransform) {
 
 		float scrolledPos = (-cellPosY) - tableContentTransform.anchoredPosition.y;
-		if (Mathf.Abs (scrolledPos - tableTransform.rect.height / 2) < (tableTransform.rect.height - cellHeight)) {
+		if (Mathf.Abs (scrolledPos - tableTransform.rect.height / 2) < (tableTransform.rect.height + cellHeight)) {
 			return true;
 		}
 		return false;
