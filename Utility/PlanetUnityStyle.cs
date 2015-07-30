@@ -36,7 +36,7 @@ public class PlanetUnityStyle
 			return 32;
 		}
 
-		int fontSize = (int)(PlanetUnityOverride.screenDPI() / 12);
+		int fontSize = (int)(PlanetUnityOverride.screenDPI() / 13);
 
 		if (fontSize < 18) {
 			fontSize = 18;
