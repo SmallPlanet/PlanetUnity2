@@ -104,7 +104,7 @@ public class RandomR
 		return ((ctx = (uint)x) % (RAND_MAX + 1));
 	}
 
-	public static List<object> RandomList(List<object> list, uint rnd) {
+	public static List<object> RandomList(List<object> list, ref uint rnd) {
 		List<object> s = new List<object>(list);
 		uint count = (uint)list.Count;
 
@@ -120,7 +120,7 @@ public class RandomR
 		return s;
 	}
 
-	public static object RandomObjectFromList(List<object> list, uint rnd) {
+	public static object RandomObjectFromList(List<object> list, ref uint rnd) {
 		if(list.Count == 0) return null;
 		return list [(int)(rnd % list.Count)];
 	}
