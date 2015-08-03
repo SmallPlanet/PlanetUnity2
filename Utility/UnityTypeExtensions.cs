@@ -80,6 +80,9 @@ public class RandomR
 	 *
 	 * Posix rand_r function added May 1999 by Wes Peters <wes@softweyr.com>.
 	 */
+
+	const uint RAND_MAX = 0x7fffffff;
+
 	public static uint Rand(ref uint ctx)
 	{
 		/*
@@ -90,7 +93,6 @@ public class RandomR
 	     * Park and Miller, Communications of the ACM, vol. 31, no. 10,
 	     * October 1988, p. 1195.
 	     */
-		const uint RAND_MAX = 0x7fffffff;
 		long hi, lo, x;
 
 		/* Can't be initialized with 0, so use another value. */
@@ -102,6 +104,10 @@ public class RandomR
 		if (x < 0)
 			x += 0x7fffffff;
 		return ((ctx = (uint)x) % (RAND_MAX + 1));
+	}
+
+	public static float Randf(ref uint rnd) {
+		return ((1.0f / RAND_MAX) * Rand(ref rnd));
 	}
 
 	public static List<object> RandomList(List<object> list, ref uint rnd) {
