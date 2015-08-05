@@ -130,6 +130,11 @@ public class RandomR
 		if(list.Count == 0) return null;
 		return list [(int)(rnd % list.Count)];
 	}
+
+	public static T RandomObjectFromArray<T>(T[] list, ref uint rnd) {
+		if(list.Length == 0) return default(T);
+		return list [(int)(rnd % list.Length)];
+	}
 }
 
 public static class RectTransformExtension
