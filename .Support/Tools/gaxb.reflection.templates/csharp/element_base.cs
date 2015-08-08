@@ -261,7 +261,7 @@ end
 			gaxb_addToParent();
 		}
 		
-		xmlns = reader.GetAttribute("xmlns");
+		//xmlns = reader.GetAttribute("xmlns");
 		
 <%
 		if (# this.attributes > 0) then

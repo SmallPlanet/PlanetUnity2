@@ -192,7 +192,7 @@ public class PUTableBase : PUScrollRect {
 			gaxb_addToParent();
 		}
 		
-		xmlns = reader.GetAttribute("xmlns");
+		//xmlns = reader.GetAttribute("xmlns");
 		
 
 	}

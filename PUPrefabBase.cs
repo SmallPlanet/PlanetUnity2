@@ -192,7 +192,7 @@ public class PUPrefabBase : PUGameObject {
 			gaxb_addToParent();
 		}
 		
-		xmlns = reader.GetAttribute("xmlns");
+		//xmlns = reader.GetAttribute("xmlns");
 		
 
 		string attr;

@@ -225,7 +225,7 @@ public class PUSimpleTableBase : PUScrollRect {
 			gaxb_addToParent();
 		}
 		
-		xmlns = reader.GetAttribute("xmlns");
+		//xmlns = reader.GetAttribute("xmlns");
 		
 
 		string attr;
