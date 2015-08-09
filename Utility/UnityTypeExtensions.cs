@@ -110,6 +110,10 @@ public class RandomR
 		return ((1.0f / RAND_MAX) * Rand(ref rnd));
 	}
 
+	public static float Range(float min, float max, ref uint rnd){
+		return Randf (ref rnd) * (max - min) + min;
+	}
+
 	public static List<object> RandomList(List<object> list, ref uint rnd) {
 		List<object> s = new List<object>(list);
 		uint count = (uint)list.Count;
