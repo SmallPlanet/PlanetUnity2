@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Reflection;
+using System.ArrayExtensions;
 
 // Right now if is just a utility holder for random math stuff
 public class MathR
@@ -196,6 +198,28 @@ public static class GameObjectExtension
 		myTransform.anchorMin = Vector2.zero;
 		myTransform.anchorMax = Vector2.one;
 		myTransform.sizeDelta = Vector2.zero;
+	}
+}
+
+public static class ListExtensions
+{
+	public static void RemoveOne(this List<object> source, object obj)
+	{
+		int idx = source.IndexOf (obj);
+		if (idx >= 0) {
+			source.RemoveAt (idx);
+		}
+	}
+
+	public static void RemoveOneRange(this List<object> self, List<object> otherArray) {
+		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
+		// In OUR version of this we want to remove just one of each that are in otherArray
+		foreach (object obj in otherArray) {
+			int idx = self.IndexOf (obj);
+			if (idx >= 0) {
+				self.RemoveAt (idx);
+			}
+		}
 	}
 }
 
