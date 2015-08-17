@@ -32,7 +32,7 @@ public class PlanetUnityResourceCache
 
 		TextAsset fileData = Resources.Load (s, typeof (TextAsset)) as TextAsset;
 		if (fileData !=null) {
-			Texture2D tex = new Texture2D (2,2);
+			Texture2D tex = new Texture2D (2,2,TextureFormat.ARGB32, false);
 			tex.LoadImage (fileData.bytes);
 			tex.filterMode = FilterMode.Bilinear;
 			return tex;

@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Reflection;
-using System.ArrayExtensions;
 
 // Right now if is just a utility holder for random math stuff
 public class MathR
