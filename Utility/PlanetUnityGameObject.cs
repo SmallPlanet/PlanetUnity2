@@ -59,6 +59,10 @@ public class PlanetUnityOverride {
 		return (decimal)0.0f;
 	};
 
+	public static Func<string,string> appProcessString = (x) => {
+		return x;
+	};
+
 	public static Func<PUGameObject, string> shaderForObject = (obj) => {
 		return null;
 	};
@@ -118,6 +122,8 @@ public class PlanetUnityOverride {
 	{
 		if (s == null)
 			return null;
+
+		s = PlanetUnityOverride.appProcessString (s);
 
 		s = s.Replace("@LANGUAGE", PlanetUnityLanguage.LanguageCode());
 		s = s.Replace("\\n", "\n");

@@ -146,12 +146,12 @@ public class PlanetUnityLanguage
 					return key;
 				return Translate(key, "en");
 			}
-			return value;
+			return PlanetUnityOverride.appProcessString(value);
 		}catch{
 			//Debug.Log ("Language key " + key + " does not exist");
 		}
 
-		return key;
+		return PlanetUnityOverride.appProcessString(key);
 	}
 
 	static public string Translate(string key)
