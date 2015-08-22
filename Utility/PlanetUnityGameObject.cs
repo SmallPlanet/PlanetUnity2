@@ -123,8 +123,6 @@ public class PlanetUnityOverride {
 		if (s == null)
 			return null;
 
-		s = PlanetUnityOverride.appProcessString (s);
-
 		s = s.Replace("@LANGUAGE", PlanetUnityLanguage.LanguageCode());
 		s = s.Replace("\\n", "\n");
 
@@ -149,11 +147,11 @@ public class PlanetUnityOverride {
 			string localizedString = PlanetUnityLanguage.Translate(s);
 			if(localizedString.Equals(s) == false)
 			{
-				return localizedString;
+				return PlanetUnityOverride.appProcessString (localizedString);
 			}
 		}
 
-		return s;
+		return PlanetUnityOverride.appProcessString (s);
 	}
 
 }
