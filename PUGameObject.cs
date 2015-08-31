@@ -350,7 +350,7 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.anchor = anchor;
 	}
 
-	public void LoadIntoPUGameObject(PUGameObject _parent)
+	public void LoadIntoPUGameObject(PUGameObject _parent, Action doChildren = null)
 	{
 		// Sanity check to make sure this wasn't called multiple times
 		if (gameObject == null) {
@@ -369,6 +369,10 @@ public partial class PUGameObject : PUGameObjectBase {
 			}
 
 			_parent.children.Add (this);
+		}
+
+		if (doChildren != null) {
+			doChildren();
 		}
 
 		gaxb_complete ();
@@ -524,7 +528,9 @@ public class GameObjectUpdateScript : MonoBehaviour {
 
 	public void Update() {
 		if (entity != null) {
+			Profiler.BeginSample((entity.title != null ? entity.title : entity.ToString()));
 			entity.Update ();
+			Profiler.EndSample();
 		}
 	}
 }
