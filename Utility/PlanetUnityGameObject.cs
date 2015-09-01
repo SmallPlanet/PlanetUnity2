@@ -424,6 +424,8 @@ public class PlanetUnityGameObject : MonoBehaviour {
 			eventSystem.AddComponent<StandaloneInputModule> ();
 			eventSystem.AddComponent<TouchInputModule> ();
 
+			GameObject.DontDestroyOnLoad(eventSystem);
+
 		}
 
 		EventSystem system = eventSystem.GetComponent<EventSystem> ();
