@@ -45,6 +45,12 @@ public class PUSimpleTableUpdateScript : MonoBehaviour {
 
 public class PUSimpleTableCell : PUTableCell {
 
+	public PUSimpleTable simpleTable {
+		get {
+			return scrollRect as PUSimpleTable;
+		}
+	}
+
 	public static Vector2 CellSize(RectTransform tableTransform) {
 		return new Vector2 (tableTransform.rect.width, 60.0f);
 	}
@@ -121,6 +127,11 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	private List<PUSimpleTableCell> activeTableCells = new List<PUSimpleTableCell>();
 	private Dictionary<string, List<PUSimpleTableCell>> pooledTableCells = new Dictionary<string, List<PUSimpleTableCell>>();
 
+	public List<PUSimpleTableCell> allCells {
+		get {
+			return activeTableCells;
+		}
+	}
 
 	public PUSimpleTableCell DequeueTableCell(object cellData){
 		string dataKey = cellData.GetType ().Name;

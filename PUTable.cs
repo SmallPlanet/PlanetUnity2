@@ -263,7 +263,7 @@ public class PUTableCell {
 public partial class PUTable : PUTableBase {
 
 	public List<object> allObjects = null;
-	List<PUTableCell> allCells = new List<PUTableCell>();
+	public List<PUTableCell> allCells = new List<PUTableCell>();
 
 
 	public void SetObjectList(List<object> objects) {
