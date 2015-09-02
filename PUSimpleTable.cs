@@ -123,6 +123,25 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 	}
 
+	public void EmptyTable() {
+		if (tableUpdateScript != null)
+			tableUpdateScript.StopReloadTableCells();
+		
+		// When the table size changes, we need to not reuse table cells...
+		for(int i = activeTableCells.Count-1; i >= 0; i--) {
+			PUSimpleTableCell cell = activeTableCells [i];
+			cell.unload();
+			activeTableCells.RemoveAt(i);
+		}
+		
+		foreach (string key in pooledTableCells.Keys) {
+			foreach (PUSimpleTableCell cell in pooledTableCells[key]) {
+				cell.unload ();
+			}
+		}
+		pooledTableCells.Clear();
+	}
+
 
 	private List<PUSimpleTableCell> activeTableCells = new List<PUSimpleTableCell>();
 	private Dictionary<string, List<PUSimpleTableCell>> pooledTableCells = new Dictionary<string, List<PUSimpleTableCell>>();
@@ -355,21 +374,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		NotificationCenter.addObserver (this, "OnAspectChanged", null, (args, name) => {
 
-			tableUpdateScript.StopReloadTableCells();
-
-			// When the table size changes, we need to not reuse table cells...
-			for(int i = activeTableCells.Count-1; i >= 0; i--) {
-				PUSimpleTableCell cell = activeTableCells [i];
-				cell.unload();
-				activeTableCells.RemoveAt(i);
-			}
-
-			foreach (string key in pooledTableCells.Keys) {
-				foreach (PUSimpleTableCell cell in pooledTableCells[key]) {
-					cell.unload ();
-				}
-			}
-			pooledTableCells.Clear();
+			EmptyTable();
 
 			ReloadTableCells();
 		});
