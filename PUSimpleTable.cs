@@ -108,6 +108,11 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			cell.UpdateContents ();
 		}
 
+		if (cell.IsHeader ()) {
+			cell.puGameObject.rectTransform.sizeDelta = headerSize.Value;
+		} else {
+			cell.puGameObject.rectTransform.sizeDelta = cellSize.Value;
+		}
 		cell.puGameObject.rectTransform.anchorMin = new Vector2 (0, 1);
 		cell.puGameObject.rectTransform.anchorMax = new Vector2 (0, 1);
 		cell.puGameObject.rectTransform.pivot = new Vector2 (0, 1);
@@ -121,6 +126,25 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			PUSimpleTableCell cell = activeTableCells [i];
 			EnqueueTableCell (cell);
 		}
+	}
+
+	public void EmptyTable() {
+		if (tableUpdateScript != null)
+			tableUpdateScript.StopReloadTableCells();
+		
+		// When the table size changes, we need to not reuse table cells...
+		for(int i = activeTableCells.Count-1; i >= 0; i--) {
+			PUSimpleTableCell cell = activeTableCells [i];
+			cell.unload();
+			activeTableCells.RemoveAt(i);
+		}
+		
+		foreach (string key in pooledTableCells.Keys) {
+			foreach (PUSimpleTableCell cell in pooledTableCells[key]) {
+				cell.unload ();
+			}
+		}
+		pooledTableCells.Clear();
 	}
 
 
@@ -355,21 +379,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		NotificationCenter.addObserver (this, "OnAspectChanged", null, (args, name) => {
 
-			tableUpdateScript.StopReloadTableCells();
-
-			// When the table size changes, we need to not reuse table cells...
-			for(int i = activeTableCells.Count-1; i >= 0; i--) {
-				PUSimpleTableCell cell = activeTableCells [i];
-				cell.unload();
-				activeTableCells.RemoveAt(i);
-			}
-
-			foreach (string key in pooledTableCells.Keys) {
-				foreach (PUSimpleTableCell cell in pooledTableCells[key]) {
-					cell.unload ();
-				}
-			}
-			pooledTableCells.Clear();
+			EmptyTable();
 
 			ReloadTableCells();
 		});
