@@ -398,6 +398,23 @@ public partial class PUGameObject : PUGameObjectBase {
 		gaxb_private_complete ();
 	}
 
+	public void SetStretchStretch(float x, float y) {
+		if (rectTransform == null) {
+			Debug.Log("SetStretchStretch() must be called after the LoadIntoPUGameObject");
+			return;
+		}
+		rectTransform.sizeDelta = new Vector2 (x * -2.0f, y * -2.0f);
+		rectTransform.anchoredPosition = new Vector2 (x, y);
+	}
+	
+	public void SetStretchStretch(float top, float left, float bottom, float right) {
+		if (rectTransform == null) {
+			Debug.Log("SetStretchStretch() must be called after the LoadIntoPUGameObject");
+			return;
+		}
+		rectTransform.sizeDelta = new Vector2 (-right, -top);
+		rectTransform.anchoredPosition = new Vector2 (left, bottom);
+	}
 
 	public void CheckCanvasGroup () {
 		if (canvasGroup == null && gameObject != null) {
