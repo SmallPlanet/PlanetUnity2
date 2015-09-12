@@ -412,7 +412,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			Debug.Log("SetStretchStretch() must be called after the LoadIntoPUGameObject");
 			return;
 		}
-		rectTransform.sizeDelta = new Vector2 (-right, -top);
+		rectTransform.sizeDelta = new Vector2 (-(left+right), -(top+bottom));
 		rectTransform.anchoredPosition = new Vector2 (left, bottom);
 	}
 
