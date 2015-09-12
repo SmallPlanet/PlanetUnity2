@@ -108,6 +108,11 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			cell.UpdateContents ();
 		}
 
+		if (cell.IsHeader ()) {
+			cell.puGameObject.rectTransform.sizeDelta = headerSize.Value;
+		} else {
+			cell.puGameObject.rectTransform.sizeDelta = cellSize.Value;
+		}
 		cell.puGameObject.rectTransform.anchorMin = new Vector2 (0, 1);
 		cell.puGameObject.rectTransform.anchorMax = new Vector2 (0, 1);
 		cell.puGameObject.rectTransform.pivot = new Vector2 (0, 1);
