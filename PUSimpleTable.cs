@@ -17,6 +17,79 @@ using UnityEngine;
 using System;
 using System.Reflection;
 using System.Collections;
+using UnityEngine.EventSystems;
+
+
+public class PUSimpleTableCellEditHandle : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler {
+
+	public PUSimpleTable table;
+	public PUSimpleTableCell cell;
+	
+	public void OnDrag (PointerEventData eventData) {
+		Vector2 dragLocation;
+		RectTransformUtility.ScreenPointToLocalPointInRectangle (cell.puGameObject.rectTransform.parent as RectTransform, eventData.position, eventData.pressEventCamera, out dragLocation);
+
+		dragLocation.x = 0;
+		dragLocation.y += table.cellSize.Value.y * 0.5f;
+
+		(cell.puGameObject.rectTransform as RectTransform).anchoredPosition = dragLocation;
+
+		dragLocation.y -= table.cellSize.Value.y * 0.5f;
+
+		int newIdx = table.RowIndexForPosition (dragLocation);
+		int oldIdx = table.ObjectIndexOfCell (cell);
+		int maxIdx = table.MaxObjectIndex ();
+
+		// Find out current index
+		if (newIdx != oldIdx && newIdx >= 0 && newIdx < maxIdx) {
+
+			// First, remove the object from the data list
+			object movedItem = null;
+			int idx = 0;
+			foreach (List<object> subtableObjects in table.allSegmentedObjects) {
+				foreach (object item in subtableObjects.ToArray()) {
+					if (idx == oldIdx) {
+						movedItem = item;
+						subtableObjects.Remove (item);
+						Debug.Log ("removed from rowIdx: " + oldIdx);
+						break;
+					}
+					idx++;
+				}
+			}
+
+			// Next, insert the object into its new position
+			if (movedItem != null) {
+				if (newIdx == maxIdx - 1) {
+					table.allSegmentedObjects [table.allSegmentedObjects.Count - 1].Add (movedItem);
+				} else {
+					idx = 0;
+					foreach (List<object> subtableObjects in table.allSegmentedObjects) {
+						foreach (object item in subtableObjects) {
+							if (idx == newIdx) {
+								subtableObjects.Insert (subtableObjects.IndexOf (item), movedItem);
+								Debug.Log ("added to rowIdx: " + newIdx);
+								break;
+							}
+							idx++;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	public void OnEndDrag (PointerEventData eventData) {
+		table.EndEdit ();
+	}
+
+	public void OnBeginDrag (PointerEventData eventData) {
+		table.BeginEditWithCell(cell);
+	}
+}
+
+
 
 public class PUSimpleTableUpdateScript : MonoBehaviour {
 
@@ -44,6 +117,8 @@ public class PUSimpleTableUpdateScript : MonoBehaviour {
 }
 
 public class PUSimpleTableCell : PUTableCell {
+
+	public bool isEdit;
 
 	public PUSimpleTable simpleTable {
 		get {
@@ -74,6 +149,8 @@ public class PUSimpleTableCell : PUTableCell {
 
 
 public partial class PUSimpleTable : PUSimpleTableBase {
+
+	public Action OnEndEdit;
 
 	int currentScrollY = -1;
 	int currentScrollHeight = -1;
@@ -322,7 +399,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 						cell = DequeueTableCell (myCellData);
 					}
 
-					cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x, currentLayoutY);
+					if(cell.isEdit == false){
+						cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x, currentLayoutY);
+					}
 				}
 
 				x += cellWidth;
@@ -333,6 +412,26 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 	}
 
+	public int RowIndexForPosition(Vector2 pos) {
+
+		RectTransform contentRectTransform = contentObject.transform as RectTransform;
+
+		float currentLayoutY = 0;
+
+		float cellWidth = rectTransform.rect.width;
+		if(rectTransform.rect.width > cellSize.Value.x)
+			cellWidth = Mathf.Floor (rectTransform.rect.width / Mathf.Floor (rectTransform.rect.width / cellSize.Value.x));
+		
+		float cellHeight = cellSize.Value.y;
+		
+		int cellsPerRow = Mathf.FloorToInt(rectTransform.rect.width / cellWidth);
+		if (cellsPerRow < 1)
+			cellsPerRow = 1;
+
+		currentLayoutY -= pos.y;
+
+		return (Mathf.FloorToInt((Mathf.Abs (contentRectTransform.anchoredPosition.y) + currentLayoutY - cellHeight) / cellHeight) * cellsPerRow) + 1;
+	}
 
 	private void ReloadTableCells() {
 		if (asynchronous) {
@@ -361,18 +460,25 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			RectTransform tableContentTransform = contentObject.transform as RectTransform;
 
 			if (currentScrollY != (int)tableContentTransform.anchoredPosition.y ||
-			    currentScrollHeight != (int)rectTransform.rect.height) {
+			    currentScrollHeight != (int)rectTransform.rect.height ||
+			    isEdit == true) {
 
-				IEnumerator t = ReloadTableAsync ();
-				while (t.MoveNext ()) {
-				}
-
-				currentScrollY = (int)tableContentTransform.anchoredPosition.y;
-				currentScrollHeight = (int)rectTransform.rect.height;
+				LayoutChildren();
 			}
 		}
 	}
 
+	public void LayoutChildren() {
+		RectTransform tableContentTransform = contentObject.transform as RectTransform;
+
+		IEnumerator t = ReloadTableAsync ();
+		while (t.MoveNext ()) {
+		}
+		
+		currentScrollY = (int)tableContentTransform.anchoredPosition.y;
+		currentScrollHeight = (int)rectTransform.rect.height;
+	}
+	
 	public override void gaxb_complete() {
 
 		base.gaxb_complete ();
@@ -399,6 +505,50 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 
 		base.unload ();
+	}
+
+
+	public bool isEdit = false;
+
+	public void BeginEditWithCell(PUSimpleTableCell cell){
+		isEdit = true;
+		cell.isEdit = true;
+
+		cell.puGameObject.rectTransform.SetParent (contentObject.transform, false);
+	}
+
+	public void EndEdit(){
+		isEdit = false;
+		foreach (PUSimpleTableCell cell in allCells) {
+			cell.isEdit = false;
+		}
+
+		LayoutChildren ();
+
+		if (OnEndEdit != null) {
+			OnEndEdit();
+		}
+	}
+
+	public int ObjectIndexOfCell(PUSimpleTableCell cell){
+		int idx = 0;
+		foreach (List<object> subtableObjects in allSegmentedObjects) {
+			foreach(object item in subtableObjects){
+				if(cell.cellData == item){
+					return idx;
+				}
+				idx++;
+			}
+		}
+		return -1;
+	}
+
+	public int MaxObjectIndex(){
+		int idx = 0;
+		foreach (List<object> subtableObjects in allSegmentedObjects) {
+			idx += subtableObjects.Count;
+		}
+		return idx;
 	}
 
 }
