@@ -186,9 +186,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 
 		if (cell.IsHeader ()) {
-			cell.puGameObject.rectTransform.sizeDelta = headerSize.Value;
+			cell.puGameObject.rectTransform.sizeDelta = new Vector2(cell.puGameObject.rectTransform.sizeDelta.x, headerSize.Value.y);
 		} else {
-			cell.puGameObject.rectTransform.sizeDelta = cellSize.Value;
+			cell.puGameObject.rectTransform.sizeDelta = new Vector2(cell.puGameObject.rectTransform.sizeDelta.x, cellSize.Value.y);
 		}
 		cell.puGameObject.rectTransform.anchorMin = new Vector2 (0, 1);
 		cell.puGameObject.rectTransform.anchorMax = new Vector2 (0, 1);
