@@ -162,7 +162,7 @@ public static class RectTransformExtension
 			return 0;
 		}
 
-		return myTransform.anchoredPosition.x - myTransform.pivot.x * parentTransform.GetWidth();
+		return myTransform.anchoredPosition.x - myTransform.pivot.x * myTransform.GetWidth();
 	}
 
 	public static float GetMaxX(this RectTransform myTransform)
@@ -178,7 +178,7 @@ public static class RectTransformExtension
 			return 0;
 		}
 
-		return myTransform.anchoredPosition.y - myTransform.pivot.y * parentTransform.GetHeight();
+		return myTransform.anchoredPosition.y - myTransform.pivot.y * myTransform.GetHeight();
 	}
 
 	public static float GetMaxY(this RectTransform myTransform)
