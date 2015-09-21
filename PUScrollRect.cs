@@ -80,14 +80,15 @@ public partial class PUScrollRect : PUScrollRectBase {
 
 		// if contentSize does not exist, run through planet children and calculate a content size
 		float minX = 999999, maxX = -999999;
-		float minY = 999999;
+		float minY = 999999, maxY = -999999;
 
 		foreach (RectTransform t in contentObject.transform) {
 
 			float tMinX = t.GetMinX ();
 			float tMaxX = t.GetMaxX ();
 			float tMinY = t.GetMinY ();
-
+			float tMaxY = t.GetMaxY ();
+			
 			if (tMinX < minX)
 				minX = tMinX;
 			if (tMinY < minY)
@@ -95,6 +96,8 @@ public partial class PUScrollRect : PUScrollRectBase {
 
 			if (tMaxX > maxX)
 				maxX = tMaxX;
+			if (tMaxY > maxY)
+				maxY = tMaxY;
 		}
 
 		// If the scroller is locked on an axis, use the parents size for that axis
@@ -105,9 +108,10 @@ public partial class PUScrollRect : PUScrollRectBase {
 
 		if (scroll.vertical == false) {
 			minY = 0;
+			maxY = ((RectTransform)myRectTransform.parent).rect.height;
 		}
 
-		myRectTransform.sizeDelta = new Vector2 ((maxX - minX) + _ContentOffset.x, Mathf.Abs(minY) + _ContentOffset.y);
+		myRectTransform.sizeDelta = new Vector2 (Mathf.Abs(maxX - minX) + _ContentOffset.x, Mathf.Abs(maxY - minY) + _ContentOffset.y);
 	}
 
 	public void SetContentSize(float w, float h)
