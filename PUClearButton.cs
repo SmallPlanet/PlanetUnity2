@@ -18,6 +18,10 @@ public partial class PUClearButton : PUClearButtonBase {
 		canvasRenderer = gameObject.AddComponent<CanvasRenderer> ();
 		graphic = gameObject.AddComponent<InvisibleHitGraphic> ();
 
+#if !UNITY_4_6
+		graphic.color = Color.clear;
+#endif
+
 		button = gameObject.AddComponent<Button> ();
 
 		ColorBlock colors = button.colors;

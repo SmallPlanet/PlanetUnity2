@@ -146,7 +146,10 @@ public partial class PUScrollRect : PUScrollRectBase {
 		myRectTransform.anchoredPosition = Vector2.zero;
 
 		if (gameObject.GetComponent<Graphic> () == null) {
-			gameObject.AddComponent<InvisibleHitGraphic> ();
+			InvisibleHitGraphic invisibleHitGraphic = gameObject.AddComponent<InvisibleHitGraphic> ();
+#if !UNITY_4_6
+			invisibleHitGraphic.color = Color.clear;
+#endif
 		}
 
 
