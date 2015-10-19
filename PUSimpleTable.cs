@@ -318,10 +318,17 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		float currentLayoutY = 0;
 		float nextY = 0;
 		float x = 0;
+		float offsetX = 0;
 
 		float cellWidth = rectTransform.rect.width;
 		if(rectTransform.rect.width > cellSize.Value.x)
 			cellWidth = Mathf.Floor (rectTransform.rect.width / Mathf.Floor (rectTransform.rect.width / cellSize.Value.x));
+
+		if (cellSize.Value.x < cellWidth) {
+			offsetX = ((cellWidth - cellSize.Value.x) / 2);
+		}
+
+
 		
 		float cellHeight = cellSize.Value.y;
 
@@ -400,7 +407,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 					}
 
 					if(cell.isEdit == false){
-						cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x, currentLayoutY);
+						cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x + offsetX, currentLayoutY);
 					}
 				}
 
