@@ -104,11 +104,13 @@ public partial class PUScrollRect : PUScrollRectBase {
 		if (scroll.horizontal == false) {
 			minX = 0;
 			maxX = ((RectTransform)myRectTransform.parent).rect.width;
+			maxY = 0;
 		}
 
 		if (scroll.vertical == false) {
 			minY = 0;
 			maxY = ((RectTransform)myRectTransform.parent).rect.height;
+			maxX = 0;
 		}
 
 		myRectTransform.sizeDelta = new Vector2 (Mathf.Abs(maxX - minX) + _ContentOffset.x, Mathf.Abs(maxY - minY) + _ContentOffset.y);
