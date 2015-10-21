@@ -83,6 +83,9 @@ public partial class PUScrollRect : PUScrollRectBase {
 		float minY = 999999, maxY = -999999;
 
 		foreach (RectTransform t in contentObject.transform) {
+			if(t.gameObject.activeSelf == false) {
+				continue;
+			}
 
 			float tMinX = t.GetMinX ();
 			float tMaxX = t.GetMaxX ();

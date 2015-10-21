@@ -325,7 +325,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			cellWidth = Mathf.Floor (rectTransform.rect.width / Mathf.Floor (rectTransform.rect.width / cellSize.Value.x));
 
 		if (cellSize.Value.x < cellWidth) {
-			offsetX = ((cellWidth - cellSize.Value.x) / 2);
+			//offsetX = ((cellWidth - cellSize.Value.x) / 2);
 		}
 
 
