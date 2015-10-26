@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Collections;
 using UnityEngine.EventSystems;
+using Mathos.Parser;
 
 
 public class PUSimpleTableCellEditHandle : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler {
@@ -320,16 +321,8 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		float x = 0;
 		float offsetX = 0;
 
-		float cellWidth = rectTransform.rect.width;
-		if(rectTransform.rect.width > cellSize.Value.x)
-			cellWidth = Mathf.Floor (rectTransform.rect.width / Mathf.Floor (rectTransform.rect.width / cellSize.Value.x));
 
-		if (cellSize.Value.x < cellWidth) {
-			//offsetX = ((cellWidth - cellSize.Value.x) / 2);
-		}
-
-
-		
+		float cellWidth = MathParser.step(contentRectTransform.sizeDelta.x, cellSize.Value.x);
 		float cellHeight = cellSize.Value.y;
 
 		int cellsPerRow = Mathf.FloorToInt(rectTransform.rect.width / cellWidth);
@@ -374,7 +367,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 
 		// Update the content size
-		float subtableWidth = cellWidth * cellsPerRow;
+		float subtableWidth = contentRectTransform.sizeDelta.x;
 		float subtableHeight = cellHeight * Mathf.Ceil ((subtableObjects.Count-hasHeader) / (float)cellsPerRow);
 		contentRectTransform.sizeDelta = new Vector2 (subtableWidth, contentRectTransform.sizeDelta.y + subtableHeight + headerSize.Value.y);
 
