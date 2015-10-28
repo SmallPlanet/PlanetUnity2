@@ -25,6 +25,9 @@ namespace Mathos.Parser
     {
 
 		static public float step(float a, float b){
+			if (b > a) {
+				return a;
+			}
 			return Mathf.Floor (a / Mathf.Floor (a / b));
 		}
 
