@@ -31,7 +31,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 	
@@ -245,6 +245,18 @@ end
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\\\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public <%=NEW_KEYWORD%>void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 <%		if(hasSuperclass(this)) then
@@ -283,7 +295,7 @@ end
 			if (typeNameForItem(v)=="bool") then
 				gaxb_print("\t\tif(attr != null) { "..v.name.." = bool.Parse(attr); } \n")
 			elseif (typeNameForItem(v)=="string") then
-				gaxb_print("\t\tif(attr != null) { "..v.name.." = attr; } \n")
+				gaxb_print("\t\tif(attr != null) { "..v.name.." = unescape(attr); } \n")
 			elseif (typeNameForItem(v)=="float") then
 				gaxb_print("\t\tif(attr != null) { "..v.name.." = float.Parse(attr); } \n")
 			elseif (typeNameForItem(v)=="short") then
@@ -355,7 +367,7 @@ end
 					gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", '..v.name..'.PUToString()); }\n')
 				end				
 			else
-				gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", '..v.name..'); }\n')
+				gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", SecurityElement.Escape ('..v.name..')); }\n')
 			end
 		end %>
 	}

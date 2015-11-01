@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUClearButton : PUClearButtonBase {
 	
@@ -185,6 +185,18 @@ public class PUClearButtonBase : PUGameObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -205,11 +217,11 @@ public class PUClearButtonBase : PUGameObject {
 		string attr;
 		attr = reader.GetAttribute("onTouchUp");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onTouchUp = attr; } 
+		if(attr != null) { onTouchUp = unescape(attr); } 
 		
 		attr = reader.GetAttribute("onTouchDown");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onTouchDown = attr; } 
+		if(attr != null) { onTouchDown = unescape(attr); } 
 		
 
 	}
@@ -224,8 +236,8 @@ public class PUClearButtonBase : PUGameObject {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", onTouchUp); }
-		if(onTouchDown != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchDown", onTouchDown); }
+		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
+		if(onTouchDown != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchDown", SecurityElement.Escape (onTouchDown)); }
 
 	}
 	

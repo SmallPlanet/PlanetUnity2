@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUObject : PUObjectBase {
 	
@@ -132,6 +132,18 @@ public class PUObjectBase : IPlanetUnity2 {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public virtual void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 
@@ -151,35 +163,35 @@ public class PUObjectBase : IPlanetUnity2 {
 		string attr;
 		attr = reader.GetAttribute("title");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { title = attr; } 
+		if(attr != null) { title = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag = attr; } 
+		if(attr != null) { tag = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag1");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag1 = attr; } 
+		if(attr != null) { tag1 = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag2");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag2 = attr; } 
+		if(attr != null) { tag2 = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag3");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag3 = attr; } 
+		if(attr != null) { tag3 = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag4");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag4 = attr; } 
+		if(attr != null) { tag4 = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag5");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag5 = attr; } 
+		if(attr != null) { tag5 = unescape(attr); } 
 		
 		attr = reader.GetAttribute("tag6");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { tag6 = attr; } 
+		if(attr != null) { tag6 = unescape(attr); } 
 		
 
 	}
@@ -193,14 +205,14 @@ public class PUObjectBase : IPlanetUnity2 {
 	public virtual void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 
-		if(title != null) { sb.AppendFormat (" {0}=\"{1}\"", "title", title); }
-		if(tag != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag", tag); }
-		if(tag1 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag1", tag1); }
-		if(tag2 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag2", tag2); }
-		if(tag3 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag3", tag3); }
-		if(tag4 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag4", tag4); }
-		if(tag5 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag5", tag5); }
-		if(tag6 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag6", tag6); }
+		if(title != null) { sb.AppendFormat (" {0}=\"{1}\"", "title", SecurityElement.Escape (title)); }
+		if(tag != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag", SecurityElement.Escape (tag)); }
+		if(tag1 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag1", SecurityElement.Escape (tag1)); }
+		if(tag2 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag2", SecurityElement.Escape (tag2)); }
+		if(tag3 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag3", SecurityElement.Escape (tag3)); }
+		if(tag4 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag4", SecurityElement.Escape (tag4)); }
+		if(tag5 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag5", SecurityElement.Escape (tag5)); }
+		if(tag6 != null) { sb.AppendFormat (" {0}=\"{1}\"", "tag6", SecurityElement.Escape (tag6)); }
 
 	}
 	

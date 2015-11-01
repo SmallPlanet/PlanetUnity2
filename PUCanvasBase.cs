@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUCanvas : PUCanvasBase {
 	
@@ -190,6 +190,18 @@ public class PUCanvasBase : PUGameObject {
 				
 			}
 		}
+	}
+
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
 	}
 
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)

@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUSlider : PUSliderBase {
 	
@@ -241,6 +241,18 @@ public class PUSliderBase : PUImage {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -261,7 +273,7 @@ public class PUSliderBase : PUImage {
 		string attr;
 		attr = reader.GetAttribute("handleResourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { handleResourcePath = attr; } 
+		if(attr != null) { handleResourcePath = unescape(attr); } 
 		
 		attr = reader.GetAttribute("handleSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -270,11 +282,11 @@ public class PUSliderBase : PUImage {
 		
 		attr = reader.GetAttribute("fillResourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { fillResourcePath = attr; } 
+		if(attr != null) { fillResourcePath = unescape(attr); } 
 		
 		attr = reader.GetAttribute("onValueChanged");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onValueChanged = attr; } 
+		if(attr != null) { onValueChanged = unescape(attr); } 
 		
 		attr = reader.GetAttribute("minValue");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -303,10 +315,10 @@ public class PUSliderBase : PUImage {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(handleResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "handleResourcePath", handleResourcePath); }
+		if(handleResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "handleResourcePath", SecurityElement.Escape (handleResourcePath)); }
 		if(handleSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "handleSize", handleSize.Value.PUToString()); }
-		if(fillResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "fillResourcePath", fillResourcePath); }
-		if(onValueChanged != null) { sb.AppendFormat (" {0}=\"{1}\"", "onValueChanged", onValueChanged); }
+		if(fillResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "fillResourcePath", SecurityElement.Escape (fillResourcePath)); }
+		if(onValueChanged != null) { sb.AppendFormat (" {0}=\"{1}\"", "onValueChanged", SecurityElement.Escape (onValueChanged)); }
 		if(minValue != null) { sb.AppendFormat (" {0}=\"{1}\"", "minValue", minValue.Value.ToString ("0.##")); }
 		if(maxValue != null) { sb.AppendFormat (" {0}=\"{1}\"", "maxValue", maxValue.Value.ToString ("0.##")); }
 		if(direction != null) { sb.AppendFormat (" {0}=\"{1}\"", "direction", (int)direction); }
