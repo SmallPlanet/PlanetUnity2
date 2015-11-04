@@ -443,14 +443,15 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	}
 
 	public void ReloadTable() {
+		if (gameObject != null) {
+			if (gameObject.GetComponent<PUSimpleTableUpdateScript> () == null) {
+				tableUpdateScript = (PUSimpleTableUpdateScript)gameObject.AddComponent (typeof(PUSimpleTableUpdateScript));
+				tableUpdateScript.table = this;
+			}
 
-		if(gameObject.GetComponent<PUSimpleTableUpdateScript>() == null){
-			tableUpdateScript = (PUSimpleTableUpdateScript)gameObject.AddComponent (typeof(PUSimpleTableUpdateScript));
-			tableUpdateScript.table = this;
+			ClearTable ();
+			ReloadTableCells ();
 		}
-
-		ClearTable ();
-		ReloadTableCells ();
 	}
 
 	public override void LateUpdate() {
