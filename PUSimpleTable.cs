@@ -152,6 +152,7 @@ public class PUSimpleTableCell : PUTableCell {
 public partial class PUSimpleTable : PUSimpleTableBase {
 
 	public Action OnEndEdit;
+	public Action OnPullToRefresh;
 
 	int currentScrollY = -1;
 	int currentScrollHeight = -1;
@@ -454,12 +455,41 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 	}
 
+
+	private bool didPullToRefresh = false;
+	private float lastTableHeight = 0;
+
 	public override void LateUpdate() {
+
+		RectTransform tableContentTransform = contentObject.transform as RectTransform;
+
+		if (OnPullToRefresh != null) {
+
+			// dont refresh check if the bounds of the table are animating
+			if(lastTableHeight == rectTransform.rect.height){
+				float refreshHeight = rectTransform.rect.height * 0.2f;
+				if(refreshHeight > cellSize.Value.y){
+					refreshHeight = cellSize.Value.y;
+				}
+
+				// check to see if we've pulled enough in the top direction to desire a pull to refresh
+				if (didPullToRefresh == false) {
+					if (tableContentTransform.anchoredPosition.y < -refreshHeight) {
+						didPullToRefresh = true;
+						OnPullToRefresh ();
+					}
+				} else {
+					if (tableContentTransform.anchoredPosition.y > -3.0f) {
+						didPullToRefresh = false;
+					}
+				}
+			}
+
+			lastTableHeight = rectTransform.rect.height;
+		}
 
 		// If we've scrolled, retest cells to see who needs to load/unload
 		if (isReloadingTableAsync == false) {
-			RectTransform tableContentTransform = contentObject.transform as RectTransform;
-
 			if (currentScrollY != (int)tableContentTransform.anchoredPosition.y ||
 			    currentScrollHeight != (int)rectTransform.rect.height ||
 			    isEdit == true) {
