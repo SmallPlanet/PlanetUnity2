@@ -112,7 +112,9 @@ public class PUSimpleTableUpdateScript : MonoBehaviour {
 
 	public void ReloadTableCells() {
 		StopCoroutine("ReloadTableCellsCoroutine");
-		StartCoroutine("ReloadTableCellsCoroutine");
+		if (gameObject.activeSelf) {
+			StartCoroutine ("ReloadTableCellsCoroutine");
+		}
 	}
 
 }
@@ -277,6 +279,10 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		isReloadingTableAsync = true;
 
 		yield return null;
+
+		if (rectTransform == null) {
+			yield break;
+		}
 
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 		contentRectTransform.sizeDelta = new Vector2(rectTransform.rect.width, 0 + _ContentOffset.y);
@@ -524,6 +530,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	}
 
 	public override void unload() {
+
+		if (tableUpdateScript != null)
+			tableUpdateScript.StopReloadTableCells();
 
 		foreach (PUSimpleTableCell cell in activeTableCells) {
 			cell.unload ();
