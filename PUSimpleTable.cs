@@ -153,6 +153,9 @@ public class PUSimpleTableCell : PUTableCell {
 
 public partial class PUSimpleTable : PUSimpleTableBase {
 
+	public PUGameObject TableFooter;
+	public PUGameObject TableHeader;
+
 	public Action OnEndEdit;
 	public Action OnPullToRefresh;
 
@@ -286,6 +289,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 		contentRectTransform.sizeDelta = new Vector2(rectTransform.rect.width, 0 + _ContentOffset.y);
+		if (TableHeader != null) {
+			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
+		}
 		totalCellsChecked = 0;
 
 		// Unload any cells which are not on the screen currently; store the object data for cells which are
@@ -508,8 +514,25 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	public void LayoutChildren() {
 		RectTransform tableContentTransform = contentObject.transform as RectTransform;
 
+		if (TableHeader != null) {
+			TableHeader.rectTransform.SetParent(contentObject.transform, false);
+			TableHeader.rectTransform.anchoredPosition = new Vector2(0,0);
+
+			RectTransform contentRectTransform = contentObject.transform as RectTransform;
+			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
+		}
+
 		IEnumerator t = ReloadTableAsync ();
 		while (t.MoveNext ()) {
+		}
+
+		if (TableFooter != null) {
+			RectTransform contentRectTransform = contentObject.transform as RectTransform;
+
+			TableFooter.rectTransform.SetParent(contentObject.transform, false);
+			TableFooter.rectTransform.anchoredPosition = new Vector2(0,-contentRectTransform.sizeDelta.y);
+
+			contentRectTransform.sizeDelta += new Vector2(0, TableFooter.rectTransform.rect.height);
 		}
 		
 		currentScrollY = (int)tableContentTransform.anchoredPosition.y;
