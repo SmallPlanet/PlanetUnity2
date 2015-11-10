@@ -306,6 +306,14 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			}
 		}
 
+
+		if (TableHeader != null) {
+			TableHeader.rectTransform.SetParent(contentObject.transform, false);
+			TableHeader.rectTransform.anchoredPosition = new Vector2(0,0);
+			
+			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
+		}
+
 		foreach (List<object> subtableObjects in allSegmentedObjects) {
 
 			IEnumerator e = ReloadSubtable (subtableObjects, visibleCells);
@@ -317,6 +325,13 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, rectTransform.rect.height + _ContentOffset.y);
 		}
 		//Debug.Log (totalCellsChecked + " **************");
+
+		if (TableFooter != null) {
+			TableFooter.rectTransform.SetParent(contentObject.transform, false);
+			TableFooter.rectTransform.anchoredPosition = new Vector2(0,-contentRectTransform.sizeDelta.y);
+
+			contentRectTransform.sizeDelta += new Vector2(0, TableFooter.rectTransform.rect.height);
+		}
 
 		isReloadingTableAsync = false;
 	}
@@ -514,27 +529,10 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	public void LayoutChildren() {
 		RectTransform tableContentTransform = contentObject.transform as RectTransform;
 
-		if (TableHeader != null) {
-			TableHeader.rectTransform.SetParent(contentObject.transform, false);
-			TableHeader.rectTransform.anchoredPosition = new Vector2(0,0);
-
-			RectTransform contentRectTransform = contentObject.transform as RectTransform;
-			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
-		}
-
 		IEnumerator t = ReloadTableAsync ();
 		while (t.MoveNext ()) {
 		}
 
-		if (TableFooter != null) {
-			RectTransform contentRectTransform = contentObject.transform as RectTransform;
-
-			TableFooter.rectTransform.SetParent(contentObject.transform, false);
-			TableFooter.rectTransform.anchoredPosition = new Vector2(0,-contentRectTransform.sizeDelta.y);
-
-			contentRectTransform.sizeDelta += new Vector2(0, TableFooter.rectTransform.rect.height);
-		}
-		
 		currentScrollY = (int)tableContentTransform.anchoredPosition.y;
 		currentScrollHeight = (int)rectTransform.rect.height;
 	}
