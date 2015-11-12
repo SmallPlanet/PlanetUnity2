@@ -30,6 +30,7 @@ using System.Xml;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Collections;
 using System.Security;
 
@@ -39,6 +40,11 @@ public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 	{<%
 			didPrintAttr = false;
 			for k,v in pairs(this.attributes) do
+				
+				if(v.name == "uuid") then
+					hasUUID = true;
+				end
+				
 				if (v.default ~= nil) then
 				
 					if (didPrintAttr == false) then
@@ -151,9 +157,10 @@ end
 
 public class <%= FULL_NAME_CAMEL %> : <%= superclassForItem(this) %> {
 
-<%  if (# this.attributes > 0) then %>
-<% end %>
-
+	<% if(hasSuperclass(this) == false) then %>
+	public string uuid = UUID.Generate ();
+	<% end %>
+	
 <%	if(hasSuperclass(this) == false) then
 		gaxb_print("\tpublic object parent;\n")
 		gaxb_print('\tpublic string xmlns = "'..this.namespaceURL..'";\n')
@@ -162,7 +169,9 @@ public class <%= FULL_NAME_CAMEL %> : <%= superclassForItem(this) %> {
 	// XML Attributes
 <%
 for k,v in pairs(this.attributes) do
-	gaxb_print("\tpublic "..nullableTypeForItem(v).." "..v.name..";\n")
+	if(v.name ~= "uuid") then
+		gaxb_print("\tpublic "..nullableTypeForItem(v).." "..v.name..";\n")
+	end
 end
 if (this.mixedContent == true) then
 	gaxb_print("\tpublic string mixedContent;\n\n");
@@ -174,9 +183,9 @@ if (# this.sequences > 0) then
 	gaxb_print("\n\t// XML Sequences\n")
 	for k,v in pairs(this.sequences) do
 		if (v.name == "any") then
-			gaxb_print("\tpublic List<object> children = new List<object>();\n")
+			gaxb_print("\tpublic OrderedDictionary children = new OrderedDictionary();\n")
 		elseif(isPlural(v)) then
-			gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
+			gaxb_print("\tpublic OrderedDictionary "..pluralName(v.name).." = new OrderedDictionary();\n")
 		else
 			if(isObject(v)) then
 				gaxb_print("\tpublic "..typeNameForItem(v).." "..v.name..";\n")
@@ -206,7 +215,7 @@ end
 		if(parent != null)
 		{
 			FieldInfo parentField = parent.GetType().GetField("<%= CAP_NAME %>");
-			List<object> parentChildren = null;
+			OrderedDictionary parentChildren = null;
 			
 			if(parentField != null)
 			{
@@ -218,14 +227,14 @@ end
 				
 				if(parentField != null)
 				{
-					parentChildren = (List<object>)(parentField.GetValue(parent));
+					parentChildren = (OrderedDictionary)(parentField.GetValue(parent));
 				}
 				else
 				{
 					parentField = parent.GetType().GetField("<%= SUPER_PLURAL_NAME %>");
 					if(parentField != null)
 					{
-						parentChildren = (List<object>)(parentField.GetValue(parent));
+						parentChildren = (OrderedDictionary)(parentField.GetValue(parent));
 					}
 				}
 				if(parentChildren == null)
@@ -233,12 +242,12 @@ end
 					FieldInfo childrenField = parent.GetType().GetField("children");
 					if(childrenField != null)
 					{
-						parentChildren = (List<object>)childrenField.GetValue(parent);
+						parentChildren = (OrderedDictionary)childrenField.GetValue(parent);
 					}
 				}
 				if(parentChildren != null)
 				{
-					parentChildren.Add(this);
+					parentChildren.Add(uuid, this);
 				}
 				
 			}

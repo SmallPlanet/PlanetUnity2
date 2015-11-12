@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Reflection;
 
 // Right now if is just a utility holder for random math stuff
+using System.Collections.Specialized;
+using System.Collections;
+
+
 public class MathR
 {
 	public static float DegreeToRadian(float angle)
@@ -131,6 +135,11 @@ public class RandomR
 		return s;
 	}
 
+	public static object RandomObjectFromOrderedDictionary(OrderedDictionary list, ref uint rnd) {
+		if(list.Count == 0) return null;
+		return list [(int)(rnd % list.Count)];
+	}
+
 	public static object RandomObjectFromList(List<object> list, ref uint rnd) {
 		if(list.Count == 0) return null;
 		return list [(int)(rnd % list.Count)];
@@ -211,6 +220,112 @@ public static class ListExtensions
 	}
 
 	public static void RemoveOneRange(this List<object> self, List<object> otherArray) {
+		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
+		// In OUR version of this we want to remove just one of each that are in otherArray
+		foreach (object obj in otherArray) {
+			int idx = self.IndexOf (obj);
+			if (idx >= 0) {
+				self.RemoveAt (idx);
+			}
+		}
+	}
+}
+
+
+public static class OrderedDictionaryExtensions
+{
+	public static void SortByValue(this OrderedDictionary source, Func<object,object,int> sorter)
+	{
+		List<DictionaryEntry> sortedList = new List<DictionaryEntry> ();
+		
+		foreach (DictionaryEntry entry in source) {
+			sortedList.Add(entry);
+		}
+
+		sortedList.Sort((a, b) => sorter(a, b));
+		source.Clear ();
+		
+		foreach (DictionaryEntry entry in sortedList) {
+			source[entry.Key] = entry.Value;
+		}
+	}
+
+	public static void SortByValue(this OrderedDictionary source)
+	{
+		List<DictionaryEntry> sortedList = new List<DictionaryEntry> ();
+		
+		foreach (DictionaryEntry entry in source) {
+			sortedList.Add(entry);
+		}
+		
+		sortedList.Sort((a, b) => a.ToString().CompareTo(b));
+		source.Clear ();
+		
+		foreach (DictionaryEntry entry in sortedList) {
+			source[entry.Key] = entry.Value;
+		}
+	}
+
+	public static List<object> ToList(this OrderedDictionary source)
+	{
+		List<object> range = new List<object> ();
+		foreach (DictionaryEntry entry in source) {
+			range.Add(entry.Value);
+		}
+		return range;
+	}
+
+	public static List<object> GetRange(this OrderedDictionary source, int start, int length)
+	{
+		List<object> range = new List<object> ();
+		for(int i = start; i < start+length; i++){
+			range.Add(source[i]);
+		}
+		return range;
+	}
+
+	public static void Add(this OrderedDictionary source, object thing)
+	{
+		source.Add (UUID.Generate (), thing);
+	}
+
+	public static void Insert(this OrderedDictionary source, int idx, object thing)
+	{
+		source.Insert (idx, UUID.Generate (), thing);
+	}
+	
+	public static void AddRange(this OrderedDictionary source, List<object> stuff)
+	{
+		foreach (object thing in stuff) {
+			source.Add (UUID.Generate (), stuff);
+		}
+	}
+
+	public static void AddRange(this OrderedDictionary source, OrderedDictionary other)
+	{
+		foreach (string key in other.Keys) {
+			source[key] = other[key];
+		}
+	}
+
+	public static int IndexOf(this OrderedDictionary source, object obj){
+		for(int i = 0; i < source.Count; i++){
+			if(source[i] == obj){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public static void RemoveOne(this OrderedDictionary source, object obj)
+	{
+		int idx = source.IndexOf (obj);
+		if (idx >= 0) {
+			source.RemoveAt (idx);
+		}
+	}
+	
+	public static void RemoveOneRange(this OrderedDictionary self, List<object> otherArray) {
 		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
 		// In OUR version of this we want to remove just one of each that are in otherArray
 		foreach (object obj in otherArray) {

@@ -28,6 +28,7 @@ using System.Text;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections;
@@ -177,7 +178,7 @@ end
 								{
 									reader.Read();
 									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue)) {
-										List<object> parentChildren = (List<object>)(rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
+										OrderedDictionary parentChildren = (OrderedDictionary)(rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
 										if (parentChildren != null) {
 											parentChildren.Add (reader.Value);
 										}
