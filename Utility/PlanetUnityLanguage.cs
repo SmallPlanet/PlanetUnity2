@@ -36,9 +36,9 @@ public class PlanetUnityLanguage
 
 		CreateLanguageCodeMapping ();
 
-		try {
+		if (languageToCode.ContainsKey (languageCode)) {
 			languageCode = languageToCode [languageCode];
-		} catch {}
+		}
 
 		return languageCode;
 	}
