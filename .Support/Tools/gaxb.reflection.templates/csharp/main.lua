@@ -128,8 +128,8 @@ function lowercasedString(x)
 	return (x:gsub("^.", string.lower,1));
 end
 
-function isListName(v)
-	return string.sub(v,1,string.len("List-"))=="List-";
+function isDictionaryName(v)
+	return string.sub(v,1,string.len("Dictionary-"))=="Dictionary-";
 end
 
 function cleanedName(v)
@@ -541,18 +541,18 @@ for k,v in pairs(schema.elements) do
 	-- if not in the schema namespace, skip
 	if (schema.namespace == v.namespace) then	
 		v.name = cleanedName(v.name);
-		v.name = string.gsub(v.name, "List%-", "")
+		v.name = string.gsub(v.name, "Dictionary%-", "")
 		for k1,v1 in pairs(v.attributes) do
 			v1.originalName = v1.name;
-			v1.isList = isListName(v1.name);
+			v1.isDictionary = isDictionaryName(v1.name);
 			v1.name = cleanedName(v1.name);
-			v1.name = string.gsub(v1.name, "List%-", "")
+			v1.name = string.gsub(v1.name, "Dictionary%-", "")
 		end
 		for k1,v1 in pairs(v.sequences) do
 			v1.originalName = v1.name;
-			v1.isList = isListName(v1.name);
+			v1.isDictionary = isDictionaryName(v1.name);
 			v1.name = cleanedName(v1.name);
-			v1.name = string.gsub(v1.name, "List%-", "")
+			v1.name = string.gsub(v1.name, "Dictionary%-", "")
 		end
 		
 		

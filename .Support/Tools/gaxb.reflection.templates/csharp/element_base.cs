@@ -183,16 +183,16 @@ if (# this.sequences > 0) then
 	gaxb_print("\n\t// XML Sequences\n")
 	for k,v in pairs(this.sequences) do
 		if (v.name == "any") then
-			if(v.isList) then
-				gaxb_print("\tpublic List<object> children = new List<object>();\n")
-			else
+			if(v.isDictionary) then
 				gaxb_print("\tpublic OrderedDictionary children = new OrderedDictionary();\n")
+			else
+				gaxb_print("\tpublic List<object> children = new List<object>();\n")
 			end
 		elseif(isPlural(v)) then
-			if(v.isList) then
-				gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
-			else
+			if(v.isDictionary) then
 				gaxb_print("\tpublic OrderedDictionary "..pluralName(v.name).." = new OrderedDictionary();\n")
+			else
+				gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
 			end
 		else
 			if(isObject(v)) then
