@@ -128,6 +128,10 @@ function lowercasedString(x)
 	return (x:gsub("^.", string.lower,1));
 end
 
+function isListName(v)
+	return string.sub(v,1,string.len("List-"))=="List-";
+end
+
 function cleanedName(v)
 	-- adds underscore to certain reserved names like class, id, restrict
 	if (v == "id") then
@@ -537,14 +541,21 @@ for k,v in pairs(schema.elements) do
 	-- if not in the schema namespace, skip
 	if (schema.namespace == v.namespace) then	
 		v.name = cleanedName(v.name);
+		v.name = string.gsub(v.name, "List%-", "")
 		for k1,v1 in pairs(v.attributes) do
 			v1.originalName = v1.name;
+			v1.isList = isListName(v1.name);
 			v1.name = cleanedName(v1.name);
+			v1.name = string.gsub(v1.name, "List%-", "")
 		end
 		for k1,v1 in pairs(v.sequences) do
 			v1.originalName = v1.name;
+			v1.isList = isListName(v1.name);
 			v1.name = cleanedName(v1.name);
+			v1.name = string.gsub(v1.name, "List%-", "")
 		end
+		
+		
 		
 		ALL_CLASSES[className(v)] = v;
 		

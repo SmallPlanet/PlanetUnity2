@@ -49,11 +49,11 @@ public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 				
 					if (didPrintAttr == false) then
 						didPrintAttr = true;
-						gaxb_print("\n\t\tstring attr;\n\n")
+						gaxb_print("\n\t\tstring attr = null;\n\n")
 					end
 					
 					if (v.default == "UUID_REGISTER") then
-						gaxb_print("\t\tattr = UUID.Generate ();\n")
+							
 					else
 						gaxb_print('\t\tattr = "'..v.default..'";\n')
 					end
@@ -183,9 +183,17 @@ if (# this.sequences > 0) then
 	gaxb_print("\n\t// XML Sequences\n")
 	for k,v in pairs(this.sequences) do
 		if (v.name == "any") then
-			gaxb_print("\tpublic OrderedDictionary children = new OrderedDictionary();\n")
+			if(v.isList) then
+				gaxb_print("\tpublic List<object> children = new List<object>();\n")
+			else
+				gaxb_print("\tpublic OrderedDictionary children = new OrderedDictionary();\n")
+			end
 		elseif(isPlural(v)) then
-			gaxb_print("\tpublic OrderedDictionary "..pluralName(v.name).." = new OrderedDictionary();\n")
+			if(v.isList) then
+				gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
+			else
+				gaxb_print("\tpublic OrderedDictionary "..pluralName(v.name).." = new OrderedDictionary();\n")
+			end
 		else
 			if(isObject(v)) then
 				gaxb_print("\tpublic "..typeNameForItem(v).." "..v.name..";\n")
@@ -215,7 +223,8 @@ end
 		if(parent != null)
 		{
 			FieldInfo parentField = parent.GetType().GetField("<%= CAP_NAME %>");
-			OrderedDictionary parentChildren = null;
+			OrderedDictionary parentAsDictionary = null;
+			List<object> parentAsList = null;
 			
 			if(parentField != null)
 			{
@@ -227,28 +236,32 @@ end
 				
 				if(parentField != null)
 				{
-					parentChildren = (OrderedDictionary)(parentField.GetValue(parent));
+					parentAsDictionary = (parentField.GetValue(parent)) as OrderedDictionary;
+					parentAsList = (parentField.GetValue(parent)) as List<object>;
 				}
 				else
 				{
 					parentField = parent.GetType().GetField("<%= SUPER_PLURAL_NAME %>");
 					if(parentField != null)
 					{
-						parentChildren = (OrderedDictionary)(parentField.GetValue(parent));
+						parentAsDictionary = (parentField.GetValue(parent)) as OrderedDictionary;
+						parentAsList = (parentField.GetValue(parent)) as List<object>;
 					}
 				}
-				if(parentChildren == null)
+				if(parentAsDictionary == null && parentAsList == null)
 				{
 					FieldInfo childrenField = parent.GetType().GetField("children");
 					if(childrenField != null)
 					{
-						parentChildren = (OrderedDictionary)childrenField.GetValue(parent);
+						parentAsDictionary = childrenField.GetValue(parent) as OrderedDictionary;
+						parentAsList = childrenField.GetValue(parent) as List<object>;
 					}
 				}
-				if(parentChildren != null)
-				{
-					parentChildren.Add(uuid, this);
-				}
+
+				if(parentAsDictionary != null)
+					parentAsDictionary.Add(uuid, this);
+				if(parentAsList != null)
+					parentAsList.Add(this);
 				
 			}
 		}
@@ -277,16 +290,11 @@ end
 		
 		parent = _parent;
 		
-		if(this.GetType() == typeof( <%= FULL_NAME_CAMEL_NON_BASE %> ))
-		{
-			gaxb_addToParent();
-		}
-		
 		//xmlns = reader.GetAttribute("xmlns");
 		
 <%
 		if (# this.attributes > 0) then
-			gaxb_print("\n\t\tstring attr;\n")
+			gaxb_print("\n\t\tstring attr = null;\n")
 		end
 		for k,v in pairs(this.attributes) do
 			gaxb_print("\t\tattr = reader.GetAttribute(\""..v.originalName.."\");\n")
@@ -295,7 +303,7 @@ end
 			
 			if (v.default ~= nil) then
 				if (v.default == "UUID_REGISTER") then
-					gaxb_print("\t\tif(attr == null) { attr = UUID.Generate (); }\n")
+					
 				else
 					gaxb_print("\t\tif(attr == null) { attr = \""..v.default.."\"; }\n")
 				end
@@ -334,6 +342,11 @@ end
 			gaxb_print("\t\t\n")
 		end
 		%>
+																				
+		if(this.GetType() == typeof( <%= FULL_NAME_CAMEL_NON_BASE %> ))
+		{
+			gaxb_addToParent();
+		}
 	}
 	
 	

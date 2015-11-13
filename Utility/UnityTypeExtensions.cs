@@ -270,7 +270,9 @@ public static class OrderedDictionaryExtensions
 	{
 		List<object> range = new List<object> ();
 		foreach (DictionaryEntry entry in source) {
-			range.Add(entry.Value);
+			if(entry.Value != null){
+				range.Add(entry.Value);
+			}
 		}
 		return range;
 	}
@@ -286,24 +288,24 @@ public static class OrderedDictionaryExtensions
 
 	public static void Add(this OrderedDictionary source, object thing)
 	{
-		source.Add (UUID.Generate (), thing);
+		source.Add (thing, thing);
 	}
 
 	public static void Insert(this OrderedDictionary source, int idx, object thing)
 	{
-		source.Insert (idx, UUID.Generate (), thing);
+		source.Insert (idx, thing, thing);
 	}
 	
-	public static void AddRange(this OrderedDictionary source, List<object> stuff)
+	public static void AddRange(this OrderedDictionary source, List<object> other)
 	{
-		foreach (object thing in stuff) {
-			source.Add (UUID.Generate (), stuff);
+		foreach (object x in other) {
+			source.Add (x, x);
 		}
 	}
 
 	public static void AddRange(this OrderedDictionary source, OrderedDictionary other)
 	{
-		foreach (string key in other.Keys) {
+		foreach (object key in other.Keys) {
 			source[key] = other[key];
 		}
 	}
