@@ -440,13 +440,13 @@ function isObject(v)
 				end
 			end
 			-- what to do if we get here?
-			print("unhandled case in isObject(): 1")
-			return "N/A_isObject"
+			--print("unhandled case in isObject(): 1")
+			return false;
 		end
 		-- or here?
-		print("unhandled case in isObject(): 2 *** ")
+		--print("unhandled case in isObject(): 2 *** ")
 		--print(table.tostring(v));
-		return "UNDEFINED_isObject"
+		return false;
 	end
 end
 	

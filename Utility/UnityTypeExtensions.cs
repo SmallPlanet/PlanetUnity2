@@ -119,15 +119,15 @@ public class RandomR
 		return Randf (ref rnd) * (max - min) + min;
 	}
 
-	public static List<object> RandomList(List<object> list, ref uint rnd) {
-		List<object> s = new List<object>(list);
+	public static List<T> RandomList<T>(List<T> list, ref uint rnd) {
+		List<T> s = new List<T>(list);
 		uint count = (uint)list.Count;
 
 		for(int i = 0; i < count; i++) {
 			uint x = RandomR.Rand(ref rnd) % count;
 			uint y = RandomR.Rand(ref rnd) % count;
 
-			object t = s [(int)x];
+			T t = s [(int)x];
 			s [(int)x] = s [(int)y];
 			s [(int)y] = t;
 		}
@@ -140,8 +140,8 @@ public class RandomR
 		return list [(int)(rnd % list.Count)];
 	}
 
-	public static object RandomObjectFromList(List<object> list, ref uint rnd) {
-		if(list.Count == 0) return null;
+	public static T RandomObjectFromList<T>(List<T> list, ref uint rnd) {
+		if(list.Count == 0) return default(T);
 		return list [(int)(rnd % list.Count)];
 	}
 

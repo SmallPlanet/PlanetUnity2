@@ -186,13 +186,21 @@ if (# this.sequences > 0) then
 			if(v.isDictionary) then
 				gaxb_print("\tpublic OrderedDictionary children = new OrderedDictionary();\n")
 			else
-				gaxb_print("\tpublic List<object> children = new List<object>();\n")
+				if(isObject(v)) then
+					gaxb_print("\tpublic List<"..typeNameForItem(v).."> children = new List<"..typeNameForItem(v)..">();\n")
+				else
+					gaxb_print("\tpublic List<object> children = new List<object>();\n")
+				end
 			end
 		elseif(isPlural(v)) then
 			if(v.isDictionary) then
 				gaxb_print("\tpublic OrderedDictionary "..pluralName(v.name).." = new OrderedDictionary();\n")
 			else
-				gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
+				if(isObject(v)) then
+					gaxb_print("\tpublic List<"..typeNameForItem(v).."> "..pluralName(v.name).." = new List<"..typeNameForItem(v)..">();\n")
+				else
+					gaxb_print("\tpublic List<object> "..pluralName(v.name).." = new List<object>();\n")
+				end
 			end
 		else
 			if(isObject(v)) then
@@ -225,6 +233,7 @@ end
 			FieldInfo parentField = parent.GetType().GetField("<%= CAP_NAME %>");
 			OrderedDictionary parentAsDictionary = null;
 			List<object> parentAsList = null;
+			List<<%= FULL_NAME_CAMEL_NON_BASE %>> parentAsSpecificList = null;
 			
 			if(parentField != null)
 			{
@@ -238,6 +247,7 @@ end
 				{
 					parentAsDictionary = (parentField.GetValue(parent)) as OrderedDictionary;
 					parentAsList = (parentField.GetValue(parent)) as List<object>;
+					parentAsSpecificList = (parentField.GetValue(parent)) as List<<%= FULL_NAME_CAMEL_NON_BASE %>>;
 				}
 				else
 				{
@@ -246,6 +256,7 @@ end
 					{
 						parentAsDictionary = (parentField.GetValue(parent)) as OrderedDictionary;
 						parentAsList = (parentField.GetValue(parent)) as List<object>;
+						parentAsSpecificList = (parentField.GetValue(parent)) as List<<%= FULL_NAME_CAMEL_NON_BASE %>>;
 					}
 				}
 				if(parentAsDictionary == null && parentAsList == null)
@@ -255,6 +266,7 @@ end
 					{
 						parentAsDictionary = childrenField.GetValue(parent) as OrderedDictionary;
 						parentAsList = childrenField.GetValue(parent) as List<object>;
+						parentAsSpecificList = childrenField.GetValue(parent) as List<<%= FULL_NAME_CAMEL_NON_BASE %>>;
 					}
 				}
 
@@ -262,6 +274,8 @@ end
 					parentAsDictionary.Add(uuid, this);
 				if(parentAsList != null)
 					parentAsList.Add(this);
+				if(parentAsSpecificList != null)
+					parentAsSpecificList.Add(this as <%= FULL_NAME_CAMEL_NON_BASE %>);
 				
 			}
 		}
