@@ -478,6 +478,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	private object _queueLock = new object();
 
 	public void PrivateScheduleTask(Task newTask) {
+
 		lock (_queueLock)
 		{
 			if (TaskQueue.Count < 100) {
@@ -507,12 +508,12 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		currentGameObject.PrivateClearTasks ();
 	}
 
-	public static void ScheduleTask(Task newTask)
+	public static void ScheduleTask(Action block)
 	{
 		if (System.Object.ReferenceEquals(currentGameObject, null)) {
 			return;
 		}
-		currentGameObject.PrivateScheduleTask(newTask);
+		currentGameObject.PrivateScheduleTask(new Task(block));
 	}
 
 	public static bool HasTasks()
