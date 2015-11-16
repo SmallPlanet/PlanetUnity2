@@ -234,6 +234,7 @@ end
 			OrderedDictionary parentAsDictionary = null;
 			List<object> parentAsList = null;
 			List<<%= FULL_NAME_CAMEL_NON_BASE %>> parentAsSpecificList = null;
+			List<<%= superclassForItem(this) %>> parentAsSuperclassSpecificList = null;
 			
 			if(parentField != null)
 			{
@@ -256,7 +257,7 @@ end
 					{
 						parentAsDictionary = (parentField.GetValue(parent)) as OrderedDictionary;
 						parentAsList = (parentField.GetValue(parent)) as List<object>;
-						parentAsSpecificList = (parentField.GetValue(parent)) as List<<%= FULL_NAME_CAMEL_NON_BASE %>>;
+						parentAsSuperclassSpecificList = (parentField.GetValue(parent)) as List<<%= superclassForItem(this) %>>;
 					}
 				}
 				if(parentAsDictionary == null && parentAsList == null)
@@ -276,6 +277,8 @@ end
 					parentAsList.Add(this);
 				if(parentAsSpecificList != null)
 					parentAsSpecificList.Add(this as <%= FULL_NAME_CAMEL_NON_BASE %>);
+				if(parentAsSuperclassSpecificList != null)
+					parentAsSuperclassSpecificList.Add(this as <%= superclassForItem(this) %>);
 				
 			}
 		}
