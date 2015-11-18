@@ -230,12 +230,24 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	private List<string> navigationHistory = new List<string>();
 
+	static public string PeekXML() {
+		return PlanetUnityGameObject.currentGameObject.InternalPeekXML ();
+	}
+
 	static public void PushXML(string newXMLPath) {
 		PlanetUnityGameObject.currentGameObject.InternalPushXML (newXMLPath);
 	}
 
 	static public void PopXML() {
 		PlanetUnityGameObject.currentGameObject.InternalPopXML ();
+	}
+
+
+	private string InternalPeekXML() {
+		if (navigationHistory.Count == 0) {
+			return null;
+		}
+		return navigationHistory [navigationHistory.Count - 1];
 	}
 
 	private void InternalPushXML(string newXMLPath) {
