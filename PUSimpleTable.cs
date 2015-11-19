@@ -289,9 +289,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 		contentRectTransform.sizeDelta = new Vector2(rectTransform.rect.width, 0 + _ContentOffset.y);
-		if (TableHeader != null) {
-			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
-		}
+		//if (TableHeader != null) {
+			//contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
+		//}
 		totalCellsChecked = 0;
 
 		// Unload any cells which are not on the screen currently; store the object data for cells which are
