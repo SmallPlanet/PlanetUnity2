@@ -402,6 +402,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
 			rootCanvas.worldCamera = Camera.main;
 			rootCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+			rootCanvas.planeDistance = 40;
 		}
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.WorldSpace)
 			rootCanvas.renderMode = RenderMode.WorldSpace;
