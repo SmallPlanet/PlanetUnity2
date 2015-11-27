@@ -34,6 +34,7 @@ public partial class PUCanvas : PUCanvasBase {
 		if (renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
 			canvas.renderMode = RenderMode.ScreenSpaceCamera;
 			canvas.worldCamera = Camera.main;
+			canvas.planeDistance = planeDistance.Value;
 		}
 		if (renderMode == PlanetUnity2.CanvasRenderMode.WorldSpace)
 			canvas.renderMode = RenderMode.WorldSpace;

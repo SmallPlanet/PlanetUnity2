@@ -388,7 +388,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (rootObject is PUCanvas) {
 			canvas = rootObject as PUCanvas;
 		} else {
-			canvas = new PUCanvas (PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera, false);
+			canvas = new PUCanvas (PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera, false, 100);
 			canvas.LoadIntoGameObject(planetUnityContainer);
 			rootObject.LoadIntoPUGameObject(canvas);
 		}
@@ -402,11 +402,11 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
 			rootCanvas.worldCamera = Camera.main;
 			rootCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-			rootCanvas.planeDistance = 40;
 		}
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.WorldSpace)
 			rootCanvas.renderMode = RenderMode.WorldSpace;
 		rootCanvas.pixelPerfect = canvas.pixelPerfect;
+		rootCanvas.planeDistance = canvas.planeDistance.Value;
 		// End silly section
 
 		#if UNITY_EDITOR

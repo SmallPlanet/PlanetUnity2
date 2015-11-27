@@ -119,6 +119,7 @@
 			<extension base="planet:GameObject">
 				<attribute name="renderMode" type="planet:CanvasRenderMode" use="optional" default="ScreenSpaceOverlay" />
 				<attribute name="pixelPerfect" type="boolean" use="optional" default="false" />
+				<attribute name="planeDistance" type="float" use="optional" default="100" />
 			</extension>
 		</complexContent>
 	</complexType>

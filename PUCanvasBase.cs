@@ -25,17 +25,22 @@ public partial class PUCanvas : PUCanvasBase {
 		if(attr != null) { renderMode = (PlanetUnity2.CanvasRenderMode)Enum.Parse(typeof(PlanetUnity2.CanvasRenderMode), attr); } 
 		attr = "false";
 		if(attr != null) { pixelPerfect = bool.Parse(attr); } 
+		attr = "100";
+		if(attr != null) { planeDistance = float.Parse(attr); } 
 
 	}
 	
 	
 	public PUCanvas(
 			PlanetUnity2.CanvasRenderMode renderMode,
-			bool pixelPerfect ) : this()
+			bool pixelPerfect,
+			float planeDistance ) : this()
 	{
 		this.renderMode = renderMode;
 
 		this.pixelPerfect = pixelPerfect;
+
+		this.planeDistance = planeDistance;
 	}
 
 	
@@ -43,6 +48,7 @@ public partial class PUCanvas : PUCanvasBase {
 	public PUCanvas(
 			PlanetUnity2.CanvasRenderMode renderMode,
 			bool pixelPerfect,
+			float planeDistance,
 			Vector4 bounds,
 			Vector3 position,
 			Vector2 size,
@@ -71,6 +77,8 @@ public partial class PUCanvas : PUCanvasBase {
 		this.renderMode = renderMode;
 
 		this.pixelPerfect = pixelPerfect;
+
+		this.planeDistance = planeDistance;
 
 		this.bounds = bounds;
 
@@ -137,6 +145,7 @@ public class PUCanvasBase : PUGameObject {
 	// XML Attributes
 	public PlanetUnity2.CanvasRenderMode? renderMode;
 	public bool pixelPerfect;
+	public float? planeDistance;
 
 
 
@@ -232,6 +241,11 @@ public class PUCanvasBase : PUGameObject {
 		if(attr == null) { attr = "false"; }
 		if(attr != null) { pixelPerfect = bool.Parse(attr); } 
 		
+		attr = reader.GetAttribute("planeDistance");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr == null) { attr = "100"; }
+		if(attr != null) { planeDistance = float.Parse(attr); } 
+		
 
 	}
 	
@@ -247,6 +261,7 @@ public class PUCanvasBase : PUGameObject {
 
 		if(renderMode != null) { sb.AppendFormat (" {0}=\"{1}\"", "renderMode", (int)renderMode); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "pixelPerfect", pixelPerfect.ToString().ToLower()); 
+		if(planeDistance != null) { sb.AppendFormat (" {0}=\"{1}\"", "planeDistance", planeDistance.Value.ToString ("0.##")); }
 
 	}
 	
