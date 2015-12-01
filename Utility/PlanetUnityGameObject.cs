@@ -230,12 +230,24 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	private List<string> navigationHistory = new List<string>();
 
+	static public string PeekXML() {
+		return PlanetUnityGameObject.currentGameObject.InternalPeekXML ();
+	}
+
 	static public void PushXML(string newXMLPath) {
 		PlanetUnityGameObject.currentGameObject.InternalPushXML (newXMLPath);
 	}
 
 	static public void PopXML() {
 		PlanetUnityGameObject.currentGameObject.InternalPopXML ();
+	}
+
+
+	private string InternalPeekXML() {
+		if (navigationHistory.Count == 0) {
+			return null;
+		}
+		return navigationHistory [navigationHistory.Count - 1];
 	}
 
 	private void InternalPushXML(string newXMLPath) {
@@ -376,7 +388,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (rootObject is PUCanvas) {
 			canvas = rootObject as PUCanvas;
 		} else {
-			canvas = new PUCanvas (PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera, false);
+			canvas = new PUCanvas (PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera, false, 100);
 			canvas.LoadIntoGameObject(planetUnityContainer);
 			rootObject.LoadIntoPUGameObject(canvas);
 		}
@@ -394,6 +406,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.WorldSpace)
 			rootCanvas.renderMode = RenderMode.WorldSpace;
 		rootCanvas.pixelPerfect = canvas.pixelPerfect;
+		rootCanvas.planeDistance = canvas.planeDistance.Value;
 		// End silly section
 
 		#if UNITY_EDITOR
@@ -478,6 +491,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	private object _queueLock = new object();
 
 	public void PrivateScheduleTask(Task newTask) {
+
 		lock (_queueLock)
 		{
 			if (TaskQueue.Count < 100) {
@@ -507,12 +521,12 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		currentGameObject.PrivateClearTasks ();
 	}
 
-	public static void ScheduleTask(Task newTask)
+	public static void ScheduleTask(Action block)
 	{
 		if (System.Object.ReferenceEquals(currentGameObject, null)) {
 			return;
 		}
-		currentGameObject.PrivateScheduleTask(newTask);
+		currentGameObject.PrivateScheduleTask(new Task(block));
 	}
 
 	public static bool HasTasks()

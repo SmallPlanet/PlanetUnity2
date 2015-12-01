@@ -112,6 +112,18 @@ public class PlanetUnityResourceCache
 		return t;
 	}
 
+	static public string GetTextFileNoCache(string s)
+	{
+		if (s == null) {
+			return null;
+		}
+		TextAsset stringData = Resources.Load<TextAsset> (s);
+		if (stringData == null) {
+			return null;
+		}
+		return stringData.text;
+	}
+
 	static public Font GetFont(string s)
 	{
 		if (s == null) {

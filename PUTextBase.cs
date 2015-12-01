@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUText : PUTextBase {
 	
@@ -271,6 +271,18 @@ public class PUTextBase : PUGameObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -291,7 +303,7 @@ public class PUTextBase : PUGameObject {
 		string attr;
 		attr = reader.GetAttribute("font");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { font = attr; } 
+		if(attr != null) { font = unescape(attr); } 
 		
 		attr = reader.GetAttribute("fontSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -318,7 +330,7 @@ public class PUTextBase : PUGameObject {
 		
 		attr = reader.GetAttribute("value");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { value = attr; } 
+		if(attr != null) { value = unescape(attr); } 
 		
 		attr = reader.GetAttribute("sizeToFit");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -342,7 +354,7 @@ public class PUTextBase : PUGameObject {
 		
 		attr = reader.GetAttribute("onLinkClick");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onLinkClick = attr; } 
+		if(attr != null) { onLinkClick = unescape(attr); } 
 		
 
 	}
@@ -357,19 +369,19 @@ public class PUTextBase : PUGameObject {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(font != null) { sb.AppendFormat (" {0}=\"{1}\"", "font", font); }
+		if(font != null) { sb.AppendFormat (" {0}=\"{1}\"", "font", SecurityElement.Escape (font)); }
 		if(fontSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "fontSize", fontSize); }
 		if(fontStyle != null) { sb.AppendFormat (" {0}=\"{1}\"", "fontStyle", (int)fontStyle); }
 		if(fontColor != null) { sb.AppendFormat (" {0}=\"{1}\"", "fontColor", fontColor.Value.PUToString()); }
 		if(lineSpacing != null) { sb.AppendFormat (" {0}=\"{1}\"", "lineSpacing", lineSpacing.Value.ToString ("0.##")); }
 		if(alignment != null) { sb.AppendFormat (" {0}=\"{1}\"", "alignment", (int)alignment); }
-		if(value != null) { sb.AppendFormat (" {0}=\"{1}\"", "value", value); }
+		if(value != null) { sb.AppendFormat (" {0}=\"{1}\"", "value", SecurityElement.Escape (value)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "sizeToFit", sizeToFit.ToString().ToLower()); 
 		if(maxFontSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "maxFontSize", maxFontSize); }
 		if(minFontSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "minFontSize", minFontSize); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "vOverflow", vOverflow.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "hOverflow", hOverflow.ToString().ToLower()); 
-		if(onLinkClick != null) { sb.AppendFormat (" {0}=\"{1}\"", "onLinkClick", onLinkClick); }
+		if(onLinkClick != null) { sb.AppendFormat (" {0}=\"{1}\"", "onLinkClick", SecurityElement.Escape (onLinkClick)); }
 
 	}
 	

@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUMovie : PUMovieBase {
 	
@@ -199,6 +199,18 @@ public class PUMovieBase : PUGameObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -227,7 +239,7 @@ public class PUMovieBase : PUGameObject {
 		
 		attr = reader.GetAttribute("resourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { resourcePath = attr; } 
+		if(attr != null) { resourcePath = unescape(attr); } 
 		
 		attr = reader.GetAttribute("color");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -248,7 +260,7 @@ public class PUMovieBase : PUGameObject {
 
 		 sb.AppendFormat (" {0}=\"{1}\"", "hasAlpha", hasAlpha.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "looping", looping.ToString().ToLower()); 
-		if(resourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "resourcePath", resourcePath); }
+		if(resourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "resourcePath", SecurityElement.Escape (resourcePath)); }
 		if(color != null) { sb.AppendFormat (" {0}=\"{1}\"", "color", color.Value.PUToString()); }
 
 	}

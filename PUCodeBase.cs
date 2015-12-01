@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUCode : PUCodeBase {
 	
@@ -194,6 +194,18 @@ public class PUCodeBase : PUGameObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -214,7 +226,7 @@ public class PUCodeBase : PUGameObject {
 		string attr;
 		attr = reader.GetAttribute("class");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { _class = attr; } 
+		if(attr != null) { _class = unescape(attr); } 
 		
 		attr = reader.GetAttribute("singleton");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -234,7 +246,7 @@ public class PUCodeBase : PUGameObject {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(_class != null) { sb.AppendFormat (" {0}=\"{1}\"", "_class", _class); }
+		if(_class != null) { sb.AppendFormat (" {0}=\"{1}\"", "_class", SecurityElement.Escape (_class)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "singleton", singleton.ToString().ToLower()); 
 
 	}

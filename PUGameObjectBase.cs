@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUGameObject : PUGameObjectBase {
 	
@@ -252,6 +252,18 @@ public class PUGameObjectBase : PUObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -302,7 +314,7 @@ public class PUGameObjectBase : PUObject {
 		attr = reader.GetAttribute("anchor");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "bottom,left"; }
-		if(attr != null) { anchor = attr; } 
+		if(attr != null) { anchor = unescape(attr); } 
 		
 		attr = reader.GetAttribute("active");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -331,7 +343,7 @@ public class PUGameObjectBase : PUObject {
 		
 		attr = reader.GetAttribute("shader");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { shader = attr; } 
+		if(attr != null) { shader = unescape(attr); } 
 		
 		attr = reader.GetAttribute("ignoreMouse");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -339,7 +351,7 @@ public class PUGameObjectBase : PUObject {
 		
 		attr = reader.GetAttribute("components");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { components = attr; } 
+		if(attr != null) { components = unescape(attr); } 
 		
 
 	}
@@ -360,16 +372,16 @@ public class PUGameObjectBase : PUObject {
 		if(rotation != null) { sb.AppendFormat (" {0}=\"{1}\"", "rotation", rotation.Value.PUToString()); }
 		if(scale != null) { sb.AppendFormat (" {0}=\"{1}\"", "scale", scale.Value.PUToString()); }
 		if(pivot != null) { sb.AppendFormat (" {0}=\"{1}\"", "pivot", pivot.Value.PUToString()); }
-		if(anchor != null) { sb.AppendFormat (" {0}=\"{1}\"", "anchor", anchor); }
+		if(anchor != null) { sb.AppendFormat (" {0}=\"{1}\"", "anchor", SecurityElement.Escape (anchor)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "active", active.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "mask", mask.ToString().ToLower()); 
 		if(maskInset != null) { sb.AppendFormat (" {0}=\"{1}\"", "maskInset", maskInset.Value.PUToString()); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "outline", outline.ToString().ToLower()); 
 		if(lastY != null) { sb.AppendFormat (" {0}=\"{1}\"", "lastY", lastY.Value.ToString ("0.##")); }
 		if(lastX != null) { sb.AppendFormat (" {0}=\"{1}\"", "lastX", lastX.Value.ToString ("0.##")); }
-		if(shader != null) { sb.AppendFormat (" {0}=\"{1}\"", "shader", shader); }
+		if(shader != null) { sb.AppendFormat (" {0}=\"{1}\"", "shader", SecurityElement.Escape (shader)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "ignoreMouse", ignoreMouse.ToString().ToLower()); 
-		if(components != null) { sb.AppendFormat (" {0}=\"{1}\"", "components", components); }
+		if(components != null) { sb.AppendFormat (" {0}=\"{1}\"", "components", SecurityElement.Escape (components)); }
 
 	}
 	

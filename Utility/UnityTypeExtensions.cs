@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Reflection;
 
 // Right now if is just a utility holder for random math stuff
+using System.Collections.Specialized;
+using System.Collections;
+
+
 public class MathR
 {
 	public static float DegreeToRadian(float angle)
@@ -115,15 +119,15 @@ public class RandomR
 		return Randf (ref rnd) * (max - min) + min;
 	}
 
-	public static List<object> RandomList(List<object> list, ref uint rnd) {
-		List<object> s = new List<object>(list);
+	public static List<T> RandomList<T>(List<T> list, ref uint rnd) {
+		List<T> s = new List<T>(list);
 		uint count = (uint)list.Count;
 
 		for(int i = 0; i < count; i++) {
 			uint x = RandomR.Rand(ref rnd) % count;
 			uint y = RandomR.Rand(ref rnd) % count;
 
-			object t = s [(int)x];
+			T t = s [(int)x];
 			s [(int)x] = s [(int)y];
 			s [(int)y] = t;
 		}
@@ -131,72 +135,19 @@ public class RandomR
 		return s;
 	}
 
-	public static object RandomObjectFromList(List<object> list, ref uint rnd) {
+	public static object RandomObjectFromOrderedDictionary(OrderedDictionary list, ref uint rnd) {
 		if(list.Count == 0) return null;
+		return list [(int)(rnd % list.Count)];
+	}
+
+	public static T RandomObjectFromList<T>(List<T> list, ref uint rnd) {
+		if(list.Count == 0) return default(T);
 		return list [(int)(rnd % list.Count)];
 	}
 
 	public static T RandomObjectFromArray<T>(T[] list, ref uint rnd) {
 		if(list.Length == 0) return default(T);
 		return list [(int)(rnd % list.Length)];
-	}
-}
-
-public static class RectTransformExtension
-{
-	public static float GetWidth(this RectTransform myTransform)
-	{
-		return myTransform.rect.width;
-	}
-
-	public static float GetHeight(this RectTransform myTransform)
-	{
-		return myTransform.rect.height;
-	}
-
-	public static float GetMinX(this RectTransform myTransform)
-	{
-		RectTransform parentTransform = myTransform.parent as RectTransform;
-
-		if (parentTransform == null) {
-			return 0;
-		}
-
-		return myTransform.anchoredPosition.x - myTransform.pivot.x * myTransform.GetWidth();
-	}
-
-	public static float GetMaxX(this RectTransform myTransform)
-	{
-		return myTransform.GetMinX () + myTransform.GetWidth ();
-	}
-
-	public static float GetMinY(this RectTransform myTransform)
-	{
-		RectTransform parentTransform = myTransform.parent as RectTransform;
-
-		if (parentTransform == null) {
-			return 0;
-		}
-
-		return myTransform.anchoredPosition.y - myTransform.pivot.y * myTransform.GetHeight();
-	}
-
-	public static float GetMaxY(this RectTransform myTransform)
-	{
-		return myTransform.GetMinY () + myTransform.GetHeight ();
-	}
-}
-
-public static class GameObjectExtension
-{
-	public static void FillParentUI(this GameObject source)
-	{
-		RectTransform myTransform = (RectTransform)source.transform;
-
-		myTransform.pivot = new Vector2(0.5f,0.5f);
-		myTransform.anchorMin = Vector2.zero;
-		myTransform.anchorMax = Vector2.one;
-		myTransform.sizeDelta = Vector2.zero;
 	}
 }
 
@@ -211,6 +162,114 @@ public static class ListExtensions
 	}
 
 	public static void RemoveOneRange(this List<object> self, List<object> otherArray) {
+		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
+		// In OUR version of this we want to remove just one of each that are in otherArray
+		foreach (object obj in otherArray) {
+			int idx = self.IndexOf (obj);
+			if (idx >= 0) {
+				self.RemoveAt (idx);
+			}
+		}
+	}
+}
+
+
+public static class OrderedDictionaryExtensions
+{
+	public static void SortByValue(this OrderedDictionary source, Func<object,object,int> sorter)
+	{
+		List<DictionaryEntry> sortedList = new List<DictionaryEntry> ();
+		
+		foreach (DictionaryEntry entry in source) {
+			sortedList.Add(entry);
+		}
+
+		sortedList.Sort((a, b) => sorter(a, b));
+		source.Clear ();
+		
+		foreach (DictionaryEntry entry in sortedList) {
+			source[entry.Key] = entry.Value;
+		}
+	}
+
+	public static void SortByValue(this OrderedDictionary source)
+	{
+		List<DictionaryEntry> sortedList = new List<DictionaryEntry> ();
+		
+		foreach (DictionaryEntry entry in source) {
+			sortedList.Add(entry);
+		}
+		
+		sortedList.Sort((a, b) => a.ToString().CompareTo(b));
+		source.Clear ();
+		
+		foreach (DictionaryEntry entry in sortedList) {
+			source[entry.Key] = entry.Value;
+		}
+	}
+
+	public static List<object> ToList(this OrderedDictionary source)
+	{
+		List<object> range = new List<object> ();
+		foreach (DictionaryEntry entry in source) {
+			if(entry.Value != null){
+				range.Add(entry.Value);
+			}
+		}
+		return range;
+	}
+
+	public static List<object> GetRange(this OrderedDictionary source, int start, int length)
+	{
+		List<object> range = new List<object> ();
+		for(int i = start; i < start+length; i++){
+			range.Add(source[i]);
+		}
+		return range;
+	}
+
+	public static void Add(this OrderedDictionary source, object thing)
+	{
+		source.Add (thing, thing);
+	}
+
+	public static void Insert(this OrderedDictionary source, int idx, object thing)
+	{
+		source.Insert (idx, thing, thing);
+	}
+	
+	public static void AddRange(this OrderedDictionary source, List<object> other)
+	{
+		foreach (object x in other) {
+			source.Add (x, x);
+		}
+	}
+
+	public static void AddRange(this OrderedDictionary source, OrderedDictionary other)
+	{
+		foreach (object key in other.Keys) {
+			source[key] = other[key];
+		}
+	}
+
+	public static int IndexOf(this OrderedDictionary source, object obj){
+		for(int i = 0; i < source.Count; i++){
+			if(source[i] == obj){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public static void RemoveOne(this OrderedDictionary source, object obj)
+	{
+		int idx = source.IndexOf (obj);
+		if (idx >= 0) {
+			source.RemoveAt (idx);
+		}
+	}
+	
+	public static void RemoveOneRange(this OrderedDictionary self, List<object> otherArray) {
 		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
 		// In OUR version of this we want to remove just one of each that are in otherArray
 		foreach (object obj in otherArray) {

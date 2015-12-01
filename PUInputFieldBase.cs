@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PUInputField : PUInputFieldBase {
 	
@@ -255,6 +255,18 @@ public class PUInputFieldBase : PUText {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -275,11 +287,11 @@ public class PUInputFieldBase : PUText {
 		string attr;
 		attr = reader.GetAttribute("onValueChanged");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onValueChanged = attr; } 
+		if(attr != null) { onValueChanged = unescape(attr); } 
 		
 		attr = reader.GetAttribute("placeholder");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { placeholder = attr; } 
+		if(attr != null) { placeholder = unescape(attr); } 
 		
 		attr = reader.GetAttribute("limit");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -310,8 +322,8 @@ public class PUInputFieldBase : PUText {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(onValueChanged != null) { sb.AppendFormat (" {0}=\"{1}\"", "onValueChanged", onValueChanged); }
-		if(placeholder != null) { sb.AppendFormat (" {0}=\"{1}\"", "placeholder", placeholder); }
+		if(onValueChanged != null) { sb.AppendFormat (" {0}=\"{1}\"", "onValueChanged", SecurityElement.Escape (onValueChanged)); }
+		if(placeholder != null) { sb.AppendFormat (" {0}=\"{1}\"", "placeholder", SecurityElement.Escape (placeholder)); }
 		if(limit != null) { sb.AppendFormat (" {0}=\"{1}\"", "limit", limit); }
 		if(contentType != null) { sb.AppendFormat (" {0}=\"{1}\"", "contentType", (int)contentType); }
 		if(lineType != null) { sb.AppendFormat (" {0}=\"{1}\"", "lineType", (int)lineType); }

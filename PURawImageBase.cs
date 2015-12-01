@@ -13,7 +13,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
-
+using System.Security;
 
 public partial class PURawImage : PURawImageBase {
 	
@@ -192,6 +192,18 @@ public class PURawImageBase : PUGameObject {
 		}
 	}
 
+	private string unescape(string s) {
+		if (string.IsNullOrEmpty(s)) return s;
+
+		string returnString = s;
+		returnString = returnString.Replace("&apos;", "'");
+		returnString = returnString.Replace("&quot;", "\"");
+		returnString = returnString.Replace("&gt;", ">");
+		returnString = returnString.Replace("&lt;", "<");
+		returnString = returnString.Replace("&amp;", "&");
+		return returnString;
+	}
+
 	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
 	{
 		base.gaxb_load(reader, _parent, args);
@@ -212,7 +224,7 @@ public class PURawImageBase : PUGameObject {
 		string attr;
 		attr = reader.GetAttribute("resourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { resourcePath = attr; } 
+		if(attr != null) { resourcePath = unescape(attr); } 
 		
 		attr = reader.GetAttribute("color");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -235,7 +247,7 @@ public class PURawImageBase : PUGameObject {
 	{
 		base.gaxb_appendXMLAttributes(sb);
 
-		if(resourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "resourcePath", resourcePath); }
+		if(resourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "resourcePath", SecurityElement.Escape (resourcePath)); }
 		if(color != null) { sb.AppendFormat (" {0}=\"{1}\"", "color", color.Value.PUToString()); }
 		if(uvRect != null) { sb.AppendFormat (" {0}=\"{1}\"", "uvRect", uvRect.Value.PUToString()); }
 

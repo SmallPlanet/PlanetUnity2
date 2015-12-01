@@ -128,6 +128,10 @@ function lowercasedString(x)
 	return (x:gsub("^.", string.lower,1));
 end
 
+function isDictionaryName(v)
+	return v == "999";
+end
+
 function cleanedName(v)
 	-- adds underscore to certain reserved names like class, id, restrict
 	if (v == "id") then
@@ -436,13 +440,13 @@ function isObject(v)
 				end
 			end
 			-- what to do if we get here?
-			print("unhandled case in isObject(): 1")
-			return "N/A_isObject"
+			--print("unhandled case in isObject(): 1")
+			return false;
 		end
 		-- or here?
-		print("unhandled case in isObject(): 2 *** ")
+		--print("unhandled case in isObject(): 2 *** ")
 		--print(table.tostring(v));
-		return "UNDEFINED_isObject"
+		return false;
 	end
 end
 	
@@ -539,12 +543,16 @@ for k,v in pairs(schema.elements) do
 		v.name = cleanedName(v.name);
 		for k1,v1 in pairs(v.attributes) do
 			v1.originalName = v1.name;
+			v1.isDictionary = isDictionaryName(v1.maxOccurs);
 			v1.name = cleanedName(v1.name);
 		end
 		for k1,v1 in pairs(v.sequences) do
 			v1.originalName = v1.name;
+			v1.isDictionary = isDictionaryName(v1.maxOccurs);
 			v1.name = cleanedName(v1.name);
 		end
+		
+		
 		
 		ALL_CLASSES[className(v)] = v;
 		

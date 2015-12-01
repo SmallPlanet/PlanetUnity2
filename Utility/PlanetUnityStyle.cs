@@ -29,21 +29,7 @@ public class PlanetUnityStyle
 	private static Dictionary<string, string> languageToCode = null;
 	private static string languageCode = null;
 
-	public static int GlobalFontSize = CalculateBestFontSize();
-
-	static public int CalculateBestFontSize() {
-		if ((int)PlanetUnityOverride.screenDPI() == 0) {
-			return 32;
-		}
-
-		int fontSize = (int)(PlanetUnityOverride.screenDPI() / 13);
-
-		if (fontSize < 18) {
-			fontSize = 18;
-		}
-
-		return fontSize;
-	}
+	public static int GlobalFontSize = 24;
 
 	static public string LanguageCode()
 	{

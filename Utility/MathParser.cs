@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using UnityEngine;
 
 namespace Mathos.Parser
 {
@@ -22,6 +23,14 @@ namespace Mathos.Parser
     /// </summary>
     public class MathParser
     {
+
+		static public float step(float a, float b){
+			if (b > a) {
+				return a;
+			}
+			return Mathf.Floor (a / Mathf.Floor (a / b));
+		}
+
         /// <summary>
         /// This constructor will add some basic operators, functions, and variables
         /// to the parser. Please note that you are able to change that using
@@ -104,7 +113,7 @@ namespace Mathos.Parser
 					// example: step(1024, 200) would result in 204.8
 					// example: step(1024, 300) would result in 341.3
 
-					return (decimal)Math.Floor((double)x[0] / Math.Floor((double)x[0]/(double)x[1]));
+					return (decimal)step((float)x[0], (float)x[1]);
 				});
 
 				LocalFunctions.Add("max", x => (decimal)Math.Max((double)x[0], (double)x[1]));
