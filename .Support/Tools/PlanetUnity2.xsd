@@ -147,7 +147,6 @@
 		<complexContent>
 			<extension base="planet:Color">
 				<attribute name="onTouchUp" type="string" use="optional" />
-				<attribute name="onTouchDown" type="string" use="optional" />
 				<attribute name="pressedColor" type="planet:color" use="optional" />
 			</extension>
 		</complexContent>
@@ -158,7 +157,6 @@
 		<complexContent>
 			<extension base="planet:GameObject">
 				<attribute name="onTouchUp" type="string" use="optional" />
-				<attribute name="onTouchDown" type="string" use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -208,7 +206,6 @@
 				<attribute name="highlightedResourcePath" type="string" use="required" />
 				<attribute name="disabledResourcePath" type="string" use="required" />
 				<attribute name="onTouchUp" type="string" use="optional" />
-				<attribute name="onTouchDown" type="string" use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>

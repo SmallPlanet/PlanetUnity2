@@ -16,13 +16,10 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using System.Runtime.Remoting.Messaging;
-using UnityEngine.EventSystems;
 
 public partial class PUImageButton : PUImageButtonBase {
 
 	public Button button;
-	private UnityEngine.Events.UnityAction currentOnTouchUpAction = null;
 
 	public override void gaxb_init ()
 	{
@@ -33,10 +30,6 @@ public partial class PUImageButton : PUImageButtonBase {
 		}
 
 		button = gameObject.AddComponent<Button> ();
-
-		ColorBlock colors = button.colors;
-		colors.fadeDuration = 0;
-		button.colors = colors;
 
 		if (pressedResourcePath != null || highlightedResourcePath != null || disabledResourcePath != null) {
 
@@ -58,28 +51,7 @@ public partial class PUImageButton : PUImageButtonBase {
 		}
 		
 		if (onTouchUp != null) {
-			currentOnTouchUpAction = () => { 
-				NotificationCenter.postNotification (Scope (), this.onTouchUp, NotificationCenter.Args("sender", this));
-			};
-			
-			button.onClick.AddListener(currentOnTouchUpAction); 
-		}
-	}
-	
-	public void SetOnTouchUp (string newNote) {
-		if (newNote != null) {
-			
-			if (currentOnTouchUpAction != null) {
-				button.onClick.RemoveListener(currentOnTouchUpAction);
-			}
-			
-			this.onTouchUp = newNote;
-			
-			currentOnTouchUpAction = () => { 
-				NotificationCenter.postNotification (Scope (), this.onTouchUp, NotificationCenter.Args("sender", this));
-			};
-			
-			button.onClick.AddListener(currentOnTouchUpAction); 
+			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
 		}
 	}
 

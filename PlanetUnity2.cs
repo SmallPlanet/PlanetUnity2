@@ -25,24 +25,26 @@ interface IPlanetUnity2
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
-	public enum InputFieldLineType {
-		single,
-		multiSubmit,
-		multiNewline,
+	public const string USERSTRINGINPUT = "UserStringInput";
+	public const string USERCHARINPUT = "UserCharInput";
+	public const string USERINPUTCANCELLED = "UserInputCancelled";
+	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
+	public const string BUTTONTOUCHUP = "ButtonTouchUp";
+	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
+	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
+	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
+
+	public enum TextOverflowHorizontal {
+		wrap,
+		overflow,
 	};
 
-	public enum SliderDirection {
-		LeftToRight,
-		RightToLeft,
-		BottomToTop,
-		TopToBottom,
-	};
-
-	public enum GridLayoutStartCorner {
-		upperLeft,
-		upperRight,
-		lowerLeft,
-		lowerRight,
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
 	};
 
 	public enum ImageType {
@@ -53,49 +55,21 @@ public class PlanetUnity2 {
 		aspectFilled,
 	};
 
-	public enum GridLayoutStartAxis {
-		horizontal,
-		vertical,
-	};
-
-	public enum CanvasRenderMode {
-		ScreenSpaceOverlay,
-		ScreenSpaceCamera,
-		WorldSpace,
-	};
-
-	public const string USERSTRINGINPUT = "UserStringInput";
-	public const string USERCHARINPUT = "UserCharInput";
-	public const string USERINPUTCANCELLED = "UserInputCancelled";
-	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
-	public const string BUTTONTOUCHUP = "ButtonTouchUp";
-	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
-	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
-	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
-
 	public enum TextOverflowVertical {
 		truncate,
 		overflow,
 	};
 
-	public enum GridLayoutChildAlignment {
-		upperLeft,
-		upperCenter,
-		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
-		lowerLeft,
-		lowerCenter,
-		lowerRight,
+	public enum GridLayoutStartAxis {
+		horizontal,
+		vertical,
 	};
 
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
+	public enum FontStyle {
+		normal,
+		bold,
+		italic,
+		boldAndItalic,
 	};
 
 	public enum InputFieldContentType {
@@ -111,6 +85,18 @@ public class PlanetUnity2 {
 		custom,
 	};
 
+	public enum GridLayoutChildAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
+	};
+
 	public enum TextAlignment {
 		upperLeft,
 		upperCenter,
@@ -123,16 +109,30 @@ public class PlanetUnity2 {
 		lowerRight,
 	};
 
-	public enum FontStyle {
-		normal,
-		bold,
-		italic,
-		boldAndItalic,
+	public enum GridLayoutStartCorner {
+		upperLeft,
+		upperRight,
+		lowerLeft,
+		lowerRight,
 	};
 
-	public enum TextOverflowHorizontal {
-		wrap,
-		overflow,
+	public enum InputFieldLineType {
+		single,
+		multiSubmit,
+		multiNewline,
+	};
+
+	public enum SliderDirection {
+		LeftToRight,
+		RightToLeft,
+		BottomToTop,
+		TopToBottom,
+	};
+
+	public enum CanvasRenderMode {
+		ScreenSpaceOverlay,
+		ScreenSpaceCamera,
+		WorldSpace,
 	};
 
 

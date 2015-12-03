@@ -16,8 +16,6 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using System.Xml;
-using System.Collections;
 
 public partial class PUColorButton : PUColorButtonBase {
 
@@ -33,24 +31,12 @@ public partial class PUColorButton : PUColorButtonBase {
 
 		button = gameObject.AddComponent<Button> ();
 
-		ColorBlock colors = button.colors;
-
 		if (pressedColor != null) {
-			colors.pressedColor = pressedColor.Value;
+			PlanetUnityButtonHelper.SetPressedColor(button, pressedColor.Value);
 		}
 
-		colors.fadeDuration = 0;
-		button.colors = colors;
-
-
-
-
-
 		if (onTouchUp != null) {
-		
-			button.onClick.AddListener(() => { 
-				NotificationCenter.postNotification (Scope (), this.onTouchUp, NotificationCenter.Args("sender", this));
-			}); 
+			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
 		}
 	}
 

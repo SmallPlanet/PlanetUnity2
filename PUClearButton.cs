@@ -2,8 +2,6 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-
 
 public partial class PUClearButton : PUClearButtonBase {
 
@@ -24,16 +22,8 @@ public partial class PUClearButton : PUClearButtonBase {
 
 		button = gameObject.AddComponent<Button> ();
 
-		ColorBlock colors = button.colors;
-		colors.fadeDuration = 0;
-		button.colors = colors;
-
-
 		if (onTouchUp != null) {
-
-			button.onClick.AddListener(() => { 
-				NotificationCenter.postNotification (Scope (), this.onTouchUp, NotificationCenter.Args("sender", this));
-			}); 
+			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
 		}
 	}
 

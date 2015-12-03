@@ -35,7 +35,7 @@ public class MaskGraphic : Graphic, ICanvasRaycastFilter {
 	}
 
 #if !UNITY_4_6
-	protected override void OnPopulateMesh(Mesh m) {
+	protected override void OnPopulateMesh(VertexHelper vh) {
 		
 		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
 		// http://docs.unity3d.com/ScriptReference/UI.Graphic.OnPopulateMesh.html
@@ -43,13 +43,12 @@ public class MaskGraphic : Graphic, ICanvasRaycastFilter {
 		var vbo = new List<UIVertex>();
 		_OnFillVBO(vbo);
 		
-		using (var vh = new VertexHelper()) {
-			var quad = new UIVertex[4];
-			for (int i = 0; i < vbo.Count; i += 4) {
-				vbo.CopyTo(i, quad, 0, 4);
-				vh.AddUIVertexQuad(quad);
-			}
-			vh.FillMesh(m);
+		vh.Clear();
+
+		var quad = new UIVertex[4];
+		for (int i = 0; i < vbo.Count; i += 4) {
+			vbo.CopyTo(i, quad, 0, 4);
+			vh.AddUIVertexQuad(quad);
 		}
 	}
 #else

@@ -24,13 +24,10 @@ public partial class PUColorButton : PUColorButtonBase {
 	
 	public PUColorButton(
 			string onTouchUp,
-			string onTouchDown,
 			Color pressedColor,
 			Color color ) : this()
 	{
 		this.onTouchUp = onTouchUp;
-
-		this.onTouchDown = onTouchDown;
 
 		this.pressedColor = pressedColor;
 
@@ -41,7 +38,6 @@ public partial class PUColorButton : PUColorButtonBase {
 	
 	public PUColorButton(
 			string onTouchUp,
-			string onTouchDown,
 			Color pressedColor,
 			Color color,
 			Vector4 bounds,
@@ -70,8 +66,6 @@ public partial class PUColorButton : PUColorButtonBase {
 			string tag6 ) : this()
 	{
 		this.onTouchUp = onTouchUp;
-
-		this.onTouchDown = onTouchDown;
 
 		this.pressedColor = pressedColor;
 
@@ -141,7 +135,6 @@ public class PUColorButtonBase : PUColor {
 
 	// XML Attributes
 	public string onTouchUp;
-	public string onTouchDown;
 	public Color? pressedColor;
 
 
@@ -232,10 +225,6 @@ public class PUColorButtonBase : PUColor {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onTouchUp = unescape(attr); } 
 		
-		attr = reader.GetAttribute("onTouchDown");
-		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onTouchDown = unescape(attr); } 
-		
 		attr = reader.GetAttribute("pressedColor");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { pressedColor = new Color().PUParse(attr); } 
@@ -254,7 +243,6 @@ public class PUColorButtonBase : PUColor {
 		base.gaxb_appendXMLAttributes(sb);
 
 		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
-		if(onTouchDown != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchDown", SecurityElement.Escape (onTouchDown)); }
 		if(pressedColor != null) { sb.AppendFormat (" {0}=\"{1}\"", "pressedColor", pressedColor.Value.PUToString()); }
 
 	}

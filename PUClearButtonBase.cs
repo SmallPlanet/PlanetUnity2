@@ -23,19 +23,15 @@ public partial class PUClearButton : PUClearButtonBase {
 	
 	
 	public PUClearButton(
-			string onTouchUp,
-			string onTouchDown ) : this()
+			string onTouchUp ) : this()
 	{
 		this.onTouchUp = onTouchUp;
-
-		this.onTouchDown = onTouchDown;
 	}
 
 	
 	
 	public PUClearButton(
 			string onTouchUp,
-			string onTouchDown,
 			Vector4 bounds,
 			Vector3 position,
 			Vector2 size,
@@ -62,8 +58,6 @@ public partial class PUClearButton : PUClearButtonBase {
 			string tag6 ) : this()
 	{
 		this.onTouchUp = onTouchUp;
-
-		this.onTouchDown = onTouchDown;
 
 		this.bounds = bounds;
 
@@ -129,7 +123,6 @@ public class PUClearButtonBase : PUGameObject {
 
 	// XML Attributes
 	public string onTouchUp;
-	public string onTouchDown;
 
 
 
@@ -219,10 +212,6 @@ public class PUClearButtonBase : PUGameObject {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onTouchUp = unescape(attr); } 
 		
-		attr = reader.GetAttribute("onTouchDown");
-		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr != null) { onTouchDown = unescape(attr); } 
-		
 
 	}
 	
@@ -237,7 +226,6 @@ public class PUClearButtonBase : PUGameObject {
 		base.gaxb_appendXMLAttributes(sb);
 
 		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
-		if(onTouchDown != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchDown", SecurityElement.Escape (onTouchDown)); }
 
 	}
 	
