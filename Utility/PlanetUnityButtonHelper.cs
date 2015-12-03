@@ -12,8 +12,6 @@ using UnityEngine.EventSystems;
 
 public partial class PlanetUnityButtonHelper {
 
-	private UnityEngine.Events.UnityAction currentOnTouchUpAction = null;
-
 	public static void SetNormalColor (Button btn, string ncStr) {
 		if (btn != null && ncStr != null)
 			SetNormalColor(btn, Color.white.PUParse(ncStr));
