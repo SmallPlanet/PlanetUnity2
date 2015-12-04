@@ -21,6 +21,7 @@ using UnityEngine.EventSystems;
 
 public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
 
+#if !UNITY_4_6
 	protected override void OnPopulateMesh(VertexHelper vh) {
 		
 		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
@@ -33,6 +34,11 @@ public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
 
 		// any new stuff here
 	}
+#else
+	protected override void OnFillVBO (List<UIVertex> vbo) {
+		_OnFillVBO(vbo);
+	}
+#endif
 
 	protected void _OnFillVBO (List<UIVertex> vbo) {
 
