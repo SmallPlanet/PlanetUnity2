@@ -33,7 +33,11 @@ public partial class PUCanvas : PUCanvasBase {
 			canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 		if (renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
 			canvas.renderMode = RenderMode.ScreenSpaceCamera;
-			canvas.worldCamera = Camera.main;
+			GameObject puCamera = GameObject.Find("PUCamera");
+			if(puCamera != null)
+				canvas.worldCamera = puCamera.GetComponent<Camera>();
+			else
+				canvas.worldCamera = Camera.main;
 			canvas.planeDistance = planeDistance.Value;
 		}
 		if (renderMode == PlanetUnity2.CanvasRenderMode.WorldSpace)
