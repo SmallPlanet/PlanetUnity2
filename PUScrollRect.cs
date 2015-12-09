@@ -20,8 +20,26 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
 public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
+	
+#if !UNITY_4_6 && !UNITY_5_0 && !UNITY_5_1
 
-#if !UNITY_4_6
+#if UNITY_5_2_0 || UNITY_5_2_1
+	protected override void OnPopulateMesh(Mesh m) {
+		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
+		// http://docs.unity3d.com/ScriptReference/UI.Graphic.OnPopulateMesh.html
+		
+		var vbo = new List<UIVertex>();
+		_OnFillVBO(vbo);
+		using (var vh = new VertexHelper()) {
+			var quad = new UIVertex[4];
+			for (int i = 0; i < vbo.Count; i += 4) {
+				vbo.CopyTo(i, quad, 0, 4);
+				vh.AddUIVertexQuad(quad);
+			}
+			vh.FillMesh(m);
+		}
+	}
+#else
 	protected override void OnPopulateMesh(VertexHelper vh) {
 		
 		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
@@ -34,6 +52,8 @@ public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
 
 		// any new stuff here
 	}
+#endif
+
 #else
 	protected override void OnFillVBO (List<UIVertex> vbo) {
 		_OnFillVBO(vbo);
