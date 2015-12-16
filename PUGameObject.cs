@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Reflection;
 using System;
+using System.Text.RegularExpressions;
 
 
 
@@ -34,9 +35,9 @@ public class MaskGraphic : Graphic, ICanvasRaycastFilter {
 		return true;
 	}
 
-#if !UNITY_4_6 && !UNITY_5
+#if !UNITY_4_6 && !UNITY_5_0 && !UNITY_5_1
 
-#if UNITY_5
+#if UNITY_5_2_0 || UNITY_5_2_1
 	protected override void OnPopulateMesh(Mesh m) {
 		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
 		// http://docs.unity3d.com/ScriptReference/UI.Graphic.OnPopulateMesh.html
@@ -291,59 +292,7 @@ public partial class PUGameObject : PUGameObjectBase {
 	}
 
 	public override void gaxb_private_complete() {
-		// Delay setting of stretch anchors until after loading has happened
-		if (gameObject == null) {
-			return;
-		}
-
-		RectTransform parentTransform = gameObject.transform.parent as RectTransform;
-		float parentW = Screen.width;
-		float parentH = Screen.height;
-
-		if (parentTransform != null) {
-			Canvas rootCanvas = parentTransform.GetComponent<Canvas> ();
-
-			if (rootCanvas == null || rootCanvas.isRootCanvas == false) {
-				// Work around for unity issue where the rect transform of a sub canvas does not update soon enough
-				if (rootCanvas != null && ((int)parentTransform.rect.width == 100 && (int)parentTransform.rect.height == 100) ) {
-
-				} else {
-					parentW = parentTransform.rect.width;
-					parentH = parentTransform.rect.height;
-				}
-			}
-		}
-
-		if (anchor != null) {
-			int numCommas = anchor.NumberOfOccurancesOfChar (',');
-			Vector4 values = new Vector4 ();
-
-			if (numCommas == 1) {
-				// english representation
-				values = stringToAnchorLookup [anchor];
-			}
-
-			if (numCommas == 3) {
-				// math representation
-				values.PUParse (anchor);
-			}
-
-			rectTransform.anchorMin = new Vector2 (values.x, values.y);
-			rectTransform.anchorMax = new Vector2 (values.z, values.w);
-
-			// the sizeDelta is the amount left over after the anchors are calculated; therefore,
-			// if we have set the anchors we need to adjust the sizeDelta
-			float anchorDeltaX = rectTransform.anchorMax.x - rectTransform.anchorMin.x;
-			float anchorDeltaY = rectTransform.anchorMax.y - rectTransform.anchorMin.y;
-
-			float mySizeDeltaX = rectTransform.sizeDelta.x;
-			float mySizeDeltaY = rectTransform.sizeDelta.y;
-
-			mySizeDeltaX -= (parentW * anchorDeltaX);
-			mySizeDeltaY -= (parentH * anchorDeltaY);
-
-			rectTransform.sizeDelta = new Vector2 (mySizeDeltaX, mySizeDeltaY);
-		}
+		SetAnchor (anchor);
 	}
 
 	public void UpdateRectTransform() {
@@ -383,6 +332,64 @@ public partial class PUGameObject : PUGameObjectBase {
 			}
 
 			rectTransform.sizeDelta = size.Value;
+		}
+	}
+
+	public void SetAnchor(string newAnchor) {
+		// Delay setting of stretch anchors until after loading has happened
+		if (gameObject == null) {
+			return;
+		}
+		
+		RectTransform parentTransform = gameObject.transform.parent as RectTransform;
+		float parentW = Screen.width;
+		float parentH = Screen.height;
+		
+		if (parentTransform != null) {
+			Canvas rootCanvas = parentTransform.GetComponent<Canvas> ();
+			
+			if (rootCanvas == null || rootCanvas.isRootCanvas == false) {
+				// Work around for unity issue where the rect transform of a sub canvas does not update soon enough
+				if (rootCanvas != null && ((int)parentTransform.rect.width == 100 && (int)parentTransform.rect.height == 100) ) {
+					
+				} else {
+					parentW = parentTransform.rect.width;
+					parentH = parentTransform.rect.height;
+				}
+			}
+		}
+
+		if (newAnchor != null) {
+			anchor = newAnchor;
+			anchor = Regex.Replace(anchor, @"\s+", ""); // remove whitespace
+			int numCommas = anchor.NumberOfOccurancesOfChar (',');
+			Vector4 values = new Vector4 ();
+			
+			if (numCommas == 1) {
+				// english representation
+				values = stringToAnchorLookup [anchor];
+			}
+			
+			if (numCommas == 3) {
+				// math representation
+				values.PUParse (anchor);
+			}
+			
+			rectTransform.anchorMin = new Vector2 (values.x, values.y);
+			rectTransform.anchorMax = new Vector2 (values.z, values.w);
+			
+			// the sizeDelta is the amount left over after the anchors are calculated; therefore,
+			// if we have set the anchors we need to adjust the sizeDelta
+			float anchorDeltaX = rectTransform.anchorMax.x - rectTransform.anchorMin.x;
+			float anchorDeltaY = rectTransform.anchorMax.y - rectTransform.anchorMin.y;
+			
+			float mySizeDeltaX = rectTransform.sizeDelta.x;
+			float mySizeDeltaY = rectTransform.sizeDelta.y;
+			
+			mySizeDeltaX -= (parentW * anchorDeltaX);
+			mySizeDeltaY -= (parentH * anchorDeltaY);
+			
+			rectTransform.sizeDelta = new Vector2 (mySizeDeltaX, mySizeDeltaY);
 		}
 	}
 
@@ -469,6 +476,24 @@ public partial class PUGameObject : PUGameObjectBase {
 		CheckCanvasGroup ();
 		canvasGroup.blocksRaycasts = !i;
 		canvasGroup.interactable = !i;
+	}
+
+	public Vector2 GetUI_WorldPositionFromBottomLeft() {
+		Vector2 worldAnchoredPos = Vector2.zero;
+
+		if (parent is PUGameObject) {
+			PUGameObject parentGmObj = (parent as PUGameObject);
+
+			float parentSizeX = parentGmObj.rectTransform.GetWidth();
+			float parentSizeY = parentGmObj.rectTransform.GetHeight();
+
+			worldAnchoredPos.x += (parentSizeX*rectTransform.anchorMin.x) + (rectTransform.anchoredPosition.x - (rectTransform.GetWidth()*rectTransform.pivot.x));
+			worldAnchoredPos.y += (parentSizeX*rectTransform.anchorMin.y) + (rectTransform.anchoredPosition.y - (rectTransform.GetHeight()*rectTransform.pivot.y));
+
+			return worldAnchoredPos + parentGmObj.GetUI_WorldPositionFromBottomLeft();
+		}
+
+		return worldAnchoredPos;
 	}
 
 

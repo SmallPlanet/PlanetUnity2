@@ -21,9 +21,9 @@ using UnityEngine.EventSystems;
 
 public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
 	
-#if !UNITY_4_6 && !UNITY_5
+#if !UNITY_4_6 && !UNITY_5_0 && !UNITY_5_1
 
-#if UNITY_5
+#if UNITY_5_2_0 || UNITY_5_2_1
 	protected override void OnPopulateMesh(Mesh m) {
 		// This is glue that uses <=5.1 OnFillVBO code with >=5.2 OnPopulatedMesh
 		// http://docs.unity3d.com/ScriptReference/UI.Graphic.OnPopulateMesh.html
