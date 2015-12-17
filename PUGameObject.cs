@@ -478,24 +478,6 @@ public partial class PUGameObject : PUGameObjectBase {
 		canvasGroup.interactable = !i;
 	}
 
-	public Vector2 GetUI_WorldPositionFromBottomLeft() {
-		Vector2 worldAnchoredPos = Vector2.zero;
-
-		if (parent is PUGameObject) {
-			PUGameObject parentGmObj = (parent as PUGameObject);
-
-			float parentSizeX = parentGmObj.rectTransform.GetWidth();
-			float parentSizeY = parentGmObj.rectTransform.GetHeight();
-
-			worldAnchoredPos.x += (parentSizeX*rectTransform.anchorMin.x) + (rectTransform.anchoredPosition.x - (rectTransform.GetWidth()*rectTransform.pivot.x));
-			worldAnchoredPos.y += (parentSizeX*rectTransform.anchorMin.y) + (rectTransform.anchoredPosition.y - (rectTransform.GetHeight()*rectTransform.pivot.y));
-
-			return worldAnchoredPos + parentGmObj.GetUI_WorldPositionFromBottomLeft();
-		}
-
-		return worldAnchoredPos;
-	}
-
 
 
 	public void UnscheduleForUpdates() {
