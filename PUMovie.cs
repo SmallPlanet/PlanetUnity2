@@ -37,7 +37,7 @@ public partial class PUMovie : PUMovieBase {
 		if (resourcePath != null) {
 
 			// Why, oh why are movie textures not supported in iOS?
-			#if (UNITY_IOS || UNITY_ANDROID || UNITY_WEBGL)
+			#if (UNITY_IOS || UNITY_ANDROID || UNITY_WEBGL || UNITY_TVOS)
 
 			#else
 			// Set texture
