@@ -45,6 +45,7 @@ public partial class PUMovie : PUMovieBase {
 			if (tex != null) {
 				image.texture = tex;
 
+				tex.Stop ();
 				tex.Play ();
 				tex.loop = looping;
 			}

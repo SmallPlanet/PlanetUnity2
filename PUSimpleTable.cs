@@ -314,10 +314,13 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
 		}
 
-		foreach (List<object> subtableObjects in allSegmentedObjects) {
+		if (allSegmentedObjects != null) {
+			foreach (List<object> subtableObjects in allSegmentedObjects) {
 
-			IEnumerator e = ReloadSubtable (subtableObjects, visibleCells);
-			while (e.MoveNext()) yield return e.Current;
+				IEnumerator e = ReloadSubtable (subtableObjects, visibleCells);
+				while (e.MoveNext())
+					yield return e.Current;
+			}
 		}
 
 
@@ -462,7 +465,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	}
 
 	private void ReloadTableCells() {
-		if (asynchronous) {
+		if (asynchronous && tableUpdateScript != null) {
 			tableUpdateScript.ReloadTableCells ();
 		} else {
 			IEnumerator t = ReloadTableAsync();

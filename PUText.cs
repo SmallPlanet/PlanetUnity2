@@ -167,10 +167,6 @@ public partial class PUText : PUTextBase {
 			gameObject.name = string.Format("\"{0}\"", value);
 		}
 
-		if (value != null) {
-			text.text = PlanetUnityStyle.ReplaceStyleTags(value);
-		}
-
 		if (fontColor != null) {
 			text.color = fontColor.Value;
 		}
@@ -241,6 +237,12 @@ public partial class PUText : PUTextBase {
 				text.alignment = TextAnchor.UpperRight;
 
 		}
+
+		if (value != null) {
+			text.text = PlanetUnityStyle.ReplaceStyleTags(value);
+		}
+
+		text.material = new Material(Shader.Find("UI/Default Font"));
 	}
 
 }
