@@ -174,7 +174,7 @@ end
 								if(rootEntity.GetType ().GetField (valueName) != null)
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue))
 									{
 										rootEntity.GetType ().GetField (valueName).SetValue (rootEntity, reader.Value);
 									}
@@ -182,7 +182,7 @@ end
 								else
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue)) {
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue)) {
 										List<object> parentChildren = (List<object>)(rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
 										if (parentChildren != null) {
 											parentChildren.Add (reader.Value);

@@ -169,7 +169,7 @@ end
 								if(rootEntity.GetType ().GetField (valueName) != null)
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue))
 									{
 										rootEntity.GetType ().GetField (valueName).SetValue (rootEntity, reader.Value);
 									}
@@ -177,7 +177,7 @@ end
 								else
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue)) {
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue)) {
 										object parentChildren = (rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
 										OrderedDictionary parentAsDictionary = parentChildren as OrderedDictionary;
 										List<object> parentAsList = parentChildren as List<object>;
