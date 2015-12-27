@@ -389,8 +389,8 @@ public class PlanetUnityGameObject : MonoBehaviour {
 			canvas = rootObject as PUCanvas;
 		} else {
 			canvas = new PUCanvas (PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera, false, 100);
-			canvas.LoadIntoGameObject(planetUnityContainer);
-			rootObject.LoadIntoPUGameObject(canvas);
+			canvas.LoadIntoGameObject (planetUnityContainer);
+			rootObject.LoadIntoPUGameObject (canvas);
 		}
 
 
@@ -400,9 +400,9 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceOverlay)
 			rootCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
 		if (canvas.renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
-			GameObject puCamera = GameObject.Find("PUCamera");
-			if(puCamera != null)
-				rootCanvas.worldCamera = puCamera.GetComponent<Camera>();
+			GameObject puCamera = GameObject.Find ("PUCamera");
+			if (puCamera != null)
+				rootCanvas.worldCamera = puCamera.GetComponent<Camera> ();
 			else
 				rootCanvas.worldCamera = Camera.main;
 			rootCanvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -412,6 +412,9 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		rootCanvas.pixelPerfect = canvas.pixelPerfect;
 		rootCanvas.planeDistance = canvas.planeDistance.Value;
 		// End silly section
+
+		// Unity 5.3: if this canvas does not override sorting, then it doesn't render in the editor (which is annoying)
+		canvas.canvas.overrideSorting = true;
 
 		#if UNITY_EDITOR
 		if(planetUnityContainer != null){
