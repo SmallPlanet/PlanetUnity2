@@ -35,6 +35,7 @@ public class PlanetUnityResourceCache
 			Texture2D tex = new Texture2D (2,2,TextureFormat.ARGB32, false);
 			tex.LoadImage (fileData.bytes);
 			tex.filterMode = FilterMode.Bilinear;
+			tex.wrapMode = TextureWrapMode.Clamp;
 			return tex;
 		}
 
@@ -46,6 +47,8 @@ public class PlanetUnityResourceCache
 				if (File.Exists(filePath))     {
 					t = new Texture2D(2, 2, TextureFormat.ARGB32, false);
 					t.LoadImage(File.ReadAllBytes(filePath));
+					t.filterMode = FilterMode.Bilinear;
+					t.wrapMode = TextureWrapMode.Clamp;
 				}
 			}
 			#endif
