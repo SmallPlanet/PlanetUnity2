@@ -153,6 +153,8 @@ public partial class PUInputField : PUInputFieldBase {
 		}
 
 		field.Rebuild (CanvasUpdate.LatePreRender);
+
+		field.text = this.value;
 	}
 
 	// only allow what FanDuel server supports
