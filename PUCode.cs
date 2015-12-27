@@ -184,7 +184,9 @@ public partial class PUCode : PUCodeBase {
 
 		if (shouldCallSingletonStart) {
 			GameObject singletonGameObject = GameObject.Find (_class);
-			singletonGameObject.SendMessage("MarkForCallStart");
+			if (singletonGameObject != null) {
+				singletonGameObject.SendMessage ("MarkForCallStart");
+			}
 		}
 
 		base.gaxb_complete ();
