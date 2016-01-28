@@ -21,7 +21,7 @@ public partial class PUPrefab : PUPrefabBase {
 
 	public override void gaxb_init ()
 	{
-		var prefab = Resources.Load (name);
+		UnityEngine.Object prefab = (UnityEngine.Object)PlanetUnityOverride.LoadResource(typeof(UnityEngine.Object), name);
 		if (prefab == null) {
 			Debug.Log ("Unable to load prefab resource " + name);
 			return;

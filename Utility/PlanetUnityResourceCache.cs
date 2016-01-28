@@ -17,6 +17,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System;
 
 public class PlanetUnityResourceCache
 {
@@ -30,8 +31,9 @@ public class PlanetUnityResourceCache
 			return null;
 		}
 
-		TextAsset fileData = Resources.Load (s, typeof (TextAsset)) as TextAsset;
-		if (fileData !=null) {
+		TextAsset fileData = (TextAsset)PlanetUnityOverride.LoadResource(typeof(TextAsset), s);
+        
+        if (fileData !=null) {
 			Texture2D tex = new Texture2D (2,2,TextureFormat.ARGB32, false);
 			tex.LoadImage (fileData.bytes);
 			tex.filterMode = FilterMode.Bilinear;
@@ -39,7 +41,8 @@ public class PlanetUnityResourceCache
 			return tex;
 		}
 
-		Texture2D t = Resources.Load<Texture2D> (s);
+		Texture2D t = (Texture2D)PlanetUnityOverride.LoadResource(typeof(Texture2D), s);
+        
 		if (t == null) {
 			#if (UNITY_WEBPLAYER == false && UNITY_WEBGL == false)
 			if (s.EndsWith (".png") || s.EndsWith (".jpg")) {
@@ -74,9 +77,9 @@ public class PlanetUnityResourceCache
 			return sprites [spriteKey];
 		}
 
-		Sprite[] allSprites = Resources.LoadAll<Sprite>(Path.GetDirectoryName(s));
-
-		foreach(Sprite sprite in allSprites) {
+		var allSprites = PlanetUnityOverride.LoadAllResources(typeof(Sprite), Path.GetDirectoryName(s));
+        
+        foreach(Sprite sprite in allSprites) {
 			sprites [s + sprite.name] = sprite;
 		}
 
@@ -102,8 +105,9 @@ public class PlanetUnityResourceCache
 		if (stringFiles.ContainsKey(s)) {
 			return stringFiles [s];
 		}
-
-		TextAsset stringData = Resources.Load<TextAsset> (s);
+        
+        TextAsset stringData = (TextAsset)PlanetUnityOverride.LoadResource(typeof(TextAsset), s);
+        
 		if (stringData == null) {
 			return null;
 		}
@@ -120,7 +124,9 @@ public class PlanetUnityResourceCache
 		if (s == null) {
 			return null;
 		}
-		TextAsset stringData = Resources.Load<TextAsset> (s);
+        
+        TextAsset stringData = (TextAsset)PlanetUnityOverride.LoadResource(typeof(TextAsset), s);
+        
 		if (stringData == null) {
 			return null;
 		}
@@ -143,7 +149,7 @@ public class PlanetUnityResourceCache
 		}
 
 		if (font == null) {
-			font = Resources.Load<Font> (s);
+			font = (Font)PlanetUnityOverride.LoadResource(typeof(Font), s);
 		}
 
 		if (font == null) {

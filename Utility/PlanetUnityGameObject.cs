@@ -66,8 +66,16 @@ public class PlanetUnityOverride {
 	public static Func<PUGameObject, string> shaderForObject = (obj) => {
 		return null;
 	};
+    
+    public static Func<Type, string, object> LoadResource = (type, pathToResource) => {
+        return Resources.Load(pathToResource, type);
+    };
+    
+    public static Func<Type, string, object[]> LoadAllResources = (type, pathToResources) => {
+        return Resources.LoadAll(pathToResources, type);
+    };
 
-
+    
 	static StringBuilder evalStringBuilder = new StringBuilder();
 	private static string evaluateString(string evalListString, object o, float multiplier, Func<decimal, decimal> appOverride = null) {
 		var parts = Regex.Split (evalListString, ",(?![^(]*\\))");

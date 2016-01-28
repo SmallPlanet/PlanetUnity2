@@ -41,8 +41,8 @@ public partial class PUMovie : PUMovieBase {
 
 			#else
 			// Set texture
-			MovieTexture tex = Resources.Load (resourcePath) as MovieTexture;
-			if (tex != null) {
+			MovieTexture tex = (MovieTexture)PlanetUnityOverride.LoadResource(typeof(MovieTexture), resourcePath);
+		    if (tex != null) {
 				image.texture = tex;
 
 				tex.Stop ();
