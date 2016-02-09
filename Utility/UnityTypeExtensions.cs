@@ -45,6 +45,14 @@ public class MathR
 		return(((c4*x + c3)*x +c2)*x + c1);
 	}
 
+	public static Vector3 CatmullRomSpline(float x, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+	{
+		return new Vector3 (
+			CatmullRomSpline (x, v0.x, v1.x, v2.x, v3.x),
+			CatmullRomSpline (x, v0.y, v1.y, v2.y, v3.y),
+			CatmullRomSpline (x, v0.z, v1.z, v2.z, v3.z));
+	}
+
 }
 
 public class RandomR
