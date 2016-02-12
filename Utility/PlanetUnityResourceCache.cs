@@ -31,6 +31,16 @@ public class PlanetUnityResourceCache
 			return null;
 		}
 
+		if (s.StartsWith("/") && (s.EndsWith (".png") || s.EndsWith (".jpg"))) {
+			if (File.Exists(s))     {
+				Texture2D fileImage = new Texture2D(512, 512, TextureFormat.ARGB32, false);
+				fileImage.LoadImage(File.ReadAllBytes(s));
+				fileImage.filterMode = FilterMode.Bilinear;
+				fileImage.wrapMode = TextureWrapMode.Clamp;
+				return fileImage;
+			}
+		}
+
 		TextAsset fileData = (TextAsset)PlanetUnityOverride.LoadResource(typeof(TextAsset), s);
         
         if (fileData !=null) {
