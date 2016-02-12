@@ -504,3 +504,87 @@ public static class ColorExtension
 		return "#" + c.r.ToString ("X2") + c.g.ToString ("X2") + c.b.ToString ("X2") + c.a.ToString ("X2");
 	}
 }
+
+
+
+public static class PlayerPrefsExtension
+{
+	public static void SaveVector2(Vector2 v, string prefKey) {
+		PlayerPrefs.SetString (prefKey, v.PUToString());
+	}
+
+	public static void SaveVector3(Vector3 v, string prefKey) {
+		PlayerPrefs.SetString (prefKey, v.PUToString());
+	}
+
+	public static void SaveVector4(Vector4 v, string prefKey) {
+		PlayerPrefs.SetString (prefKey, v.PUToString());
+	}
+
+	public static void SaveColor(Color v, string prefKey) {
+		PlayerPrefs.SetString (prefKey, v.PUToString());
+	}
+
+
+	public static void LoadVector2(ref Vector2 v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v = Vector2.zero.PUParse (PlayerPrefs.GetString (prefKey));
+	}
+
+	public static void LoadVector3(ref Vector3 v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v = Vector3.zero.PUParse (PlayerPrefs.GetString (prefKey));
+	}
+
+	public static void LoadVector4(ref Vector4 v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v = Vector4.zero.PUParse (PlayerPrefs.GetString (prefKey));
+	}
+
+	public static void LoadColor(ref Color v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v = Color.black.PUParse (PlayerPrefs.GetString (prefKey));
+	}
+
+
+
+
+
+	public static void LoadVector2(Action<Vector2> v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v (Vector2.zero.PUParse (PlayerPrefs.GetString (prefKey)));
+	}
+
+	public static void LoadVector3(Action<Vector3> v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v (Vector3.zero.PUParse (PlayerPrefs.GetString (prefKey)));
+	}
+
+	public static void LoadVector4(Action<Vector4> v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v (Vector4.zero.PUParse (PlayerPrefs.GetString (prefKey)));
+	}
+
+	public static void LoadColor(Action<Color> v, string prefKey) {
+		if (PlayerPrefs.HasKey (prefKey) == false) {
+			return;
+		}
+		v (Color.black.PUParse (PlayerPrefs.GetString (prefKey)));
+	}
+
+
+}
