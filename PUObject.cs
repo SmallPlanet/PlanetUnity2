@@ -58,6 +58,18 @@ public partial class PUObject : PUObjectBase {
 
 	}
 
+	public T GetChildOfType<T>(){
+		object child = null;
+		this.PerformOnChildren (val => {
+			if(val is T){
+				child = val;
+				return false;
+			}
+			return true;
+		});
+		return (T)child;
+	}
+
 	public T GetChildWithTitle<T>(string childTitle){
 		object child = null;
 		this.PerformOnChildren (val => {
