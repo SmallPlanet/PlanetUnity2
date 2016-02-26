@@ -290,6 +290,18 @@ public static class OrderedDictionaryExtensions
 }
 
 
+public static class IntExtension
+{
+	// n.AmountAsString("Ship", "Ships");
+	public static string AmountAsString(this int n, string label, string labelPlural) {
+		if (n == 1) {
+			return string.Format ("{0} {1}", n, label);
+		}
+		return string.Format ("{0} {1}", n, labelPlural);
+	}
+}
+
+
 public static class StringExtension
 {
 	public static int NumberOfOccurancesOfChar(this string source, char c)
@@ -504,8 +516,6 @@ public static class ColorExtension
 		return "#" + c.r.ToString ("X2") + c.g.ToString ("X2") + c.b.ToString ("X2") + c.a.ToString ("X2");
 	}
 }
-
-
 
 public static class PlayerPrefsExtension
 {
