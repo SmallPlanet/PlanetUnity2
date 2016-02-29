@@ -154,6 +154,10 @@ public partial class PUInputField : PUInputFieldBase {
 
 		field.Rebuild (CanvasUpdate.LatePreRender);
 
+		if (this.value == null) {
+			this.value = "";
+		}
+
 		field.text = this.value;
 	}
 
