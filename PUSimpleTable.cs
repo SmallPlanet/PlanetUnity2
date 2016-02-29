@@ -365,7 +365,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		// Handle the header
 		int hasHeader = 0;
-		if (headerSize.Value.y > 0) {
+		if (headerSize.Value.y > 0 && subtableObjects.Count > 0) {
 			hasHeader = 1;
 			//currentLayoutY -= headerSize.Value.y;
 		}
