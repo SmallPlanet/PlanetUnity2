@@ -22,6 +22,31 @@ public class MathR
 		return angle * (180.0f / Mathf.PI);
 	}
 
+	public static Vector2 Bezier(Vector3 p1, Vector2 p2, Vector2 p3, float mu) {
+		float mum1,mum12,mu2;
+		mu2 = mu * mu;
+		mum1 = 1 - mu;
+		mum12 = mum1 * mum1;
+
+		return new Vector2 (
+			(p1) [0] * mum12 + 2 * (p2) [0] * mum1 * mu + (p3) [0] * mu2,
+			(p1) [1] * mum12 + 2 * (p2) [1] * mum1 * mu + (p3) [1] * mu2
+		);
+	}
+
+	public static Vector3 Bezier(Vector3 p1, Vector3 p2, Vector3 p3, float mu) {
+		float mum1,mum12,mu2;
+		mu2 = mu * mu;
+		mum1 = 1 - mu;
+		mum12 = mum1 * mum1;
+
+		return new Vector3 (
+			(p1) [0] * mum12 + 2 * (p2) [0] * mum1 * mu + (p3) [0] * mu2,
+			(p1) [1] * mum12 + 2 * (p2) [1] * mum1 * mu + (p3) [1] * mu2,
+			(p1) [2] * mum12 + 2 * (p2) [2] * mum1 * mu + (p3) [2] * mu2
+		);
+	}
+
 	public static float CatmullRomSpline(float x, float v0, float v1, float v2, float v3)
 	{
 		const float M12	= 1.0f;
