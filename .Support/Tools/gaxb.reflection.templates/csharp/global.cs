@@ -178,14 +178,18 @@ end
 								{
 									reader.Read();
 									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue)) {
-										object parentChildren = (rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
-										OrderedDictionary parentAsDictionary = parentChildren as OrderedDictionary;
-										List<object> parentAsList = parentChildren as List<object>;
-										if (parentAsDictionary != null) {
-											parentAsDictionary.Add (reader.Value);
-										}
-										if (parentAsList != null) {
-											parentAsList.Add (reader.Value);
+										FieldInfo fInfo = rootEntity.GetType ().GetField (valueName + "s");
+										if (fInfo != null) {
+											object parentChildren = fInfo.GetValue (rootEntity);
+										
+											OrderedDictionary parentAsDictionary = parentChildren as OrderedDictionary;
+											List<object> parentAsList = parentChildren as List<object>;
+											if (parentAsDictionary != null) {
+												parentAsDictionary.Add (reader.Value);
+											}
+											if (parentAsList != null) {
+												parentAsList.Add (reader.Value);
+											}
 										}
 									}
 								}
