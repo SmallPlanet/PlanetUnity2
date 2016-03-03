@@ -166,6 +166,8 @@ public class PlanetUnityOverride {
 
 public class PlanetUnityGameObject : MonoBehaviour {
 
+	static int mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
 	public static float desiredFPS;
 	public static void RequestFPS(float f) {
 		// Called by entities to request a specific fps. PlanetUnity will set the fps dynamically
@@ -215,23 +217,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	public static bool IsMainThread()
 	{
-		if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA &&
-			!Thread.CurrentThread.IsBackground && !Thread.CurrentThread.IsThreadPoolThread && Thread.CurrentThread.IsAlive)
-		{
-			MethodInfo correctEntryMethod = Assembly.GetEntryAssembly().EntryPoint;
-			StackTrace trace = new StackTrace();
-			StackFrame[] frames = trace.GetFrames();
-			for (int i = frames.Length - 1; i >= 0; i--)
-			{
-				MethodBase method = frames[i].GetMethod();
-				if (correctEntryMethod == method)
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return System.Threading.Thread.CurrentThread.ManagedThreadId == mainThreadId;
 	}
 
 	#region XML navigation

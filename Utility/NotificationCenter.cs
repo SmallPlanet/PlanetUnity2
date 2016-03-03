@@ -119,6 +119,11 @@ public class NotificationCenter
 
 	public static void postNotification(object scope, string name, Hashtable args)
 	{
+		// do not allow notifications from background threads
+		if (PlanetUnityGameObject.IsMainThread () == false) {
+			return;
+		}
+
 		if (name == null) {
 			UnityEngine.Debug.Log ("Warning: NotificationCenter.postNotification() called with null notification name");
 			return;
