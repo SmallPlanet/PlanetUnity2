@@ -166,7 +166,7 @@ public class PlanetUnityOverride {
 
 public class PlanetUnityGameObject : MonoBehaviour {
 
-	static int mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+	static int mainThreadId;
 
 	public static float desiredFPS;
 	public static void RequestFPS(float f) {
@@ -296,6 +296,8 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
 		Application.targetFrameRate = 60;
 
 		currentGameObject = this;
