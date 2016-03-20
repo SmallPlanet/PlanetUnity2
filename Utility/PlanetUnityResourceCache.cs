@@ -107,6 +107,15 @@ public class PlanetUnityResourceCache
 		return sprites [spriteKey];
 	}
 
+	static public AudioClip GetAudioClip(string s)
+	{
+		if (s == null) {
+			return null;
+		}
+
+		return (AudioClip)PlanetUnityOverride.LoadResource(typeof(AudioClip), s);
+	}
+
 	static public string GetTextFile(string s)
 	{
 		if (s == null) {
