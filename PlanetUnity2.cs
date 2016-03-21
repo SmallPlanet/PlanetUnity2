@@ -25,26 +25,24 @@ interface IPlanetUnity2
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
-	public const string USERSTRINGINPUT = "UserStringInput";
-	public const string USERCHARINPUT = "UserCharInput";
-	public const string USERINPUTCANCELLED = "UserInputCancelled";
-	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
-	public const string BUTTONTOUCHUP = "ButtonTouchUp";
-	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
-	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
-	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
-
-	public enum TextOverflowHorizontal {
-		wrap,
-		overflow,
+	public enum InputFieldLineType {
+		single,
+		multiSubmit,
+		multiNewline,
 	};
 
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
+	public enum SliderDirection {
+		LeftToRight,
+		RightToLeft,
+		BottomToTop,
+		TopToBottom,
+	};
+
+	public enum GridLayoutStartCorner {
+		upperLeft,
+		upperRight,
+		lowerLeft,
+		lowerRight,
 	};
 
 	public enum ImageType {
@@ -55,21 +53,49 @@ public class PlanetUnity2 {
 		aspectFilled,
 	};
 
-	public enum TextOverflowVertical {
-		truncate,
-		overflow,
-	};
-
 	public enum GridLayoutStartAxis {
 		horizontal,
 		vertical,
 	};
 
-	public enum FontStyle {
-		normal,
-		bold,
-		italic,
-		boldAndItalic,
+	public enum CanvasRenderMode {
+		ScreenSpaceOverlay,
+		ScreenSpaceCamera,
+		WorldSpace,
+	};
+
+	public const string USERSTRINGINPUT = "UserStringInput";
+	public const string USERCHARINPUT = "UserCharInput";
+	public const string USERINPUTCANCELLED = "UserInputCancelled";
+	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
+	public const string BUTTONTOUCHUP = "ButtonTouchUp";
+	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
+	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
+	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
+
+	public enum TextOverflowVertical {
+		truncate,
+		overflow,
+	};
+
+	public enum GridLayoutChildAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
+	};
+
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
 	};
 
 	public enum InputFieldContentType {
@@ -85,18 +111,6 @@ public class PlanetUnity2 {
 		custom,
 	};
 
-	public enum GridLayoutChildAlignment {
-		upperLeft,
-		upperCenter,
-		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
-		lowerLeft,
-		lowerCenter,
-		lowerRight,
-	};
-
 	public enum TextAlignment {
 		upperLeft,
 		upperCenter,
@@ -109,30 +123,16 @@ public class PlanetUnity2 {
 		lowerRight,
 	};
 
-	public enum GridLayoutStartCorner {
-		upperLeft,
-		upperRight,
-		lowerLeft,
-		lowerRight,
+	public enum FontStyle {
+		normal,
+		bold,
+		italic,
+		boldAndItalic,
 	};
 
-	public enum InputFieldLineType {
-		single,
-		multiSubmit,
-		multiNewline,
-	};
-
-	public enum SliderDirection {
-		LeftToRight,
-		RightToLeft,
-		BottomToTop,
-		TopToBottom,
-	};
-
-	public enum CanvasRenderMode {
-		ScreenSpaceOverlay,
-		ScreenSpaceCamera,
-		WorldSpace,
+	public enum TextOverflowHorizontal {
+		wrap,
+		overflow,
 	};
 
 
@@ -208,7 +208,7 @@ public class PlanetUnity2 {
 								if(rootEntity.GetType ().GetField (valueName) != null)
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue))
 									{
 										rootEntity.GetType ().GetField (valueName).SetValue (rootEntity, reader.Value);
 									}
@@ -216,7 +216,7 @@ public class PlanetUnity2 {
 								else
 								{
 									reader.Read();
-									if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue)) {
+									if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA) && (reader.HasValue)) {
 										List<object> parentChildren = (List<object>)(rootEntity.GetType ().GetField (valueName + "s").GetValue (rootEntity));
 										if (parentChildren != null) {
 											parentChildren.Add (reader.Value);

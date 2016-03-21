@@ -541,6 +541,7 @@
 				<attribute name="cellSize" type="planet:vec2" use="required" />
 				<attribute name="headerSize" type="planet:vec2" use="optional" default="0,0" />
 				<attribute name="asynchronous" type="boolean" use="optional" default="true" />
+				<attribute name="expandCellWidth" type="boolean" use="optional" default="true" />
 			</extension>
 		</complexContent>
 	</complexType>

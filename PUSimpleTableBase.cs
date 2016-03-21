@@ -25,6 +25,8 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		if(attr != null) { headerSize = new Vector2().PUParse(attr); } 
 		attr = "true";
 		if(attr != null) { asynchronous = bool.Parse(attr); } 
+		attr = "true";
+		if(attr != null) { expandCellWidth = bool.Parse(attr); } 
 
 	}
 	
@@ -32,13 +34,16 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	public PUSimpleTable(
 			Vector2 cellSize,
 			Vector2 headerSize,
-			bool asynchronous ) : this()
+			bool asynchronous,
+			bool expandCellWidth ) : this()
 	{
 		this.cellSize = cellSize;
 
 		this.headerSize = headerSize;
 
 		this.asynchronous = asynchronous;
+
+		this.expandCellWidth = expandCellWidth;
 	}
 
 	
@@ -47,6 +52,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			Vector2 cellSize,
 			Vector2 headerSize,
 			bool asynchronous,
+			bool expandCellWidth,
 			bool inertia,
 			bool horizontal,
 			bool vertical,
@@ -81,6 +87,8 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		this.headerSize = headerSize;
 
 		this.asynchronous = asynchronous;
+
+		this.expandCellWidth = expandCellWidth;
 
 		this.inertia = inertia;
 
@@ -156,6 +164,7 @@ public class PUSimpleTableBase : PUScrollRect {
 	public Vector2? cellSize;
 	public Vector2? headerSize;
 	public bool asynchronous;
+	public bool expandCellWidth;
 
 
 
@@ -255,6 +264,11 @@ public class PUSimpleTableBase : PUScrollRect {
 		if(attr == null) { attr = "true"; }
 		if(attr != null) { asynchronous = bool.Parse(attr); } 
 		
+		attr = reader.GetAttribute("expandCellWidth");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr == null) { attr = "true"; }
+		if(attr != null) { expandCellWidth = bool.Parse(attr); } 
+		
 
 	}
 	
@@ -271,6 +285,7 @@ public class PUSimpleTableBase : PUScrollRect {
 		if(cellSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "cellSize", cellSize.Value.PUToString()); }
 		if(headerSize != null) { sb.AppendFormat (" {0}=\"{1}\"", "headerSize", headerSize.Value.PUToString()); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "asynchronous", asynchronous.ToString().ToLower()); 
+		 sb.AppendFormat (" {0}=\"{1}\"", "expandCellWidth", expandCellWidth.ToString().ToLower()); 
 
 	}
 	

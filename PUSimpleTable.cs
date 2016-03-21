@@ -354,6 +354,10 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 
 		float cellWidth = MathParser.step(contentRectTransform.sizeDelta.x, cellSize.Value.x);
+		if (expandCellWidth == false) {
+			cellWidth = cellSize.Value.x;
+		}
+
 		float cellHeight = cellSize.Value.y;
 
 		int cellsPerRow = Mathf.FloorToInt(rectTransform.rect.width / cellWidth);
