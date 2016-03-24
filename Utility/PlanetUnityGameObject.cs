@@ -131,14 +131,21 @@ public class PlanetUnityOverride {
 		if (s == null)
 			return null;
 
-		s = s.Replace("@LANGUAGE", PlanetUnityLanguage.LanguageCode());
+		#if USE_LAURETTE
+		s = s.Replace("@LANGUAGE", Localizations.GetLanguageCode());
+		#endif
 		s = s.Replace("\\n", "\n");
 
 		if (s.Equals ("nan")) {
 			return "0";
 		}
-			
-		if (s.StartsWith ("@eval(")) {
+
+		if (s.StartsWith ("@localization(")) {
+			#if USE_LAURETTE
+			string evalListString = s.Substring(14, s.Length-15);
+			s = Localizations.TranslateKey (evalListString);
+			#endif
+		} else if (s.StartsWith ("@eval(")) {
 			string evalListString = s.Substring(6, s.Length-7);
 			s = evaluateString (evalListString, o, 1.0f);
 
@@ -150,13 +157,6 @@ public class PlanetUnityOverride {
 			string evalListString = s.Substring(6, s.Length-7);
 			s = evaluateString (evalListString, o, PlanetUnityOverride.screenDPI(), PlanetUnityOverride.app1);
 
-		} else if(s.StartsWith("@")) {
-
-			string localizedString = PlanetUnityLanguage.Translate(s);
-			if(localizedString.Equals(s) == false)
-			{
-				return PlanetUnityOverride.appProcessString (localizedString);
-			}
 		}
 
 		return PlanetUnityOverride.appProcessString (s);
@@ -312,7 +312,6 @@ public class PlanetUnityGameObject : MonoBehaviour {
 				assetPath.EndsWith(".strings"))
 			{
 				EditorReloadCanvas ();
-				PlanetUnityLanguage.ReloadAllLanguages();
 				ReloadCanvas ();
 			}
 		});
