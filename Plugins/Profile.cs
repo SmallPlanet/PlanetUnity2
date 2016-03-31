@@ -93,6 +93,8 @@ public class Profile
 			output.Append (" seconds per call");
 
 			UnityEngine.Debug.Log (output.ToString ());
+
+			profiles.Remove (tag);
 		}
 	}
  
