@@ -61,6 +61,8 @@ public class Profile
 		StartProfile (tag);
 		block ();
 		EndProfile (tag);
+
+		PrintResult (tag);
 	}
  
     public static void Reset()
@@ -68,6 +70,31 @@ public class Profile
         profiles.Clear();
         startTime = DateTime.UtcNow;
     }
+
+	public static void PrintResult(string tag)
+	{
+		if (profiles.ContainsKey (tag)) {
+			System.Text.StringBuilder output = new System.Text.StringBuilder ();
+
+			ProfilePoint profileTime = profiles [tag];
+			double totalTime = profileTime.totalTime.TotalSeconds;
+			int totalCalls = profileTime.totalCalls;
+			output.Append ("\nProfile ");
+			output.Append (tag);
+			output.Append (" took ");
+			output.Append (totalTime.ToString ("F9"));
+			output.Append (" seconds to complete over ");
+			output.Append (totalCalls);
+			output.Append (" iteration");
+			if (totalCalls != 1)
+				output.Append ("s");
+			output.Append (", averaging ");
+			output.Append ((totalTime / totalCalls).ToString ("F9"));
+			output.Append (" seconds per call");
+
+			UnityEngine.Debug.Log (output.ToString ());
+		}
+	}
  
     public static void PrintResults()
     {
