@@ -51,7 +51,11 @@ public partial class PUImageButton : PUImageButtonBase {
 		}
 		
 		if (onTouchUp != null) {
-			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
+			PlanetUnityButtonHelper.SetOnTouchUp (this, button, onTouchUp);
+		}
+
+		if (onTouchDown != null) {
+			PlanetUnityButtonHelper.SetOnTouchDown (this, button, onTouchDown);
 		}
 	}
 

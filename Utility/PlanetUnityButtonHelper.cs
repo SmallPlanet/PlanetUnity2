@@ -73,4 +73,34 @@ public partial class PlanetUnityButtonHelper {
 		}
 	}
 
+	public static void SetOnTouchDown (PUGameObject gmObj, Button btn, string newNote) {
+		if (btn != null && newNote != null) {
+			
+			// check if the ButtonOnDownBehaviour component exists
+			ButtonOnDownBehaviour onDownBehavior = btn.GetComponent<ButtonOnDownBehaviour> ();
+
+			// if we don't then add one
+			if (onDownBehavior == null) {
+				onDownBehavior = btn.gameObject.AddComponent<ButtonOnDownBehaviour> ();
+			}
+
+			// set the note info
+			onDownBehavior.scopeObj = gmObj;
+			onDownBehavior.note = newNote;
+		}
+	}
+
+	private class ButtonOnDownBehaviour : MonoBehaviour, IPointerDownHandler {
+		public object scopeObj = null;
+		public string note = null;
+
+		public void OnPointerDown(PointerEventData data) {
+			if (scopeObj != null && scopeObj is PUGameObject)
+				NotificationCenter.postNotification ((scopeObj as PUGameObject).Scope(), note, NotificationCenter.Args("sender", scopeObj));
+			else
+				NotificationCenter.postNotification (null, note);
+		}
+
+	}
+
 }
