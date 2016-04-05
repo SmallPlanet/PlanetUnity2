@@ -273,6 +273,11 @@ public partial class PUGameObject : PUGameObjectBase {
 
 		unloadAllChildren ();
 
+		MethodInfo method2 = this.GetType ().GetMethod ("gaxb_unload");
+		if (method2 != null) {
+			method2.Invoke (this, null);
+		}
+
 		NotificationCenter.removeObserver (this);
 
 		if (gameObject != null) {
