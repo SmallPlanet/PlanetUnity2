@@ -27,6 +27,7 @@ public partial class PUImageButton : PUImageButtonBase {
 			string highlightedResourcePath,
 			string disabledResourcePath,
 			string onTouchUp,
+			string onTouchDown,
 			string resourcePath ) : this()
 	{
 		this.pressedResourcePath = pressedResourcePath;
@@ -36,6 +37,8 @@ public partial class PUImageButton : PUImageButtonBase {
 		this.disabledResourcePath = disabledResourcePath;
 
 		this.onTouchUp = onTouchUp;
+
+		this.onTouchDown = onTouchDown;
 
 		this.resourcePath = resourcePath;
 	}
@@ -47,6 +50,7 @@ public partial class PUImageButton : PUImageButtonBase {
 			string highlightedResourcePath,
 			string disabledResourcePath,
 			string onTouchUp,
+			string onTouchDown,
 			string resourcePath,
 			Color color,
 			PlanetUnity2.ImageType type,
@@ -82,6 +86,8 @@ public partial class PUImageButton : PUImageButtonBase {
 		this.disabledResourcePath = disabledResourcePath;
 
 		this.onTouchUp = onTouchUp;
+
+		this.onTouchDown = onTouchDown;
 
 		this.resourcePath = resourcePath;
 
@@ -156,6 +162,7 @@ public class PUImageButtonBase : PUImage {
 	public string highlightedResourcePath;
 	public string disabledResourcePath;
 	public string onTouchUp;
+	public string onTouchDown;
 
 
 
@@ -257,6 +264,10 @@ public class PUImageButtonBase : PUImage {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onTouchUp = unescape(attr); } 
 		
+		attr = reader.GetAttribute("onTouchDown");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr != null) { onTouchDown = unescape(attr); } 
+		
 
 	}
 	
@@ -274,6 +285,7 @@ public class PUImageButtonBase : PUImage {
 		if(highlightedResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "highlightedResourcePath", SecurityElement.Escape (highlightedResourcePath)); }
 		if(disabledResourcePath != null) { sb.AppendFormat (" {0}=\"{1}\"", "disabledResourcePath", SecurityElement.Escape (disabledResourcePath)); }
 		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
+		if(onTouchDown != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchDown", SecurityElement.Escape (onTouchDown)); }
 
 	}
 	

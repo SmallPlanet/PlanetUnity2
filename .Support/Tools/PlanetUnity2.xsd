@@ -206,6 +206,7 @@
 				<attribute name="highlightedResourcePath" type="string" use="required" />
 				<attribute name="disabledResourcePath" type="string" use="required" />
 				<attribute name="onTouchUp" type="string" use="optional" />
+				<attribute name="onTouchDown" type="string" use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>
