@@ -341,19 +341,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	public void RemoveCanvas () {
 		if (canvas != null) {
-			canvas.PerformOnChildren (val => {
-				MethodInfo method = val.GetType ().GetMethod ("gaxb_unload");
-				if (method != null) {
-					method.Invoke (val, null);
-				}
-				return true;
-			});
-
-			canvas.gaxb_unload ();
-
 			canvas.unload ();
-
-			DestroyImmediate (canvas.gameObject);
 			canvas = null;
 		}
 

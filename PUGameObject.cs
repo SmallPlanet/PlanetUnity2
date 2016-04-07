@@ -278,7 +278,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			method2.Invoke (this, null);
 		}
 
-		NotificationCenter.removeObserver (this);
+		NotificationCenter.removeCompletely (this);
 
 		if (gameObject != null) {
 			gameObject.SetActive (false);
@@ -581,7 +581,7 @@ public partial class PUGameObject : PUGameObjectBase {
 
 public class GameObjectRemoveFromNotificationCenter : MonoBehaviour {
 	void OnDestroy() {
-		NotificationCenter.removeObserver (this);
+		NotificationCenter.removeCompletely (this);
 	}
 }
 

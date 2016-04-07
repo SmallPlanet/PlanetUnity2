@@ -186,7 +186,7 @@ public class RandomR
 
 public static class ListExtensions
 {
-	public static void RemoveOne(this List<object> source, object obj)
+	public static void RemoveOne<T>(this List<T> source, T obj)
 	{
 		int idx = source.IndexOf (obj);
 		if (idx >= 0) {
@@ -194,10 +194,10 @@ public static class ListExtensions
 		}
 	}
 
-	public static void RemoveOneRange(this List<object> self, List<object> otherArray) {
+	public static void RemoveOneRange<T>(this List<T> self, List<T> otherArray) {
 		// The normal version of this removes ALL INSTANCES of objects in otherArray from myself.
 		// In OUR version of this we want to remove just one of each that are in otherArray
-		foreach (object obj in otherArray) {
+		foreach (T obj in otherArray) {
 			int idx = self.IndexOf (obj);
 			if (idx >= 0) {
 				self.RemoveAt (idx);

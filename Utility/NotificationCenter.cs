@@ -172,4 +172,9 @@ public class NotificationCenter
 	{
 		observersByScope.Clear ();
 	}
+
+	public static void removeCompletely(object obv) {
+		removeObserver(obv);
+		observersByScope.Remove (obv);
+	}
 }
