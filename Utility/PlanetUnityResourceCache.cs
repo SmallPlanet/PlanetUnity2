@@ -25,6 +25,12 @@ public class PlanetUnityResourceCache
 	static private Dictionary<string, string> stringFiles = new Dictionary<string, string>();
 	static private Dictionary<string, Font> fonts = new Dictionary<string, Font>();
 
+	static public void DrainCaches() {
+		sprites.Clear ();
+		stringFiles.Clear ();
+		fonts.Clear ();
+	}
+
 	static public Texture2D GetTexture(string s)
 	{
 		if (s == null) {
