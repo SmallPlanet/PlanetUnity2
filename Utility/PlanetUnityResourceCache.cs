@@ -87,24 +87,24 @@ public class PlanetUnityResourceCache
 			return sprites [spriteKey];
 		}
 
-		var allSprites = PlanetUnityOverride.LoadAllResources(typeof(Sprite), Path.GetDirectoryName(s));
-        
-        foreach(Sprite sprite in allSprites) {
-			sprites [s + sprite.name] = sprite;
-		}
-
-		if (sprites.ContainsKey(spriteKey) == false) {
-			// This wasn't a sprite atlas, must be an individual texture
-			Texture2D texture = GetTexture(s);
-			if (texture == null) {
-				return null;
-			}
+		Texture2D texture = (Texture2D)PlanetUnityOverride.LoadResource(typeof(Texture2D), s);
+		if (texture != null) {
 			Sprite sprite = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), Vector2.zero);
 			sprites [spriteKey] = sprite;
 			return sprite;
 		}
 
-		return sprites [spriteKey];
+		// try load all
+		var allSprites = PlanetUnityOverride.LoadAllResources (typeof(Sprite), Path.GetDirectoryName (s));
+		foreach (Sprite sprite in allSprites) {
+			sprites [s + sprite.name] = sprite;
+		}
+
+		if (sprites.ContainsKey (spriteKey)) {
+			return sprites [spriteKey];
+		}
+
+		return null;
 	}
 
 	static public AudioClip GetAudioClip(string s)
