@@ -122,6 +122,15 @@ public class PlanetUnityResourceCache
 		return (AudioClip)PlanetUnityOverride.LoadResource(typeof(AudioClip), s);
 	}
 
+	static public T GetAsset<T>(string s)
+	{
+		if (s == null) {
+			return default(T);
+		}
+
+		return (T)PlanetUnityOverride.LoadResource(typeof(T), s);
+	}
+
 	static public string GetTextFile(string s)
 	{
 		if (s == null) {
