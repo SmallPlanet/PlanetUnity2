@@ -405,7 +405,11 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.anchor = anchor;
 	}
 
-	public void LoadIntoPUGameObject(PUGameObject _parent, Action doChildren = null)
+	public void LoadIntoPUGameObject(PUGameObject _parent, Action doChildren = null) {
+		LoadIntoPUGameObject (_parent, -1, doChildren);
+	}
+
+	public void LoadIntoPUGameObject(PUGameObject _parent, int atIndex, Action doChildren = null)
 	{
 		// Sanity check to make sure this wasn't called multiple times
 		if (gameObject == null) {
@@ -423,7 +427,12 @@ public partial class PUGameObject : PUGameObjectBase {
 				gameObject.transform.SetParent (_parent.gameObject.transform, false);
 			}
 
-			_parent.children.Add (this);
+			if (atIndex < 0 || atIndex >= _parent.children.Count) {
+				_parent.children.Add (this);
+			} else {
+				_parent.children.Insert (atIndex, this);
+				this.rectTransform.SetSiblingIndex (atIndex);
+			}
 		}
 
 		if (doChildren != null) {
