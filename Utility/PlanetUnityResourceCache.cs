@@ -81,28 +81,40 @@ public class PlanetUnityResourceCache
 		return t;
 	}
 
-	static public Sprite GetSprite(string s)
+	static public Sprite GetSprite(string s, bool forceSprite = false)
 	{
 		if (s == null) {
 			return null;
 		}
-
-		string spriteName = Path.GetFileName (s);
-		string spriteKey = s + spriteName;
+			
+		string spriteKey = s;
 		if (sprites.ContainsKey(spriteKey)) {
 			return sprites [spriteKey];
 		}
 
-		Texture2D texture = (Texture2D)PlanetUnityOverride.LoadResource(typeof(Texture2D), s);
-		if (texture != null) {
-			Sprite sprite = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), Vector2.zero);
+		if (forceSprite == true) {
+			var allSprites = PlanetUnityOverride.LoadAllResources(typeof(Sprite), Path.GetDirectoryName(s));
+
+			foreach(Sprite sprite in allSprites) {
+				string b = Path.GetDirectoryName (s) + "/" + sprite.name;
+				sprites [Path.GetDirectoryName(s) + "/" + sprite.name] = sprite;
+			}
+
+			if (sprites.ContainsKey(spriteKey)) {
+				return sprites [spriteKey];
+			}
+		}
+
+		Texture2D texture2 = (Texture2D)PlanetUnityOverride.LoadResource(typeof(Texture2D), s);
+		if (texture2 != null) {
+			Sprite sprite = Sprite.Create (texture2, new Rect (0, 0, texture2.width, texture2.height), Vector2.zero);
 			sprites [spriteKey] = sprite;
 			return sprite;
 		}
 
 		// try load all
-		var allSprites = PlanetUnityOverride.LoadAllResources (typeof(Sprite), Path.GetDirectoryName (s));
-		foreach (Sprite sprite in allSprites) {
+		var allSprites2 = PlanetUnityOverride.LoadAllResources (typeof(Sprite), Path.GetDirectoryName (s));
+		foreach (Sprite sprite in allSprites2) {
 			sprites [s + sprite.name] = sprite;
 		}
 

@@ -45,7 +45,18 @@ public partial class PUImage : PUImageBase {
 			return;
 		}
 
-		image.sprite = PlanetUnityResourceCache.GetSprite (p);
+		LoadSprite (p, PlanetUnityResourceCache.GetSprite (p));
+	}
+
+	public virtual void LoadSprite(string p, Sprite sp) {
+		resourcePath = p;
+
+		if (image == null) {
+			Debug.Log(" ********** ERROR: PUImage image is null!! **********");
+			return;
+		}
+
+		image.sprite = sp;
 		if (image.sprite != null) {
 			Vector4 border = image.sprite.border;
 			if (!border.x.Equals (0) || !border.y.Equals (0) || !border.z.Equals (0) || !border.w.Equals (0)) {
