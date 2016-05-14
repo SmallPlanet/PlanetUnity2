@@ -158,10 +158,17 @@ public partial class PUScrollRect : PUScrollRectBase {
 		myRectTransform.sizeDelta = new Vector2 (Mathf.Abs(maxX - minX) + _ContentOffset.x, Mathf.Abs(maxY - minY) + _ContentOffset.y);
 	}
 
-	public void SetContentSize(float w, float h)
+	public Vector2 SetContentSize(float w, float h)
 	{
+		// returns the ideal scroll position after content size has changed
 		RectTransform myRectTransform = (RectTransform)contentObject.transform;
+		Vector2 oldSize = myRectTransform.sizeDelta;
+
 		myRectTransform.sizeDelta = new Vector2 (w + _ContentOffset.x, h + _ContentOffset.y);
+
+		// do we need to adjust the scroll to take this into account??
+		RectTransform contentRectTransform = (RectTransform)contentObject.transform;
+		return contentRectTransform.anchoredPosition + (oldSize - myRectTransform.sizeDelta);
 	}
 		
 	public override void gaxb_complete()
@@ -195,7 +202,6 @@ public partial class PUScrollRect : PUScrollRectBase {
 			invisibleHitGraphic.color = Color.clear;
 #endif
 		}
-
 
 		base.gaxb_complete ();
 	}
