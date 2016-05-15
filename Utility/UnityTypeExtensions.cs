@@ -22,6 +22,15 @@ public class MathR
 		return angle * (180.0f / Mathf.PI);
 	}
 
+	public static float Bezier(float p1, float p2, float p3, float mu) {
+		float mum1,mum12,mu2;
+		mu2 = mu * mu;
+		mum1 = 1 - mu;
+		mum12 = mum1 * mum1;
+
+		return (p1) * mum12 + 2 * (p2) * mum1 * mu + (p3) * mu2;
+	}
+
 	public static Vector2 Bezier(Vector2 p1, Vector2 p2, Vector2 p3, float mu) {
 		float mum1,mum12,mu2;
 		mu2 = mu * mu;
