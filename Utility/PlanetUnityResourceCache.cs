@@ -105,6 +105,18 @@ public class PlanetUnityResourceCache
 			}
 		}
 
+		TextAsset fileData = (TextAsset)PlanetUnityOverride.LoadResource(typeof(TextAsset), s);
+		if (fileData != null) {
+			Texture2D tex = new Texture2D (2, 2, TextureFormat.ARGB32, false);
+			tex.LoadImage (fileData.bytes);
+			tex.filterMode = FilterMode.Bilinear;
+			tex.wrapMode = TextureWrapMode.Clamp;
+
+			Sprite sprite = Sprite.Create (tex, new Rect (0, 0, tex.width, tex.height), Vector2.zero);
+			sprites [spriteKey] = sprite;
+			return sprite;
+		}
+
 		Texture2D texture2 = (Texture2D)PlanetUnityOverride.LoadResource(typeof(Texture2D), s);
 		if (texture2 != null) {
 			Sprite sprite = Sprite.Create (texture2, new Rect (0, 0, texture2.width, texture2.height), Vector2.zero);
