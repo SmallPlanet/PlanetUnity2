@@ -131,6 +131,11 @@ public class PlanetUnityStyle
 
 	static public string ReplaceStyleTags(string baseString, string code)
 	{
+		#if PLANET_UNITY_DISABLE_STYLES
+		return baseString;
+		#endif
+
+
 		VerifyLanguageCode (code);
 
 		Dictionary<string,string> languageDict;
