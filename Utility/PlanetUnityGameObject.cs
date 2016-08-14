@@ -34,6 +34,8 @@ public delegate void Task();
 
 public class PlanetUnityOverride {
 
+	public static bool ForceActualSprites = false;
+
 	private static Mathos.Parser.MathParser mathParser = new Mathos.Parser.MathParser();
 	public static int minFPS = 10;
 	public static int maxFPS = 60;

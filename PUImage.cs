@@ -45,7 +45,7 @@ public partial class PUImage : PUImageBase {
 			return;
 		}
 
-		LoadSprite (p, PlanetUnityResourceCache.GetSprite (p));
+		LoadSprite (p, PlanetUnityResourceCache.GetSprite (p, PlanetUnityOverride.ForceActualSprites));
 	}
 
 	public virtual void LoadSprite(string p, Sprite sp) {
