@@ -38,13 +38,13 @@ public partial class PUImageButton : PUImageButtonBase {
 			SpriteState states = button.spriteState;
 
 			if (pressedResourcePath != null) {
-				states.pressedSprite = PlanetUnityResourceCache.GetSprite (pressedResourcePath);
+				states.pressedSprite = PlanetUnityResourceCache.GetSprite (pressedResourcePath, PlanetUnityOverride.ForceActualSprites);
 			}
 			if (highlightedResourcePath != null) {
-				states.highlightedSprite = PlanetUnityResourceCache.GetSprite (highlightedResourcePath);
+				states.highlightedSprite = PlanetUnityResourceCache.GetSprite (highlightedResourcePath, PlanetUnityOverride.ForceActualSprites);
 			}
 			if (disabledResourcePath != null) {
-				states.disabledSprite = PlanetUnityResourceCache.GetSprite (disabledResourcePath);
+				states.disabledSprite = PlanetUnityResourceCache.GetSprite (disabledResourcePath, PlanetUnityOverride.ForceActualSprites);
 			}
 
 			button.spriteState = states;

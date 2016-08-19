@@ -133,6 +133,14 @@
 		</complexContent>
 	</complexType>
 	
+	<element name="CustomGeometry" type="planet:CustomGeometry"/>
+	<complexType name="CustomGeometry">
+		<complexContent>
+			<extension base="planet:GameObject">
+			</extension>
+		</complexContent>
+	</complexType>
+	
 	<element name="Color" type="planet:Color"/>
 	<complexType name="Color">
 		<complexContent>
