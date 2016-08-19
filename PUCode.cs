@@ -95,9 +95,10 @@ public partial class PUCode : PUCodeBase {
 		}
 
 		if (singleton) {
-			if (instances [_class] != null && instances [_class] != this) {
+			IPUCode tempClassInstance = (IPUCode)instances [_class];
+			if (tempClassInstance != null && !tempClassInstance.Equals(this)) {
 				GameObject.DestroyImmediate (this.gameObject);
-				controller = (IPUCode)instances[_class];
+				controller = (IPUCode)tempClassInstance;
 				shouldCallSingletonStart = true;
 			} else {
 				MonoBehaviour.DontDestroyOnLoad(this.gameObject);
