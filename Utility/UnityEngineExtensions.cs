@@ -15,6 +15,7 @@ public static class GameObjectExtension
 		myTransform.anchorMin = Vector2.zero;
 		myTransform.anchorMax = Vector2.one;
 		myTransform.sizeDelta = Vector2.zero;
+		myTransform.anchoredPosition = Vector2.zero;
 	}
 }
 
