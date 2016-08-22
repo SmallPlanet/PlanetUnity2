@@ -23,20 +23,26 @@ public partial class PUGridTable : PUGridTableBase {
 
 		attr = "RectBottomLeftRule";
 		if(attr != null) { heuristic = (PlanetUnity2.GridTableHeuristic)Enum.Parse(typeof(PlanetUnity2.GridTableHeuristic), attr); } 
+		attr = "true";
+		if(attr != null) { expandToFill = bool.Parse(attr); } 
 
 	}
 	
 	
 	public PUGridTable(
-			PlanetUnity2.GridTableHeuristic heuristic ) : this()
+			PlanetUnity2.GridTableHeuristic heuristic,
+			bool expandToFill ) : this()
 	{
 		this.heuristic = heuristic;
+
+		this.expandToFill = expandToFill;
 	}
 
 	
 	
 	public PUGridTable(
 			PlanetUnity2.GridTableHeuristic heuristic,
+			bool expandToFill,
 			bool inertia,
 			bool horizontal,
 			bool vertical,
@@ -67,6 +73,8 @@ public partial class PUGridTable : PUGridTableBase {
 			string tag6 ) : this()
 	{
 		this.heuristic = heuristic;
+
+		this.expandToFill = expandToFill;
 
 		this.inertia = inertia;
 
@@ -140,6 +148,7 @@ public class PUGridTableBase : PUTable {
 
 	// XML Attributes
 	public PlanetUnity2.GridTableHeuristic? heuristic;
+	public bool expandToFill;
 
 
 
@@ -230,6 +239,11 @@ public class PUGridTableBase : PUTable {
 		if(attr == null) { attr = "RectBottomLeftRule"; }
 		if(attr != null) { heuristic = (PlanetUnity2.GridTableHeuristic)Enum.Parse(typeof(PlanetUnity2.GridTableHeuristic), attr); } 
 		
+		attr = reader.GetAttribute("expandToFill");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr == null) { attr = "true"; }
+		if(attr != null) { expandToFill = bool.Parse(attr); } 
+		
 
 	}
 	
@@ -244,6 +258,7 @@ public class PUGridTableBase : PUTable {
 		base.gaxb_appendXMLAttributes(sb);
 
 		if(heuristic != null) { sb.AppendFormat (" {0}=\"{1}\"", "heuristic", (int)heuristic); }
+		 sb.AppendFormat (" {0}=\"{1}\"", "expandToFill", expandToFill.ToString().ToLower()); 
 
 	}
 	

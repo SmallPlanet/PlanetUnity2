@@ -7,36 +7,79 @@ using System.Collections;
 
 public partial class PUGridTable : PUGridTableBase {
 
-	private void LayoutAllCells (MaxRectsBinPack.FreeRectChoiceHeuristic heuristic) {
+	public struct LORect {
+		public float x, y, width, height;
+		public RectTransform rectTransform;
+	}
+
+
+	private void SubLayoutCells(ref float maxHeight, List<PUTableCell> cellsToAdd, MaxRectsBinPack.FreeRectChoiceHeuristic heuristic) {
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
+
+		float blockHeight = 2048.0f;
+		float baseY = maxHeight;
+
+		if (cellsToAdd [0].IsHeader ()) {
+			PUTableCell cell = cellsToAdd [0];
+			cellsToAdd.RemoveAt (0);
+
+			cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (0, -baseY);
+
+			baseY += cell.puGameObject.rectTransform.sizeDelta.y;
+		}
 
 		// The MaxRects packer works by being given a canvas (width/height) to fit all rectangles in
 		// For us to use this and allow arbitrary height, we give it a rect the size of the visible
 		// scroll area, fill it up, and then repeat until we run out of cells.
 
-		List<PUTableCell> cellsToAdd = new List<PUTableCell> (allCells);
-
-		float blockHeight = 2048.0f;
-		float maxHeight = 0;
-		float baseY = 0;
 		while (cellsToAdd.Count > 0) {
 			MaxRectsBinPack packer = new MaxRectsBinPack ((int)contentRectTransform.rect.width, (int)blockHeight, false);
 
 			for (int i = cellsToAdd.Count - 1; i >= 0; i--) {
 				PUTableCell cell = cellsToAdd [i];
-				Rect packedRect;
+				LORect packedRect;
 
-				if (packer.Insert ((int)cell.puGameObject.rectTransform.sizeDelta.x, (int)cell.puGameObject.rectTransform.sizeDelta.y, heuristic, out packedRect)) {
+				if (packer.Insert ((int)cell.puGameObject.rectTransform.sizeDelta.x, (int)cell.puGameObject.rectTransform.sizeDelta.y, heuristic, cell.puGameObject.rectTransform, out packedRect)) {
 					packedRect.y += baseY;
 					cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (packedRect.x, -packedRect.y);
-					if (packedRect.yMax > maxHeight) {
-						maxHeight = packedRect.yMax;
+					if ((packedRect.y + packedRect.height) > maxHeight) {
+						maxHeight = (packedRect.y + packedRect.height);
 					}
 					cellsToAdd.RemoveAt (i);
 				}
 			}
 
+			if (expandToFill) {
+				packer.ExpandRectsToFill ((int)contentRectTransform.rect.width, (maxHeight - baseY));
+			}
+
 			baseY += blockHeight;
+		}
+
+
+	}
+
+	private void LayoutAllCells (MaxRectsBinPack.FreeRectChoiceHeuristic heuristic) {
+		RectTransform contentRectTransform = contentObject.transform as RectTransform;
+
+		float maxHeight = 0;
+
+		// If we have headers, we want to layout the cells in header-to-header chuncks of cells
+		if (allCells [0].IsHeader () == false) {
+			SubLayoutCells (ref maxHeight, allCells, heuristic);
+		} else {
+			int lastHeaderIdx = 0;
+
+			for (int i = 1; i < allCells.Count; i++) {
+				if (allCells [i].IsHeader ()) {
+					SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (i - lastHeaderIdx)), heuristic);
+					lastHeaderIdx = i;
+				}
+			}
+			if (lastHeaderIdx != allCells.Count - 1) {
+				SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (allCells.Count - lastHeaderIdx)), heuristic);
+			}
+
 		}
 
 		contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, maxHeight);
@@ -45,7 +88,7 @@ public partial class PUGridTable : PUGridTableBase {
 
 	public override void LayoutAllCells () {
 		if (heuristic == null) {
-			LayoutAllCells (MaxRectsBinPack.FreeRectChoiceHeuristic.RectBottomLeftRule);
+			LayoutAllCells (MaxRectsBinPack.FreeRectChoiceHeuristic.RectBestAreaFit);
 		} else {
 			LayoutAllCells ((MaxRectsBinPack.FreeRectChoiceHeuristic)heuristic.Value);
 		}
@@ -67,10 +110,9 @@ public partial class PUGridTable : PUGridTableBase {
 
 		public int binWidth = 0;
 		public int binHeight = 0;
-		public bool allowRotations;
 
-		public List<Rect> usedRectangles = new List<Rect>();
-		public List<Rect> freeRectangles = new List<Rect>();
+		public List<LORect> usedRectangles = new List<LORect>();
+		public List<LORect> freeRectangles = new List<LORect>();
 
 		public enum FreeRectChoiceHeuristic {
 			RectBestShortSideFit, ///< -BSSF: Positions the rectangle against the short side of a free rectangle into which it fits the best.
@@ -87,9 +129,8 @@ public partial class PUGridTable : PUGridTableBase {
 		public void Init(int width, int height, bool rotations = true) {
 			binWidth = width;
 			binHeight = height;
-			allowRotations = rotations;
 
-			Rect n = new Rect();
+			LORect n = new LORect();
 			n.x = 0;
 			n.y = 0;
 			n.width = width;
@@ -101,8 +142,8 @@ public partial class PUGridTable : PUGridTableBase {
 			freeRectangles.Add(n);
 		}
 
-		public bool Insert(int width, int height, FreeRectChoiceHeuristic method, out Rect packedRect) {
-			Rect newNode = new Rect();
+		public bool Insert(int width, int height, FreeRectChoiceHeuristic method, RectTransform rt, out LORect packedRect) {
+			LORect newNode = new LORect();
 			int score1 = 0; // Unused in this function. We don't need to know the score after finding the position.
 			int score2 = 0;
 			switch(method) {
@@ -112,6 +153,8 @@ public partial class PUGridTable : PUGridTableBase {
 			case FreeRectChoiceHeuristic.RectBestLongSideFit: newNode = FindPositionForNewNodeBestLongSideFit(width, height, ref score2, ref score1); break;
 			case FreeRectChoiceHeuristic.RectBestAreaFit: newNode = FindPositionForNewNodeBestAreaFit(width, height, ref score1, ref score2); break;
 			}
+
+			newNode.rectTransform = rt;
 
 			if (newNode.height == 0) {
 				packedRect = newNode;
@@ -134,19 +177,19 @@ public partial class PUGridTable : PUGridTableBase {
 			return true;
 		}
 
-		public void Insert(List<Rect> rects, List<Rect> dst, FreeRectChoiceHeuristic method) {
+		public void Insert(List<LORect> rects, List<LORect> dst, FreeRectChoiceHeuristic method) {
 			dst.Clear();
 
 			while(rects.Count > 0) {
 				int bestScore1 = int.MaxValue;
 				int bestScore2 = int.MaxValue;
 				int bestRectIndex = -1;
-				Rect bestNode = new Rect();
+				LORect bestNode = new LORect();
 
 				for(int i = 0; i < rects.Count; ++i) {
 					int score1 = 0;
 					int score2 = 0;
-					Rect newNode = ScoreRect((int)rects[i].width, (int)rects[i].height, method, ref score1, ref score2);
+					LORect newNode = ScoreRect((int)rects[i].width, (int)rects[i].height, method, ref score1, ref score2);
 
 					if (score1 < bestScore1 || (score1 == bestScore1 && score2 < bestScore2)) {
 						bestScore1 = score1;
@@ -164,7 +207,7 @@ public partial class PUGridTable : PUGridTableBase {
 			}
 		}
 
-		void PlaceRect(Rect node) {
+		void PlaceRect(LORect node) {
 			int numRectanglesToProcess = freeRectangles.Count;
 			for(int i = 0; i < numRectanglesToProcess; ++i) {
 				if (SplitFreeNode(freeRectangles[i], ref node)) {
@@ -179,8 +222,8 @@ public partial class PUGridTable : PUGridTableBase {
 			usedRectangles.Add(node);
 		}
 
-		Rect ScoreRect(int width, int height, FreeRectChoiceHeuristic method, ref int score1, ref int score2) {
-			Rect newNode = new Rect();
+		LORect ScoreRect(int width, int height, FreeRectChoiceHeuristic method, ref int score1, ref int score2) {
+			LORect newNode = new LORect();
 			score1 = int.MaxValue;
 			score2 = int.MaxValue;
 			switch(method) {
@@ -211,9 +254,8 @@ public partial class PUGridTable : PUGridTableBase {
 			return (float)usedSurfaceArea / (binWidth * binHeight);
 		}
 
-		Rect FindPositionForNewNodeBottomLeft(int width, int height, ref int bestY, ref int bestX) {
-			Rect bestNode = new Rect();
-			//memset(bestNode, 0, sizeof(Rect));
+		LORect FindPositionForNewNodeBottomLeft(int width, int height, ref int bestY, ref int bestX) {
+			LORect bestNode = new LORect();
 
 			bestY = int.MaxValue;
 
@@ -230,24 +272,12 @@ public partial class PUGridTable : PUGridTableBase {
 						bestX = (int)freeRectangles[i].x;
 					}
 				}
-				if (allowRotations && freeRectangles[i].width >= height && freeRectangles[i].height >= width) {
-					int topSideY = (int)freeRectangles[i].y + width;
-					if (topSideY < bestY || (topSideY == bestY && freeRectangles[i].x < bestX)) {
-						bestNode.x = freeRectangles[i].x;
-						bestNode.y = freeRectangles[i].y;
-						bestNode.width = height;
-						bestNode.height = width;
-						bestY = topSideY;
-						bestX = (int)freeRectangles[i].x;
-					}
-				}
 			}
 			return bestNode;
 		}
 
-		Rect FindPositionForNewNodeBestShortSideFit(int width, int height, ref int bestShortSideFit, ref int bestLongSideFit)  {
-			Rect bestNode = new Rect();
-			//memset(&bestNode, 0, sizeof(Rect));
+		LORect FindPositionForNewNodeBestShortSideFit(int width, int height, ref int bestShortSideFit, ref int bestLongSideFit)  {
+			LORect bestNode = new LORect();
 
 			bestShortSideFit = int.MaxValue;
 
@@ -268,29 +298,12 @@ public partial class PUGridTable : PUGridTableBase {
 						bestLongSideFit = longSideFit;
 					}
 				}
-
-				if (allowRotations && freeRectangles[i].width >= height && freeRectangles[i].height >= width) {
-					int flippedLeftoverHoriz = Mathf.Abs((int)freeRectangles[i].width - height);
-					int flippedLeftoverVert = Mathf.Abs((int)freeRectangles[i].height - width);
-					int flippedShortSideFit = Mathf.Min(flippedLeftoverHoriz, flippedLeftoverVert);
-					int flippedLongSideFit = Mathf.Max(flippedLeftoverHoriz, flippedLeftoverVert);
-
-					if (flippedShortSideFit < bestShortSideFit || (flippedShortSideFit == bestShortSideFit && flippedLongSideFit < bestLongSideFit)) {
-						bestNode.x = freeRectangles[i].x;
-						bestNode.y = freeRectangles[i].y;
-						bestNode.width = height;
-						bestNode.height = width;
-						bestShortSideFit = flippedShortSideFit;
-						bestLongSideFit = flippedLongSideFit;
-					}
-				}
 			}
 			return bestNode;
 		}
 
-		Rect FindPositionForNewNodeBestLongSideFit(int width, int height, ref int bestShortSideFit, ref int bestLongSideFit) {
-			Rect bestNode = new Rect();
-			//memset(&bestNode, 0, sizeof(Rect));
+		LORect FindPositionForNewNodeBestLongSideFit(int width, int height, ref int bestShortSideFit, ref int bestLongSideFit) {
+			LORect bestNode = new LORect();
 
 			bestLongSideFit = int.MaxValue;
 
@@ -311,29 +324,12 @@ public partial class PUGridTable : PUGridTableBase {
 						bestLongSideFit = longSideFit;
 					}
 				}
-
-				if (allowRotations && freeRectangles[i].width >= height && freeRectangles[i].height >= width) {
-					int leftoverHoriz = Mathf.Abs((int)freeRectangles[i].width - height);
-					int leftoverVert = Mathf.Abs((int)freeRectangles[i].height - width);
-					int shortSideFit = Mathf.Min(leftoverHoriz, leftoverVert);
-					int longSideFit = Mathf.Max(leftoverHoriz, leftoverVert);
-
-					if (longSideFit < bestLongSideFit || (longSideFit == bestLongSideFit && shortSideFit < bestShortSideFit)) {
-						bestNode.x = freeRectangles[i].x;
-						bestNode.y = freeRectangles[i].y;
-						bestNode.width = height;
-						bestNode.height = width;
-						bestShortSideFit = shortSideFit;
-						bestLongSideFit = longSideFit;
-					}
-				}
 			}
 			return bestNode;
 		}
 
-		Rect FindPositionForNewNodeBestAreaFit(int width, int height, ref int bestAreaFit, ref int bestShortSideFit) {
-			Rect bestNode = new Rect();
-			//memset(&bestNode, 0, sizeof(Rect));
+		LORect FindPositionForNewNodeBestAreaFit(int width, int height, ref int bestAreaFit, ref int bestShortSideFit) {
+			LORect bestNode = new LORect();
 
 			bestAreaFit = int.MaxValue;
 
@@ -351,21 +347,6 @@ public partial class PUGridTable : PUGridTableBase {
 						bestNode.y = freeRectangles[i].y;
 						bestNode.width = width;
 						bestNode.height = height;
-						bestShortSideFit = shortSideFit;
-						bestAreaFit = areaFit;
-					}
-				}
-
-				if (allowRotations && freeRectangles[i].width >= height && freeRectangles[i].height >= width) {
-					int leftoverHoriz = Mathf.Abs((int)freeRectangles[i].width - height);
-					int leftoverVert = Mathf.Abs((int)freeRectangles[i].height - width);
-					int shortSideFit = Mathf.Min(leftoverHoriz, leftoverVert);
-
-					if (areaFit < bestAreaFit || (areaFit == bestAreaFit && shortSideFit < bestShortSideFit)) {
-						bestNode.x = freeRectangles[i].x;
-						bestNode.y = freeRectangles[i].y;
-						bestNode.width = height;
-						bestNode.height = width;
 						bestShortSideFit = shortSideFit;
 						bestAreaFit = areaFit;
 					}
@@ -398,9 +379,8 @@ public partial class PUGridTable : PUGridTableBase {
 			return score;
 		}
 
-		Rect FindPositionForNewNodeContactPoint(int width, int height, ref int bestContactScore) {
-			Rect bestNode = new Rect();
-			//memset(&bestNode, 0, sizeof(Rect));
+		LORect FindPositionForNewNodeContactPoint(int width, int height, ref int bestContactScore) {
+			LORect bestNode = new LORect();
 
 			bestContactScore = -1;
 
@@ -416,21 +396,11 @@ public partial class PUGridTable : PUGridTableBase {
 						bestContactScore = score;
 					}
 				}
-				if (allowRotations && freeRectangles[i].width >= height && freeRectangles[i].height >= width) {
-					int score = ContactPointScoreNode((int)freeRectangles[i].x, (int)freeRectangles[i].y, height, width);
-					if (score > bestContactScore) {
-						bestNode.x = (int)freeRectangles[i].x;
-						bestNode.y = (int)freeRectangles[i].y;
-						bestNode.width = height;
-						bestNode.height = width;
-						bestContactScore = score;
-					}
-				}
 			}
 			return bestNode;
 		}
 
-		bool SplitFreeNode(Rect freeNode, ref Rect usedNode) {
+		bool SplitFreeNode(LORect freeNode, ref LORect usedNode) {
 			// Test with SAT if the rectangles even intersect.
 			if (usedNode.x >= freeNode.x + freeNode.width || usedNode.x + usedNode.width <= freeNode.x ||
 				usedNode.y >= freeNode.y + freeNode.height || usedNode.y + usedNode.height <= freeNode.y)
@@ -439,14 +409,14 @@ public partial class PUGridTable : PUGridTableBase {
 			if (usedNode.x < freeNode.x + freeNode.width && usedNode.x + usedNode.width > freeNode.x) {
 				// New node at the top side of the used node.
 				if (usedNode.y > freeNode.y && usedNode.y < freeNode.y + freeNode.height) {
-					Rect newNode = freeNode;
+					LORect newNode = freeNode;
 					newNode.height = usedNode.y - newNode.y;
 					freeRectangles.Add(newNode);
 				}
 
 				// New node at the bottom side of the used node.
 				if (usedNode.y + usedNode.height < freeNode.y + freeNode.height) {
-					Rect newNode = freeNode;
+					LORect newNode = freeNode;
 					newNode.y = usedNode.y + usedNode.height;
 					newNode.height = freeNode.y + freeNode.height - (usedNode.y + usedNode.height);
 					freeRectangles.Add(newNode);
@@ -456,14 +426,14 @@ public partial class PUGridTable : PUGridTableBase {
 			if (usedNode.y < freeNode.y + freeNode.height && usedNode.y + usedNode.height > freeNode.y) {
 				// New node at the left side of the used node.
 				if (usedNode.x > freeNode.x && usedNode.x < freeNode.x + freeNode.width) {
-					Rect newNode = freeNode;
+					LORect newNode = freeNode;
 					newNode.width = usedNode.x - newNode.x;
 					freeRectangles.Add(newNode);
 				}
 
 				// New node at the right side of the used node.
 				if (usedNode.x + usedNode.width < freeNode.x + freeNode.width) {
-					Rect newNode = freeNode;
+					LORect newNode = freeNode;
 					newNode.x = usedNode.x + usedNode.width;
 					newNode.width = freeNode.x + freeNode.width - (usedNode.x + usedNode.width);
 					freeRectangles.Add(newNode);
@@ -471,6 +441,15 @@ public partial class PUGridTable : PUGridTableBase {
 			}
 
 			return true;
+		}
+
+		bool Intersects(LORect r1, LORect r2) {
+			return !(
+			    r2.x >= r1.x + r1.width ||
+			    r2.x + r2.width <= r1.x ||
+			    r2.y + r2.height <= r1.y ||
+			    r2.y >= r1.y + r1.height
+			);
 		}
 
 		void PruneFreeList() {
@@ -488,10 +467,94 @@ public partial class PUGridTable : PUGridTableBase {
 				}
 		}
 
-		bool IsContainedIn(Rect a, Rect b) {
+		bool IsContainedIn(LORect a, LORect b) {
 			return a.x >= b.x && a.y >= b.y 
 				&& a.x+a.width <= b.x+b.width 
 				&& a.y+a.height <= b.y+b.height;
+		}
+
+
+		public void ExpandRectsToFill(float w, float h) {
+
+			// Run through all rects; make them the full width
+			// find any other intersecting rects, mind our min X and max X
+			for (int i = 0; i < usedRectangles.Count; i++) {
+				LORect a = usedRectangles [i];
+
+				float centerX = a.x + a.width * 0.5f;
+				float minX = 0;
+				float maxX = w;
+
+				a.x = 0;
+				a.width = w;
+
+				for (int j = 0; j < usedRectangles.Count; j++) {
+					if (i == j) {
+						continue;
+					}
+
+					LORect b = usedRectangles [j];
+
+					if (Intersects (a, b)) {
+
+						// find a left edge which is > centerX && < maxX
+						if (b.x > centerX && b.x < maxX) {
+							maxX = b.x;
+						}
+
+						// find a right edge which is < centerX && > minX
+						if ((b.x + b.width) < centerX && (b.x + b.width) > minX) {
+							minX = (b.x + b.width);
+						}
+					}
+				}
+
+				a.x = minX;
+				a.width = maxX - minX;
+				a.rectTransform.sizeDelta = new Vector2 (a.width, a.rectTransform.sizeDelta.y);
+
+				usedRectangles [i] = a;
+			}
+
+
+			// Same thing as above, but do it for the Y axis
+			for (int i = 0; i < usedRectangles.Count; i++) {
+				LORect a = usedRectangles [i];
+
+				float centerY = a.y + a.height * 0.5f;
+				float minY = 0;
+				float maxY = h;
+
+				a.y = 0;
+				a.height = h;
+
+				for (int j = 0; j < usedRectangles.Count; j++) {
+					if (i == j) {
+						continue;
+					}
+
+					LORect b = usedRectangles [j];
+
+					if (Intersects (a, b)) {
+
+						// find a left edge which is > centerX && < maxX
+						if (b.y > centerY && b.y < maxY) {
+							maxY = b.y;
+						}
+
+						// find a right edge which is < centerX && > minX
+						if ((b.y + b.height) < centerY && (b.y + b.height) > minY) {
+							minY = (b.y + b.height);
+						}
+					}
+				}
+
+				a.y = minY;
+				a.height = maxY - minY;
+				a.rectTransform.sizeDelta = new Vector2 (a.rectTransform.sizeDelta.x, a.height);
+
+				usedRectangles [i] = a;
+			}
 		}
 
 	}

@@ -574,6 +574,7 @@
 		<complexContent>
 			<extension base="planet:Table">
 				<attribute name="heuristic" type="planet:GridTableHeuristic" use="optional" default="RectBottomLeftRule" />
+				<attribute name="expandToFill" type="boolean" use="optional" default="true" />
 			</extension>
 		</complexContent>
 	</complexType>

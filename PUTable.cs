@@ -28,96 +28,6 @@ public class PUTableUpdateScript : MonoBehaviour {
 	}
 }
 
-public class PUTableHeaderScript : MonoBehaviour {
-
-	public PUScrollRect table;
-	public PUTableCell tableCell;
-	private float originalY;
-
-	RectTransform cellTransform;
-	RectTransform nextHeaderTransform;
-	RectTransform tableTransform;
-	RectTransform tableContentTransform;
-
-	public void Start()
-	{
-		if (cellTransform == null) {
-			cellTransform = tableCell.puGameObject.rectTransform;
-		}
-		if (tableTransform == null) {
-			tableTransform = table.rectTransform as RectTransform;
-		}
-		if (tableContentTransform == null) {
-			tableContentTransform = table.contentObject.transform as RectTransform;
-		}
-		if (nextHeaderTransform == null) {
-			if ((cellTransform.GetSiblingIndex () + 1) < tableContentTransform.childCount) {
-				nextHeaderTransform = tableContentTransform.GetChild (cellTransform.GetSiblingIndex () + 1) as RectTransform;
-				if (nextHeaderTransform.GetComponent<PUTableHeaderScript> () == null) {
-					nextHeaderTransform = null;
-				}
-			}
-		}
-
-		tableCell.puGameObject.CheckCanvasGroup ();
-
-		originalY = cellTransform.anchoredPosition.y;
-	}
-
-	public Vector2 DesiredAnchorPosition() {
-		float bottomOfCell = (cellTransform.anchoredPosition.y) + tableContentTransform.anchoredPosition.y - (tableContentTransform.rect.height - tableTransform.rect.height);
-		float topOfCell = bottomOfCell + cellTransform.rect.height;
-		float tableViewHeight = tableTransform.rect.height;
-
-		if (topOfCell > tableViewHeight) {
-			Vector2 pos = cellTransform.anchoredPosition;
-			pos.y = originalY + (tableViewHeight - topOfCell);
-			return pos;
-		} else if(cellTransform.anchoredPosition.y.Equals(originalY) == false) {
-			Vector2 pos = cellTransform.anchoredPosition;
-			pos.y = originalY;
-			return pos;
-		}
-
-		return cellTransform.anchoredPosition;
-	}
-
-	public void LateUpdate()
-	{
-		cellTransform.anchoredPosition = DesiredAnchorPosition ();
-
-		float bottomOfCell = (cellTransform.anchoredPosition.y) + tableContentTransform.anchoredPosition.y - (tableContentTransform.rect.height - tableTransform.rect.height);
-		Vector2 otherPos = cellTransform.anchoredPosition;
-		float distance = 99999.0f;
-
-		// Get my sibling's top of cell, allow it to push me out of the way
-		if (nextHeaderTransform != null) {
-			PUTableHeaderScript otherScript = nextHeaderTransform.GetComponent<PUTableHeaderScript> ();
-			otherPos = otherScript.DesiredAnchorPosition ();
-			distance = cellTransform.anchoredPosition.y - otherPos.y;
-		}
-
-
-		if (distance < cellTransform.rect.height) {
-			cellTransform.anchoredPosition = new Vector2 (otherPos.x, otherPos.y + cellTransform.rect.height);
-
-			tableCell.puGameObject.canvasGroup.alpha = easeInCubic (0, 1, distance / cellTransform.rect.height);
-		} else if (bottomOfCell < 0) {
-			tableCell.puGameObject.canvasGroup.alpha = easeInCubic (0, 1, (bottomOfCell+cellTransform.rect.height) / cellTransform.rect.height);
-		} else {
-			if (tableCell.puGameObject.canvasGroup.alpha.Equals (1.0f) == false) {
-				tableCell.puGameObject.canvasGroup.alpha = 1.0f;
-			}
-		}
-
-	}
-
-	private float easeInCubic(float start, float end, float val){
-		end -= start;
-		return end * val * val * val + start;
-	}
-}
-
 public class PUTableCell {
 
 	public PUScrollRect scrollRect = null;
@@ -227,12 +137,6 @@ public class PUTableCell {
 			puGameObject.SetFrame (0, 0, 0, 60, 0, 0, "bottom,stretch");
 			puGameObject.LoadIntoPUGameObject (parent);
 			puGameObject.gameObject.transform.SetParent(parent.contentObject.transform, false);
-		}
-
-		if (IsHeader () && this is PUSimpleTableCell == false) {
-			PUTableHeaderScript script = (PUTableHeaderScript)puGameObject.gameObject.AddComponent (typeof(PUTableHeaderScript));
-			script.table = table;
-			script.tableCell = this;
 		}
 
 		puGameObject.parent = table;
@@ -361,18 +265,6 @@ public partial class PUTable : PUTableBase {
 			currentContentHeight += newCell.puGameObject.rectTransform.rect.height;
 		}
 
-		for(int i = 0; i < allObjects.Count; i++) {
-			PUTableCell cell = allCells [i];
-			if (cell.IsHeader ()) {
-				// TODO: Move me to the end of the stuff
-				cell.puGameObject.parent = this;
-				cell.puGameObject.gameObject.transform.SetParent (cell.puGameObject.gameObject.transform.parent, false);
-
-				PUTableHeaderScript headerScript = cell.puGameObject.rectTransform.GetComponent<PUTableHeaderScript> ();
-				headerScript.Start ();
-			}
-		}
-			
 		// This will layout our cells
 		prevLayoutSizeHash = Vector2.zero;
 		LateUpdate ();
@@ -405,6 +297,11 @@ public partial class PUTable : PUTableBase {
 
 		if ((layoutSizeHash - prevLayoutSizeHash).sqrMagnitude > 1) {
 			LayoutAllCells ();
+
+			layoutSizeHash = Vector2.zero;
+			foreach (PUTableCell cell in allCells) {
+				layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
+			}
 			prevLayoutSizeHash = layoutSizeHash;
 		}
 	}
@@ -416,11 +313,7 @@ public partial class PUTable : PUTableBase {
 		float nextY = 0;
 		float x = 0;
 
-		Vector2 layoutSizeHash = Vector2.zero;
-
 		foreach (PUTableCell cell in allCells) {
-
-			layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
 
 			// Can I fit on the current line?
 			if(	x + cell.puGameObject.rectTransform.rect.width > (contentRectTransform.rect.width+1) ||
