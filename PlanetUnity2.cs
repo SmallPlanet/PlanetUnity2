@@ -78,6 +78,14 @@ public class PlanetUnity2 {
 		overflow,
 	};
 
+	public enum GridTableHeuristic {
+		RectBestShortSideFit,
+		RectBestLongSideFit,
+		RectBestAreaFit,
+		RectBottomLeftRule,
+		RectContactPointRule,
+	};
+
 	public enum GridLayoutChildAlignment {
 		upperLeft,
 		upperCenter,

@@ -556,6 +556,28 @@
 	</complexType>
 	
 	
+	<simpleType name="GridTableHeuristic">
+		<annotation>
+			<appinfo>NAMED_ENUM</appinfo>
+		</annotation>
+        <restriction base="string">
+			<enumeration value = "RectBestShortSideFit"/>
+			<enumeration value = "RectBestLongSideFit"/>
+			<enumeration value = "RectBestAreaFit"/>
+			<enumeration value = "RectBottomLeftRule"/>
+			<enumeration value = "RectContactPointRule"/>
+		</restriction>
+    </simpleType>
+	
+	<element name="GridTable" type="planet:GridTable"/>
+	<complexType name="GridTable">
+		<complexContent>
+			<extension base="planet:Table">
+				<attribute name="heuristic" type="planet:GridTableHeuristic" use="optional" default="RectBottomLeftRule" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
 	<simpleType name="AspectFitMode">
 		<annotation>
 			<appinfo>NAMED_ENUM</appinfo>

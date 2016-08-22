@@ -368,6 +368,7 @@ public partial class PUTable : PUTableBase {
 		}
 			
 		// This will layout our cells
+		prevLayoutSizeHash = Vector2.zero;
 		LateUpdate ();
 
 		// 3) offset the scroll based upon the change in table height
@@ -385,19 +386,39 @@ public partial class PUTable : PUTableBase {
 		}
 	}
 
+
+	private Vector2 prevLayoutSizeHash;
 	public override void LateUpdate() {
+
+		Vector2 layoutSizeHash = Vector2.zero;
+		foreach (PUTableCell cell in allCells) {
+			cell.LateUpdate ();
+			cell.puGameObject.gameObject.SetActive (cell.TestForVisibility ());
+			layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
+		}
+
+		if ((layoutSizeHash - prevLayoutSizeHash).sqrMagnitude > 1) {
+			LayoutAllCells ();
+			prevLayoutSizeHash = layoutSizeHash;
+		}
+	}
+
+	public virtual void LayoutAllCells () {
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 
 		float y = 0;
 		float nextY = 0;
 		float x = 0;
 
+		Vector2 layoutSizeHash = Vector2.zero;
+
 		foreach (PUTableCell cell in allCells) {
-			cell.LateUpdate ();
+
+			layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
 
 			// Can I fit on the current line?
 			if(	x + cell.puGameObject.rectTransform.rect.width > (contentRectTransform.rect.width+1) ||
-			   	cell.IsHeader()){
+				cell.IsHeader()){
 				x = 0;
 				y = nextY;
 			}
@@ -412,8 +433,6 @@ public partial class PUTable : PUTableBase {
 			if (ny < nextY) {
 				nextY = ny;
 			}
-
-			cell.puGameObject.gameObject.SetActive (cell.TestForVisibility ());
 		}
 
 		contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, Mathf.Abs (nextY));
