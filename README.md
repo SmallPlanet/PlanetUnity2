@@ -9,6 +9,12 @@ See a demo of it in action!
 
 [![PlanetUnity Web Demo](https://img.youtube.com/vi/10zXPQIr70U/0.jpg)](https://www.youtube.com/embed/10zXPQIr70U?vq=hd1080&autoplay=1 "PlanetUnity Web Demo")
 
+## Documentation
+
+Documentation is a work-in-progress, please pardon the dust.
+
+[Getting Started](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/GETTINGSTARTED.md)
+
 ## License
 
 PlanetUnity is free software distributed under the terms of the MIT license, reproduced below. PlanetUnity may be used for any purpose, including commercial purposes, at absolutely no cost. No paperwork, no royalties, no GNU-like "copyleft" restrictions. Just download and enjoy.
