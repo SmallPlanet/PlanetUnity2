@@ -1,3 +1,5 @@
+[Table of Contents](https://github.com/SmallPlanetUnity/PlanetUnity2#documentation)
+
 # Adding Planet Unity (PU) to Your Unity Project
 
 If you are using git as source control, then the recommended method for putting Planet Unity into your project is with git submodules.  Using a git submodule will allow you to track, manage and update to changes made to Planet Unity.

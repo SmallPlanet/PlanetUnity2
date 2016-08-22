@@ -13,7 +13,7 @@ See a demo of it in action!
 
 Documentation is a work-in-progress, please pardon the dust.
 
-do[Getting Started](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/GettingStarted.md)
+[Getting Started](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/GettingStarted.md)
 
 ## License
 
