@@ -100,15 +100,21 @@ public class PUTableHeaderScript : MonoBehaviour {
 
 		if (distance < cellTransform.rect.height) {
 			cellTransform.anchoredPosition = new Vector2 (otherPos.x, otherPos.y + cellTransform.rect.height);
-			tableCell.puGameObject.canvasGroup.alpha = LeanTween.easeInCubic (0, 1, distance / cellTransform.rect.height);
+
+			tableCell.puGameObject.canvasGroup.alpha = easeInCubic (0, 1, distance / cellTransform.rect.height);
 		} else if (bottomOfCell < 0) {
-			tableCell.puGameObject.canvasGroup.alpha = LeanTween.easeInCubic (0, 1, (bottomOfCell+cellTransform.rect.height) / cellTransform.rect.height);
+			tableCell.puGameObject.canvasGroup.alpha = easeInCubic (0, 1, (bottomOfCell+cellTransform.rect.height) / cellTransform.rect.height);
 		} else {
 			if (tableCell.puGameObject.canvasGroup.alpha.Equals (1.0f) == false) {
 				tableCell.puGameObject.canvasGroup.alpha = 1.0f;
 			}
 		}
 
+	}
+
+	private float easeInCubic(float start, float end, float val){
+		end -= start;
+		return end * val * val * val + start;
 	}
 }
 
