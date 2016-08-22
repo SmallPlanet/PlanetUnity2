@@ -132,22 +132,6 @@ public class PUSimpleTableCell : PUTableCell {
 	public static Vector2 CellSize(RectTransform tableTransform) {
 		return new Vector2 (tableTransform.rect.width, 60.0f);
 	}
-
-	public static bool TestForVisibility(float cellPosY, float cellHeight, RectTransform tableTransform, RectTransform tableContentTransform) {
-
-		float scrolledPos = (-cellPosY) - tableContentTransform.anchoredPosition.y;
-		if (Mathf.Abs (scrolledPos - tableTransform.rect.height / 2) < (tableTransform.rect.height + cellHeight)) {
-			return true;
-		}
-		return false;
-	}
-		
-	public override bool TestForVisibility() {
-		if (TestForVisibility (cellTransform.anchoredPosition.y, cellTransform.rect.height, tableTransform, tableContentTransform)) {
-			return true;
-		}
-		return false;
-	}
 }
 
 

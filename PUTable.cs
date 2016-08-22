@@ -150,28 +150,19 @@ public class PUTableCell {
 		// Subclasses can override to dynamically check their current size
 	}
 
-	public virtual bool TestForVisibility() {
+	public static bool TestForVisibility(float cellPosY, float cellHeight, RectTransform tableTransform, RectTransform tableContentTransform) {
 
-		// Note to self: cell are arranged from bottom of content object (pos 0) to the top (pos height)
-		// Note to self: table scrolling is positive (as you scroll up, the anchored position increases)
-		if (IsHeader () == false) {
-			float bottomOfCell = (cellTransform.anchoredPosition.y) + tableContentTransform.anchoredPosition.y - (tableContentTransform.rect.height - tableTransform.rect.height);
-			float topOfCell = bottomOfCell + cellTransform.rect.height;
-			float tableViewHeight = tableTransform.rect.height;
-
-			if (cellGameObject.activeSelf) {
-				if (bottomOfCell > tableViewHeight || topOfCell < 0) {
-					cellGameObject.SetActive (false);
-					return false;
-				}
-			} else {
-				if (bottomOfCell < tableViewHeight && topOfCell > 0) {
-					cellGameObject.SetActive (true);
-					return true;
-				}
-			}
+		float scrolledPos = (-cellPosY) - tableContentTransform.anchoredPosition.y;
+		if (Mathf.Abs (scrolledPos - tableTransform.rect.height / 2) < (tableTransform.rect.height + cellHeight)) {
+			return true;
 		}
+		return false;
+	}
 
+	public virtual bool TestForVisibility() {
+		if (TestForVisibility (cellTransform.anchoredPosition.y, cellTransform.rect.height, tableTransform, tableContentTransform)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -308,6 +299,9 @@ public partial class PUTable : PUTableBase {
 		allCells.Add (cell);
 
 		cell.puGameObject.rectTransform.anchoredPosition = new Vector3 (0, currentContentHeight, 0);
+		cell.puGameObject.rectTransform.anchorMin = new Vector2 (0, 1);
+		cell.puGameObject.rectTransform.anchorMax = new Vector2 (0, 1);
+		cell.puGameObject.rectTransform.pivot = new Vector2 (0, 1);
 
 		return cell;
 	}
@@ -320,10 +314,6 @@ public partial class PUTable : PUTableBase {
 			PUTableUpdateScript script = (PUTableUpdateScript)gameObject.AddComponent (typeof(PUTableUpdateScript));
 			script.table = this;
 		}
-
-		// This one will set the content size of the scrolling axis
-		CalculateContentSize ();
-
 
 		// -2) Calculate the old height, so we can subtract it from the new height and adjust the scrolling appropriately
 		float oldHeight = contentRectTransform.rect.height;
@@ -376,15 +366,9 @@ public partial class PUTable : PUTableBase {
 				headerScript.Start ();
 			}
 		}
-
-		// This one will set the content size of the scrolling axis
-		CalculateContentSize ();
-
+			
 		// This will layout our cells
 		LateUpdate ();
-
-		// This will get the actual content size after the cells are successfully laid out
-		CalculateContentSize ();
 
 		// 3) offset the scroll based upon the change in table height
 		float newHeight = contentRectTransform.rect.height;
@@ -408,7 +392,6 @@ public partial class PUTable : PUTableBase {
 		float nextY = 0;
 		float x = 0;
 
-		// 0) Remove all previous content
 		foreach (PUTableCell cell in allCells) {
 			cell.LateUpdate ();
 
@@ -419,27 +402,21 @@ public partial class PUTable : PUTableBase {
 				y = nextY;
 			}
 
-			cell.animatedYOffset += (0.0f - cell.animatedYOffset) * 0.12346f;
-			cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x, y - cell.animatedYOffset - cell.puGameObject.rectTransform.rect.height);
+			//cell.animatedYOffset += (0.0f - cell.animatedYOffset) * 0.12346f;
+			cell.puGameObject.rectTransform.anchoredPosition = new Vector2 (x, y);
 
 
 			x += cell.puGameObject.rectTransform.rect.width;
-			nextY = y - cell.puGameObject.rectTransform.rect.height;
+
+			float ny = y - cell.puGameObject.rectTransform.rect.height;
+			if (ny < nextY) {
+				nextY = ny;
+			}
+
+			cell.puGameObject.gameObject.SetActive (cell.TestForVisibility ());
 		}
 
-		// y now equates to the content height
-		float height = -nextY;
-		float currentY = 0;
-		foreach (PUTableCell cell in allCells) {
-			Vector2 pos = cell.puGameObject.rectTransform.anchoredPosition;
-			pos.y = pos.y + height;
-			cell.puGameObject.rectTransform.anchoredPosition = pos;
-
-			cell.TestForVisibility ();
-		}
-
-		//CalculateContentSize ();
-
+		contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, Mathf.Abs (nextY));
 	}
 
 	public override void gaxb_complete() {
