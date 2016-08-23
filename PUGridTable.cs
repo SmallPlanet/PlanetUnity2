@@ -53,7 +53,7 @@ public partial class PUGridTable : PUGridTableBase {
 				packer.ExpandRectsToFill ((int)contentRectTransform.rect.width, (maxHeight - baseY));
 			}
 
-			baseY += blockHeight;
+			baseY = maxHeight;
 		}
 
 
@@ -537,12 +537,12 @@ public partial class PUGridTable : PUGridTableBase {
 
 					if (Intersects (a, b)) {
 
-						// find a left edge which is > centerX && < maxX
+						// find a top edge which is > centerY && < maxY
 						if (b.y > centerY && b.y < maxY) {
 							maxY = b.y;
 						}
 
-						// find a right edge which is < centerX && > minX
+						// find a bottom edge which is < centerY && > minY
 						if ((b.y + b.height) < centerY && (b.y + b.height) > minY) {
 							minY = (b.y + b.height);
 						}
