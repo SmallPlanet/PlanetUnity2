@@ -9,11 +9,17 @@ See a demo of it in action!
 
 [![PlanetUnity Web Demo](https://img.youtube.com/vi/10zXPQIr70U/0.jpg)](https://www.youtube.com/embed/10zXPQIr70U?vq=hd1080&autoplay=1 "PlanetUnity Web Demo")
 
+
 ## Documentation
 
 Documentation is a work-in-progress, please pardon the dust.
 
-[Getting Started](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/GettingStarted.md)
+[Planet Unity Documentation](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/TableOfContents.md)
+
+#### Planet Unity Extensions
+
+1. [PUMarkdown](https://github.com/SmallPlanetUnity/PUMarkdown) - A custom entity for PlanetUnity2 which reads in Markdown content at runtime and generates Unity UI using Planet Unity.
+2. [PUTMPro](https://github.com/SmallPlanetUnity/PUTMPro) - A custom entity for PlanetUnity2 which allows for easy integration of the TextMesh Pro Unity asset.
 
 ## License
 

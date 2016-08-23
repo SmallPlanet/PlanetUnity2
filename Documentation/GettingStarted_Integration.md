@@ -1,6 +1,8 @@
-[Table of Contents](https://github.com/SmallPlanetUnity/PlanetUnity2#documentation)
+[Table of Contents](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/TableOfContents.md)
 
-# Adding Planet Unity (PU) to Your Unity Project
+# Integrating Planet Unity
+
+## Adding Planet Unity (PU) to Your Unity Project
 
 If you are using git as source control, then the recommended method for putting Planet Unity into your project is with git submodules.  Using a git submodule will allow you to track, manage and update to changes made to Planet Unity.
 
@@ -9,7 +11,7 @@ If you are using git as source control, then the recommended method for putting 
 A simpler method to adding PU to your project, simply [download the project as a zip](https://github.com/SmallPlanetUnity/PlanetUnity2/archive/master.zip) from github, extract the zip, and place the contents in your projects Assets folder.
 
 
-#Sample XML
+## Sample XML
 
 Here is some sample XML to get you started with the integration steps below.  Copy the code into **Assets/Resources/PlanetUnityTest/PlanetUnityTest.xml**, you can then put **PlanetUnityTest/PlanetUnityTest** in the Xml Path fields mentioned below.  This XML will generate a canvas which renders using the screen space overlay, and in that canvas will be a red square which will stretch to fill the entire canvas.
 
@@ -21,7 +23,7 @@ Here is some sample XML to get you started with the integration steps below.  Co
 ~~~~
 
 
-# Standard Integration
+## Standard Integration
 
 The standard way to integrate Planet Unity in an existing scene is by using the **Planet Unity Game Object** component.
 
@@ -33,7 +35,7 @@ That's it! When the scene is run, the XML file will be loaded and the associated
 
 By using the standard integration, you can get access to the loaded components through the PlanetUnityGameObject class.  For example, you can access the main canvas by calling ```PlanetUnityGameObject.MainCanvas()```.
 
-# Embedded Integration
+## Embedded Integration
 
 It is possible to load multiple PU XML files in the same scene.  While there can only be one "main" xml (which can be accessed through the PlanetUnityGameObject component), you can optionally "embed" other bits of PU generated UI anywhere you want.
 
@@ -46,7 +48,7 @@ There are many reasons why you might want to do this, such as:
 1. You would like to have two completely separate canvases (perhaps rendering to two separate cameras)
 2. You want to embed PU XML into an already existing UI
 
-# Programmatic Integration
+## Programmatic Integration
 
 One of the strengths of Planet Unity is that everything can be easily generated through code.  As such, you can generate the whole UI easily though code, or you can dynamically load whole XML UI through code.  To load an entire PU XML by code, simply call ```PlanetUnityGameObject.LoadXML (pathToXmlFile, ParentGameObjectToLoadUIInto);```
 
