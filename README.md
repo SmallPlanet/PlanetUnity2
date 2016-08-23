@@ -16,11 +16,6 @@ Documentation is a work-in-progress, please pardon the dust.
 
 [Planet Unity Documentation](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/TableOfContents.md)
 
-#### Planet Unity Extensions
-
-1. [PUMarkdown](https://github.com/SmallPlanetUnity/PUMarkdown) - A custom entity for PlanetUnity2 which reads in Markdown content at runtime and generates Unity UI using Planet Unity.
-2. [PUTMPro](https://github.com/SmallPlanetUnity/PUTMPro) - A custom entity for PlanetUnity2 which allows for easy integration of the TextMesh Pro Unity asset.
-
 ## License
 
 PlanetUnity is free software distributed under the terms of the MIT license, reproduced below. PlanetUnity may be used for any purpose, including commercial purposes, at absolutely no cost. No paperwork, no royalties, no GNU-like "copyleft" restrictions. Just download and enjoy.
