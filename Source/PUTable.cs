@@ -294,6 +294,7 @@ public partial class PUTable : PUTableBase {
 			cell.puGameObject.gameObject.SetActive (cell.TestForVisibility ());
 			layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
 		}
+		layoutSizeHash += rectTransform.rect.size;
 
 		if ((layoutSizeHash - prevLayoutSizeHash).sqrMagnitude > 1) {
 			LayoutAllCells ();
@@ -302,6 +303,7 @@ public partial class PUTable : PUTableBase {
 			foreach (PUTableCell cell in allCells) {
 				layoutSizeHash += cell.puGameObject.rectTransform.sizeDelta;
 			}
+			layoutSizeHash += rectTransform.rect.size;
 			prevLayoutSizeHash = layoutSizeHash;
 		}
 	}

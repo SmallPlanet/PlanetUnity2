@@ -31,8 +31,8 @@ public partial class PUGridTable : PUGridTableBase {
 		// The MaxRects packer works by being given a canvas (width/height) to fit all rectangles in
 		// For us to use this and allow arbitrary height, we give it a rect the size of the visible
 		// scroll area, fill it up, and then repeat until we run out of cells.
-
-		while (cellsToAdd.Count > 0) {
+		int bail = 500;
+		while (cellsToAdd.Count > 0 && bail > 0) {
 			MaxRectsBinPack packer = new MaxRectsBinPack ((int)contentRectTransform.rect.width, (int)blockHeight, false);
 
 			for (int i = cellsToAdd.Count - 1; i >= 0; i--) {
@@ -54,6 +54,11 @@ public partial class PUGridTable : PUGridTableBase {
 			}
 
 			baseY = maxHeight;
+			bail--;
+		}
+
+		if (bail == 0) {
+			Debug.Log ("Warning: PUGridTable layout failed to place all cells");
 		}
 
 
@@ -66,7 +71,7 @@ public partial class PUGridTable : PUGridTableBase {
 
 		// If we have headers, we want to layout the cells in header-to-header chuncks of cells
 		if (allCells [0].IsHeader () == false) {
-			SubLayoutCells (ref maxHeight, allCells, heuristic);
+			SubLayoutCells (ref maxHeight, allCells.GetRange(0, allCells.Count), heuristic);
 		} else {
 			int lastHeaderIdx = 0;
 
