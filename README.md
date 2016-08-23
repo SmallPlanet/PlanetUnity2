@@ -3,18 +3,15 @@
 # Planet Unity
 
 
-PlanetUnity is an XML driven framework for creating user interfaces utilizing the new uGUI system introduced in Unity 4.6. It is still in the incubator, expect more details in the future.
-
-See a demo of it in action!
-
-[![PlanetUnity Web Demo](https://img.youtube.com/vi/10zXPQIr70U/0.jpg)](https://www.youtube.com/embed/10zXPQIr70U?vq=hd1080&autoplay=1 "PlanetUnity Web Demo")
-
+PlanetUnity is an XML driven framework for creating user interfaces utilizing the new Unity UI system introduced in Unity 4.6.
 
 ## Documentation
 
-Documentation is a work-in-progress, please pardon the dust.
-
 [Planet Unity Documentation](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/TableOfContents.md)
+
+## Video Demo
+
+[![PlanetUnity Web Demo](https://img.youtube.com/vi/10zXPQIr70U/0.jpg)](https://www.youtube.com/embed/10zXPQIr70U?vq=hd1080&autoplay=1 "PlanetUnity Web Demo")
 
 ## License
 
