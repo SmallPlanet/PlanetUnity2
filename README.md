@@ -9,6 +9,12 @@ PlanetUnity is an XML driven framework for creating user interfaces utilizing th
 
 [Planet Unity Documentation](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/TableOfContents.md)
 
+## Example Projects
+
+[Image Search](https://github.com/SmallPlanetUnity/ImageSearch)
+![](https://github.com/SmallPlanetUnity/ImageSearch/raw/master/kittens.png=250x)
+
+
 ## Video Demo
 
 [![PlanetUnity Web Demo](https://img.youtube.com/vi/10zXPQIr70U/0.jpg)](https://www.youtube.com/embed/10zXPQIr70U?vq=hd1080&autoplay=1 "PlanetUnity Web Demo")
