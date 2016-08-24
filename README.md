@@ -11,8 +11,10 @@ PlanetUnity is an XML driven framework for creating user interfaces utilizing th
 
 ## Example Projects
 
-[Image Search](https://github.com/SmallPlanetUnity/ImageSearch)
-![](https://github.com/SmallPlanetUnity/ImageSearch/raw/master/kittens.png=250x)
+
+###[Image Search](https://github.com/SmallPlanetUnity/ImageSearch)  
+This is a moderate example of how to build Unity UI using Planet Unity; it creates an application which allows you to perform an image by entering some text in an input field, pressing the search button, performing some asynchronous web requests and populating a grid table with the resulting images.  
+<img src="https://github.com/SmallPlanetUnity/ImageSearch/raw/master/kittens.png" width="240">
 
 
 ## Video Demo
