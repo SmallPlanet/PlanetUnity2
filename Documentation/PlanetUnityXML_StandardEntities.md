@@ -41,12 +41,9 @@ The base class of most standard entities, the GameObject entity will create an e
 | size | Vector2 | The width and height of the RectTransform |
 | bounds | Vector4 | Convenience attribute combines positions and size as x,y,width,height |
 | pivot | Vector2 | The pivot of the RectTransform |
-| anchor | string | One of the common anchor values (see below) |
+| anchor | string | "top,left", "top,center", "top,right", "top,stretch", "middle,left", "middle,center", "middle,right", "middle,stretch", "bottom,left", "bottom,center", "bottom,right", "bottom,stretch", "stretch,left", "stretch,center", "stretch,right", "stretch,stretch" |
 | title | string | Sets the name of the Game Object, also allows linking to C# code |
 | active | boolean | Whether this Game Object is initialized as active or not |
-
-**Valid values for anchor**  
-"top,left", "top,center", "top,right", "top,stretch", "middle,left", "middle,center", "middle,right", "middle,stretch", "bottom,left", "bottom,center", "bottom,right", "bottom,stretch", "stretch,left", "stretch,center", "stretch,right", "stretch,stretch"
 
 ----
 
