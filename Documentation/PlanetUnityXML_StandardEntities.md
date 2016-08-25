@@ -3,8 +3,8 @@
 # Standard Entities
 
 
-## &lt;GameObject/&gt;
-### C# Class - PUGameObject
+### &lt;GameObject/&gt;
+#### C# Class - PUGameObject
 
 The base class of most standard entities, the GameObject entity will create an empty Unity Game Object. When used directly it is generally used for building hierarchical structures in your UI as a lightweight container to hold other entities.
 
@@ -21,9 +21,10 @@ The base class of most standard entities, the GameObject entity will create an e
 **Valid values for anchor**  
 "top,left", "top,center", "top,right", "top,stretch", "middle,left", "middle,center", "middle,right", "middle,stretch", "bottom,left", "bottom,center", "bottom,right", "bottom,stretch", "stretch,left", "stretch,center", "stretch,right", "stretch,stretch"
 
+----
 
-## &lt;Canvas/&gt;
-### C# Class - PUCanvas : PUGameObject
+### &lt;Canvas/&gt;
+#### C# Class - PUCanvas : PUGameObject
 
 Generates a standard Unity Canvas
 
@@ -33,9 +34,10 @@ Generates a standard Unity Canvas
 | planeDistance | float | The distance of the canvas plane from the camera when render mode is set to ScreenSpaceCamera |
 | pixelPerfect | bool | Convenience attribute combines positions and size as x,y,width,height |
 
+----
 
-## &lt;Color/&gt;
-### C# Class - PUColor : PUGameObject
+### &lt;Color/&gt;
+#### C# Class - PUColor : PUGameObject
 
 A colored rectangle the size of the RectTransform
 
@@ -43,9 +45,10 @@ A colored rectangle the size of the RectTransform
 |----------|--------------|---------------|
 | color | Color | The color of the rectangle |
 
+----
 
-## &lt;ColorButton/&gt;
-### C# Class - PUColorButton : PUColor
+### &lt;ColorButton/&gt;
+#### C# Class - PUColorButton : PUColor
 
 A colored rectangle the size of the RectTransform which can be pressed like a button
 
@@ -54,9 +57,10 @@ A colored rectangle the size of the RectTransform which can be pressed like a bu
 | onTouchUp | string | Notification name to be sent when the button is clicked |
 | pressedColor | Color | The color of the button in its pressed state |
 
+----
 
-## &lt;ClearButton/&gt;
-### C# Class - PUClearButton : PUGameObject
+### &lt;ClearButton/&gt;
+#### C# Class - PUClearButton : PUGameObject
 
 A clear rectangle the size of the RectTransform which can be pressed like a button; note that this is more performant than using a ColorButton with a clear color because ClearButton will have no impact on rendering performance.
 
@@ -64,9 +68,10 @@ A clear rectangle the size of the RectTransform which can be pressed like a butt
 |----------|--------------|---------------|
 | onTouchUp | string | Notification name to be sent when the button is clicked |
 
+----
 
-## &lt;RawImage/&gt;
-### C# Class - PURawImage : PUGameObject
+### &lt;RawImage/&gt;
+#### C# Class - PURawImage : PUGameObject
 
 An image the size of the RectTransform
 
@@ -75,10 +80,10 @@ An image the size of the RectTransform
 | resourcePath | string | The path to the texture in Assets/Resources to load |
 | color | Color | The color to tint the raw image |
 
+----
 
-
-## &lt;Image/&gt;
-### C# Class - PUImage : PUGameObject
+### &lt;Image/&gt;
+#### C# Class - PUImage : PUGameObject
 
 A sprite set to the size of the RectTransform
 
@@ -93,10 +98,10 @@ Note: at the time of this writing, you cannot load a single sprite with C# code,
 1. You can call LoadSprite() from C# code to force the loading of a sprite on a specific PUImage
 2. You can override Planet Unity's default behaviour and have it load sprites for all PUImage by setting **PlanetUnityOverride.ForceActualSprites = true;**  Please note you should set Planet Unity overrides in an Awake method to ensure they are set before Planet Unity loads UI
 
+----
 
-
-## &lt;ImageButton/&gt;
-### C# Class - PUImageButton : PUImage
+### &lt;ImageButton/&gt;
+#### C# Class - PUImageButton : PUImage
 
 An image the size of the RectTransform which can be pressed like a button
 
@@ -108,9 +113,10 @@ An image the size of the RectTransform which can be pressed like a button
 | onTouchUp | string | Notification name to be sent when the button is clicked |
 | onTouchDown | string | Notification name to be sent when the button is pressed |
 
+----
 
-## &lt;ScrollRect/&gt;
-### C# Class - PUScrollRect : PUGameObject
+### &lt;ScrollRect/&gt;
+#### C# Class - PUScrollRect : PUGameObject
 
 A container object that allows you to scroll the children placed in it
 
@@ -121,34 +127,10 @@ A container object that allows you to scroll the children placed in it
 | vertical | boolean | Should you be able to scroll vertically |
 | scrollWheelSensitivity | float | The sensitivity to scroll wheel and trackpad events |
 
+----
 
-
-## &lt;Text/&gt;
-### C# Class - PUText : PUGameObject
-
-Text displayed within the bounds of the RectTransform. Please note you might want to consider using [PUTMPro](https://github.com/SmallPlanetUnity/PUTMPro) and [TextMesh Pro](https://www.assetstore.unity3d.com/en/#!/content/17662) instead.
-
-| Attribute | Type | Description              |
-|----------|--------------|---------------|
-| font | string | The resource path to the font |
-| fontSize | int | The point size of the text |
-| fontStyle | FontStyle |"normal", "bold", "italic", "boldAndItalic" |
-| fontColor | Color | The color of the text |
-| lineSpacing | float | Line spacing specified as a factor of the font line height |
-| alignment | TextAlignment | "upperLeft", "upperCenter", "upperRight", "middleLeft", "middleCenter", "middleRight", "lowerLeft", "lowerCenter", "lowerRight" |
-| value | string | The content of the text |
-| sizeToFit | boolean | Resize the font to size the size of the RectTransform |
-| maxFontSize | int | Maximum font size to use with the sizeToFit option is specified |
-| minFontSize | int | Minimum font size to use with the sizeToFit option is specified |
-| vOverflow | boolean | Should the text overflow the RectTransform area vertically |
-| hOverflow | boolean | Should the text overflow the RectTransform area horizontally |
-| onLinkClick | string | Notification sent when a link is clicked |
-
-
-
-
-## &lt;Text/&gt;
-### C# Class - PUText : PUGameObject
+### &lt;Text/&gt;
+#### C# Class - PUText : PUGameObject
 
 Text displayed within the bounds of the RectTransform. Please note you might want to consider using [PUTMPro](https://github.com/SmallPlanetUnity/PUTMPro) and [TextMesh Pro](https://www.assetstore.unity3d.com/en/#!/content/17662) instead.
 
@@ -168,11 +150,33 @@ Text displayed within the bounds of the RectTransform. Please note you might wan
 | hOverflow | boolean | Should the text overflow the RectTransform area horizontally |
 | onLinkClick | string | Notification sent when a link is clicked |
 
+----
 
+### &lt;Text/&gt;
+#### C# Class - PUText : PUGameObject
 
+Text displayed within the bounds of the RectTransform. Please note you might want to consider using [PUTMPro](https://github.com/SmallPlanetUnity/PUTMPro) and [TextMesh Pro](https://www.assetstore.unity3d.com/en/#!/content/17662) instead.
 
-## &lt;TextButton/&gt;
-### C# Class - PUTextButton : PUText
+| Attribute | Type | Description              |
+|----------|--------------|---------------|
+| font | string | The resource path to the font |
+| fontSize | int | The point size of the text |
+| fontStyle | FontStyle |"normal", "bold", "italic", "boldAndItalic" |
+| fontColor | Color | The color of the text |
+| lineSpacing | float | Line spacing specified as a factor of the font line height |
+| alignment | TextAlignment | "upperLeft", "upperCenter", "upperRight", "middleLeft", "middleCenter", "middleRight", "lowerLeft", "lowerCenter", "lowerRight" |
+| value | string | The content of the text |
+| sizeToFit | boolean | Resize the font to size the size of the RectTransform |
+| maxFontSize | int | Maximum font size to use with the sizeToFit option is specified |
+| minFontSize | int | Minimum font size to use with the sizeToFit option is specified |
+| vOverflow | boolean | Should the text overflow the RectTransform area vertically |
+| hOverflow | boolean | Should the text overflow the RectTransform area horizontally |
+| onLinkClick | string | Notification sent when a link is clicked |
+
+----
+
+### &lt;TextButton/&gt;
+#### C# Class - PUTextButton : PUText
 
 Text displayed within the bounds of the RectTransform which can be clicked like a button
 
@@ -180,10 +184,10 @@ Text displayed within the bounds of the RectTransform which can be clicked like 
 |----------|--------------|---------------|
 | onTouchUp | string | Notification name to be sent when the button is clicked |
 
+----
 
-
-## &lt;InputField/&gt;
-### C# Class - PUInputField : PUText
+### &lt;InputField/&gt;
+#### C# Class - PUInputField : PUText
 
 Text displayed within the bounds of the RectTransform which can be clicked like a button
 
@@ -196,9 +200,10 @@ Text displayed within the bounds of the RectTransform which can be clicked like 
 | lineType | InputFieldLineType | "single", "multiSubmit", "multiNewline" |
 | selectionColor | Color | The color of the input field's highlights |
 
+----
 
-## &lt;Slider/&gt;
-### C# Class - PUSlider : PUImage
+### &lt;Slider/&gt;
+#### C# Class - PUSlider : PUImage
 
 A basic slider control
 
@@ -212,9 +217,10 @@ A basic slider control
 | maxValue | float | The maximum value of the slider |
 | direction | SliderDirection | "LeftToRight", "RightToLeft", "BottomToTop", "TopToBottom" |
 
+----
 
-## &lt;Table/&gt;
-### C# Class - PUTable : PUScrollRect
+### &lt;Table/&gt;
+#### C# Class - PUTable : PUScrollRect
 
 Present a scrollable list of items to the user. PUTable uses a simple algorithm to place cell from left-to-right from top-to-bottom, and contains a simple API for use. PUTable relies on loading and laying out all of the cells at the same time, so is not recommended for tables with lots of cells. Use PUSimpleTable for tables with lots of content.
 
@@ -222,9 +228,10 @@ Present a scrollable list of items to the user. PUTable uses a simple algorithm 
 |----------|--------------|---------------|
 |  |  |  |
 
+----
 
-## &lt;GridTable/&gt;
-### C# Class - PU GridTable : PUTable
+### &lt;GridTable/&gt;
+#### C# Class - PU GridTable : PUTable
 
 A subclass of PUTable which uses the MAXRECTS algorithm to tighly fit cells of different sizes into the requested scroll area. Very useful for things like displaying multiple images. Just like PUTable, PUGridTable relies on loading and laying out all of the cells at the same time, so is not recommended for tables with lots of cells.
 
@@ -233,9 +240,10 @@ A subclass of PUTable which uses the MAXRECTS algorithm to tighly fit cells of d
 | heuristic | GridTableHeuristic | "RectBestShortSideFit", "RectBestLongSideFit", "RectBestAreaFit", "RectBottomLeftRule", "RectContactPointRule" |
 | expandToFill | boolean | Resize the cells to reduce as much empty space as possible |
 
+----
 
-## &lt;GridLayoutGroup/&gt;
-### C# Class - PUGridLayoutGroup : PUGameObject
+### &lt;GridLayoutGroup/&gt;
+#### C# Class - PUGridLayoutGroup : PUGameObject
 
 The grid layout group will organize the child entities in a grid based on the parameters supplied
 
@@ -249,10 +257,10 @@ The grid layout group will organize the child entities in a grid based on the pa
 | fixedRows | int | Constrain to the number of rows specified |
 | fixedColumns | int | Constrain to the number of columns specified |
 
+----
 
-
-## &lt;VerticalLayoutGroup/&gt;
-### C# Class - PUVerticalLayoutGroup : PUGameObject
+### &lt;VerticalLayoutGroup/&gt;
+#### C# Class - PUVerticalLayoutGroup : PUGameObject
 
 A layout group which will organize the child entities vertically
 
@@ -262,9 +270,10 @@ A layout group which will organize the child entities vertically
 | padding | Vector4 | The amount of internal padding for each cell |
 | childAlignment | GridLayoutChildAlignment | "upperLeft", "upperCenter", "upperRight", "middleLeft", "middleCenter", "middleRight", "lowerLeft", "lowerCenter", "lowerRight" |
 
+----
 
-## &lt;HorizontalLayoutGroup/&gt;
-### C# Class - PUHorizontalLayoutGroup : PUGameObject
+### &lt;HorizontalLayoutGroup/&gt;
+#### C# Class - PUHorizontalLayoutGroup : PUGameObject
 
 A layout group which will organize the child entities horizontally
 
@@ -274,9 +283,10 @@ A layout group which will organize the child entities horizontally
 | padding | Vector4 | The amount of internal padding for each cell |
 | childAlignment | GridLayoutChildAlignment | "upperLeft", "upperCenter", "upperRight", "middleLeft", "middleCenter", "middleRight", "lowerLeft", "lowerCenter", "lowerRight" |
 
+----
 
-## &lt;AspectFit/&gt;
-### C# Class - PUAspectFit : PUGameObject
+### &lt;AspectFit/&gt;
+#### C# Class - PUAspectFit : PUGameObject
 
 Use the Unity AspectRatioFitter component to resize children of this entity.
 
@@ -285,9 +295,10 @@ Use the Unity AspectRatioFitter component to resize children of this entity.
 | contentSize | Vector2 | The size of the content to fit |
 | mode | AspectFitMode | "None", "WidthControlsHeight", "HeightControlsWidth", "FitInParent", "EnvelopeParent" |
 
+----
 
-## &lt;Code/&gt;
-### C# Class - PUCode : PUGameObject
+### &lt;Code/&gt;
+#### C# Class - PUCode : PUGameObject
 
 The code entity will instantiate an instance of the MonoBehaviour class specified, automatically fill out any public member variables which are the same type and title of other entities, and subscribe to any notifications specified
 
@@ -296,9 +307,10 @@ The code entity will instantiate an instance of the MonoBehaviour class specifie
 | class | string | The name of the MonoBehaviour class |
 | singleton | boolean | Should this instance be kept around and treated like a singleton |
 
+----
 
-## &lt;Notification/&gt;
-### C# Class - PUNotification : PUObject
+### &lt;Notification/&gt;
+#### C# Class - PUNotification : PUObject
 
 Used as a child of the Code entity, provides a list of notifications the code entity should subscribe to
 
@@ -306,10 +318,11 @@ Used as a child of the Code entity, provides a list of notifications the code en
 |----------|--------------|---------------|
 | name | string | The name of the notification the code entity should subscribe to |
 
+----
 
-## &lt;Movie/&gt;
-### C# Class - PUMovie : PUGameObject
-#### TO BE REMOVED SOON
+### &lt;Movie/&gt;
+#### C# Class - PUMovie : PUGameObject
+##### TO BE REMOVED SOON
 
 An entity to load and play a MovieTexture. This entity is marked for possible removal from Planet Unity due to the lack of MovieTexture support across all Unity platforms.
 
@@ -319,10 +332,11 @@ An entity to load and play a MovieTexture. This entity is marked for possible re
 | resourcePath | string | The path to the movie to play |
 | color | Color | The color to tint the move |
 
+----
 
-## &lt;Prefab/&gt;
-### C# Class - PUPrefab : PUGameObject
-#### TO BE REMOVED SOON
+### &lt;Prefab/&gt;
+#### C# Class - PUPrefab : PUGameObject
+##### TO BE REMOVED SOON
 
 Load a prefab and set it as my child. This entity is marked for possible removal from Planet Unity. Using prefabs for UI elements is against the purpose of Planet Unity, and while there may be good reasons to use this entity it is by far the exception rather than the rule. In addition, those who have this need usually end up doing this in C# code and/or in some other method than with the PUPrefab entity.
 
