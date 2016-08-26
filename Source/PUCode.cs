@@ -28,7 +28,7 @@ public interface IPUSingletonCode : IPUCode {
 
 public partial class PUCode : PUCodeBase {
 
-	IPUCode controller;
+	MonoBehaviour controller;
 
 	private static Hashtable instances = new Hashtable ();
 	private static Hashtable normalInstances = new Hashtable ();
@@ -95,10 +95,10 @@ public partial class PUCode : PUCodeBase {
 		}
 
 		if (singleton) {
-			IPUCode tempClassInstance = (IPUCode)instances [_class];
+			MonoBehaviour tempClassInstance = (MonoBehaviour)instances [_class];
 			if (tempClassInstance != null && !tempClassInstance.Equals(this)) {
 				GameObject.DestroyImmediate (this.gameObject);
-				controller = (IPUCode)tempClassInstance;
+				controller = (MonoBehaviour)tempClassInstance;
 				shouldCallSingletonStart = true;
 			} else {
 				MonoBehaviour.DontDestroyOnLoad(this.gameObject);
@@ -110,7 +110,7 @@ public partial class PUCode : PUCodeBase {
 		if (controller == null && _class != null) {
 			// Attach all of the PlanetUnity objects
 			try {
-				controller = (IPUCode)gameObject.AddComponent(Type.GetType (_class, true));
+				controller = (MonoBehaviour)gameObject.AddComponent(Type.GetType (_class, true));
 
 				PUGameObject scene = Scope() as PUGameObject;
 				if(scene != null)
