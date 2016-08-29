@@ -1,8 +1,6 @@
 
 # Planet Unity Documentation
 
-*Documentation is a work-in-progress, please pardon the dust.*
-
 ## Table of Contents
 
 #### Getting Started
