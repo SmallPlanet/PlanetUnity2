@@ -155,7 +155,13 @@ public class PUTableCell {
 		UpdateContents ();
 	}
 
+	public virtual void UnloadContents() {
+		
+	}
+
 	public void unload() {
+		UnloadContents ();
+
 		NotificationCenter.removeObserver (this);
 		puGameObject.unload ();
 	}
