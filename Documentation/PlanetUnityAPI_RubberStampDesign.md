@@ -2,6 +2,9 @@
 
 # Rubber Stamp Design
 
+Planet Unity entities are only loosely coupled with the generated Unity Game Objects and Components; setting a value on an entity **after** the Unity Game Object has been generated will not affect the generated object.
+
+
 ![](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/Images/rubber_stamps.png)
 
 ## image.color or image.image.color?
