@@ -30,3 +30,22 @@ PUGridTable is a subclass of PUTable with a custom layout algorithm, specificall
 ![](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/Images/PUSimpleTable.gif)
 
 PUSimpleTable is the ideal table class to use, especially for mobile. It supports lazy loading of cells, it only layouts and loads the cells which are visible, and is highly performant. However, the performance improvements come with more restrictions. PUSimpleTable cells must all be of the same size (not including section headers, which all need to be the same size but can be a different size from other cells), and only supports vertical scrolling.
+
+
+
+# Loading data into tables
+
+![](https://github.com/SmallPlanetUnity/PlanetUnity2/blob/master/Documentation/Images/tables.png)
+
+Loading your data into any of the tables is fairly simple.
+
+1. Create a List<object> which contains all of your data objects (they can be anything)
+2. Create C# subclasses of PUTableCell (or PUSimpleTableCell) which are the same name as the data class with "TableCell" appended to it
+3. Override the appropriate methods of PUTableCell to create the cell's UI
+
+For a step-by-step example, please refer to the Image Search example:
+
+####[Image Search](https://github.com/SmallPlanetUnity/ImageSearch)  
+This is a moderate example of how to build Unity UI using Planet Unity; it creates an application which allows you to perform an image search by entering some text in an input field, pressing the search button, performing some asynchronous web requests and populating a grid table with the resulting images.
+
+<img src="https://github.com/SmallPlanetUnity/ImageSearch/raw/master/kittens.png" width="240">
