@@ -180,7 +180,6 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	}
 
 	public string xmlPath;
-	public bool editorPreview = true;
 
 	public Vector2 referenceResolution;
 	public bool scaleAutomatically;
@@ -474,12 +473,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	}
 
 	public void EditorReloadCanvas () {
-
 		SafeRemoveAllChildren ();
-
-		if (editorPreview) {
-			ReloadCanvas ();
-		}
 	}
 
 	private Queue<Task> TaskQueue = new Queue<Task>();
@@ -534,60 +528,6 @@ public class PlanetUnityGameObject : MonoBehaviour {
 }
 
 #if UNITY_EDITOR
-
-[InitializeOnLoad]
-public class Autorun
-{
-	static Autorun()
-	{
-		EditorApplication.update += Update;
-	}
-
-
-	static bool inEditor = true;
-	static bool editorPreviewCache = false;
-
-	static void Update()
-	{
-		bool reloadPreview = false;
-
-		// If we're the editor, and we're in edit mode, and live preview is set...
-		GameObject puObject = GameObject.Find ("PlanetUnity");
-		if (puObject == null)
-			return;
-		PlanetUnityGameObject script = puObject.GetComponent<PlanetUnityGameObject> ();
-		if (script == null)
-			return;
-
-		// Monitor changes to and from edit mode
-		if (inEditor == true && Application.isPlaying) {
-			//UnityEngine.Debug.Log ("Switch to play mode");
-
-			inEditor = false;
-		}else if (inEditor == false && Application.isPlaying == false) {
-			//UnityEngine.Debug.Log ("Switch to edit mode");
-
-			reloadPreview = true;
-
-			inEditor = true;
-		}
-
-
-		// Monitor changes to the editorPreview variable
-		if (script.editorPreview != editorPreviewCache) {
-
-			reloadPreview = true;
-
-			editorPreviewCache = script.editorPreview;
-		}
-
-		if (inEditor) {
-			if (reloadPreview) {
-				script.EditorReloadCanvas ();
-			}
-		}
-	}
-}
 
 [ExecuteInEditMode]
 public class CustomPostprocessor : AssetPostprocessor
