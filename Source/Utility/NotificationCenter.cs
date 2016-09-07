@@ -23,20 +23,34 @@ public class NotificationObserver
 {
 	public string name;
 	public string methodName;
-	public object observer;
 	public Action<Hashtable, string> block;
 
-	public void callObserver(Hashtable args, string notificatioName)
+	private WeakReference observerReference;
+	public object observer {
+		get {
+			return observerReference.Target;
+		}
+		set {
+			observerReference = new WeakReference (value);
+		}
+	}
+
+	public bool callObserver(Hashtable args, string notificatioName)
 	{
+		// this observer has been cleaned up by the garbage collector
+		if (observerReference.Target == null) {
+			return false;
+		}
+
 		if (methodName != null) {
-			MethodInfo method = observer.GetType ().GetMethod (methodName);
+			MethodInfo method = observerReference.Target.GetType ().GetMethod (methodName);
 			if (method != null) {
 				if (method.GetParameters ().Length == 2) {
-					method.Invoke (observer, new [] { (object)args, (object)notificatioName });
+					method.Invoke (observerReference.Target, new [] { (object)args, (object)notificatioName });
 				} else if (method.GetParameters ().Length == 1) {
-					method.Invoke (observer, new [] { args });
+					method.Invoke (observerReference.Target, new [] { args });
 				} else {
-					method.Invoke (observer, null);
+					method.Invoke (observerReference.Target, null);
 				}
 
 			} else {
@@ -44,7 +58,9 @@ public class NotificationObserver
 			}
 		} else if (block != null) {
 			block (args, notificatioName);
-		} 
+		}
+
+		return true;
 	}
 }
 
@@ -139,11 +155,14 @@ public class NotificationCenter
 		}
 
 		List<NotificationObserver> list;
-		if (observersByScope.TryGetValue(scope, out list))
-		{
-			foreach (NotificationObserver o in new List<NotificationObserver>(list)) {
-				if (o.name.Equals (name) || o.name.Equals("*")) {
-					o.callObserver (args, name);
+		if (observersByScope.TryGetValue (scope, out list)) {
+			for (int i = 0; i < list.Count; i++) {
+				NotificationObserver o = list [i];
+				if (o.name.Equals (name) || o.name.Equals ("*")) {
+					if (!o.callObserver (args, name)) {
+						list.RemoveAt (i);
+						i--;
+					}
 				}
 			}
 		}
