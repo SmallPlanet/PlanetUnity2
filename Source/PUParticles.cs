@@ -33,7 +33,7 @@ public partial class PUParticles : PUParticlesBase {
 				particleSystem = particleSystemGO.GetComponent<ParticleSystem> ();
 				particleRenderer = particleSystemGO.GetComponent<ParticleSystemRenderer> ();
 
-				shim.material = particleRenderer.material;
+				shim.material = new Material(particleRenderer.material);
 
 				particleSystem.simulationSpace = ParticleSystemSimulationSpace.Local;
 				particleRenderer.enabled = false;
@@ -219,12 +219,14 @@ public partial class PUParticles : PUParticlesBase {
 		float scaleX = rectTransform.rect.width / shapeSizeX;
 		float scaleY = rectTransform.rect.height / shapeSizeY;
 
+		Vector2 rectCenter = rectTransform.rect.center;
+
 		float avgScale = (scaleX + scaleY) * 0.5f;
 
-		if (particleRenderer.material.HasProperty("_ScaleInfo")) {
+		if (shim.material.HasProperty("_ScaleInfo")) {
 			
 			// special vertex shader which moves some calculations off of the CPU
-			particleRenderer.material.SetVector ("_ScaleInfo", new Vector4 (scaleX, scaleY, 0, 0));
+			shim.material.SetVector ("_ScaleInfo", new Vector4 (scaleX, scaleY, 0, 0));
 
 			UIVertex[] quad = new UIVertex[4] {
 				UIVertex.simpleVert,
@@ -253,7 +255,7 @@ public partial class PUParticles : PUParticlesBase {
 				if (textureSheetAnimation.enabled) {
 
 					Vector4 uvs = sheetLUT[lutIdx];
-					
+
 					quad [0].uv0.x = uvs.x;
 					quad [0].uv0.y = uvs.w;
 					quad [1].uv0.x = uvs.x;
@@ -264,7 +266,7 @@ public partial class PUParticles : PUParticlesBase {
 					quad [3].uv0.y = uvs.w;
 				}
 
-				quad [0].position = quad [1].position = quad [2].position = quad [3].position = p.position;
+				quad [0].position = quad [1].position = quad [2].position = quad [3].position = new Vector3 (p.position.x * scaleX + rectCenter.x, p.position.y * scaleY + rectCenter.y, p.position.z);
 				quad [0].color = quad [1].color = quad [2].color = quad [3].color = colorLUT [lutIdx];
 				quad [0].uv1 = quad [1].uv1 = quad [2].uv1 = quad [3].uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
 
@@ -290,10 +292,29 @@ public partial class PUParticles : PUParticlesBase {
 
 				int idx = vh.currentVertCount;
 
-				vh.AddVert (pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (0f, 0f));
-				vh.AddVert (pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (0f, 1f));
-				vh.AddVert (pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (1f, 1f));
-				vh.AddVert (pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (1f, 0f));
+
+				if (textureSheetAnimation.enabled) {
+					float frameProgress = (p.lifetime / p.startLifetime);
+					int lutIdx = Mathf.FloorToInt (frameProgress * (lutMax - 1));
+
+					Vector4 uvs = sheetLUT [lutIdx];
+
+					vh.AddVert (pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (uvs.x, uvs.y));
+					vh.AddVert (pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (uvs.x, uvs.w));
+					vh.AddVert (pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (uvs.z, uvs.w));
+					vh.AddVert (pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (uvs.z, uvs.y));
+
+				} else {
+					
+					vh.AddVert (pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (0f, 0f));
+					vh.AddVert (pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (0f, 1f));
+					vh.AddVert (pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (1f, 1f));
+					vh.AddVert (pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (1f, 0f));
+
+				}
+
+
+
 
 				vh.AddTriangle (idx + 0, idx + 1, idx + 2);
 				vh.AddTriangle (idx + 2, idx + 3, idx + 0);
