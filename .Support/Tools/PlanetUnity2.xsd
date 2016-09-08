@@ -133,6 +133,20 @@
 		</complexContent>
 	</complexType>
 	
+	<element name="Particles" type="planet:Particles"/>
+	<complexType name="Particles">
+		<complexContent>
+			<extension base="planet:CustomGeometry">
+				<attribute name="systemName" type="string" use="required" />
+				
+				<attribute name="scaleToFit" type="boolean" use="optional" default="true" />
+				<attribute name="adjustToFPS" type="boolean" use="optional" default="true" />
+				<attribute name="customScale" type="planet:vec2" use="optional" />
+				
+			</extension>
+		</complexContent>
+	</complexType>
+	
 	<element name="CustomGeometry" type="planet:CustomGeometry"/>
 	<complexType name="CustomGeometry">
 		<complexContent>
