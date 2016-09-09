@@ -21,8 +21,8 @@ public partial class PUParticles : PUParticlesBase {
 	{
 		string attr;
 
-		attr = "true";
-		if(attr != null) { scaleToFit = bool.Parse(attr); } 
+		attr = "SystemScaled";
+		if(attr != null) { emitMode = (PlanetUnity2.ParticleEmitMode)Enum.Parse(typeof(PlanetUnity2.ParticleEmitMode), attr); } 
 		attr = "true";
 		if(attr != null) { adjustToFPS = bool.Parse(attr); } 
 
@@ -31,13 +31,13 @@ public partial class PUParticles : PUParticlesBase {
 	
 	public PUParticles(
 			string systemName,
-			bool scaleToFit,
+			PlanetUnity2.ParticleEmitMode emitMode,
 			bool adjustToFPS,
 			Vector2 customScale ) : this()
 	{
 		this.systemName = systemName;
 
-		this.scaleToFit = scaleToFit;
+		this.emitMode = emitMode;
 
 		this.adjustToFPS = adjustToFPS;
 
@@ -48,7 +48,7 @@ public partial class PUParticles : PUParticlesBase {
 	
 	public PUParticles(
 			string systemName,
-			bool scaleToFit,
+			PlanetUnity2.ParticleEmitMode emitMode,
 			bool adjustToFPS,
 			Vector2 customScale,
 			Vector4 bounds,
@@ -78,7 +78,7 @@ public partial class PUParticles : PUParticlesBase {
 	{
 		this.systemName = systemName;
 
-		this.scaleToFit = scaleToFit;
+		this.emitMode = emitMode;
 
 		this.adjustToFPS = adjustToFPS;
 
@@ -148,7 +148,7 @@ public class PUParticlesBase : PUCustomGeometry {
 
 	// XML Attributes
 	public string systemName;
-	public bool scaleToFit;
+	public PlanetUnity2.ParticleEmitMode? emitMode;
 	public bool adjustToFPS;
 	public Vector2? customScale;
 
@@ -240,10 +240,10 @@ public class PUParticlesBase : PUCustomGeometry {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { systemName = unescape(attr); } 
 		
-		attr = reader.GetAttribute("scaleToFit");
+		attr = reader.GetAttribute("emitMode");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr == null) { attr = "true"; }
-		if(attr != null) { scaleToFit = bool.Parse(attr); } 
+		if(attr == null) { attr = "SystemScaled"; }
+		if(attr != null) { emitMode = (PlanetUnity2.ParticleEmitMode)Enum.Parse(typeof(PlanetUnity2.ParticleEmitMode), attr); } 
 		
 		attr = reader.GetAttribute("adjustToFPS");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
@@ -268,7 +268,7 @@ public class PUParticlesBase : PUCustomGeometry {
 		base.gaxb_appendXMLAttributes(sb);
 
 		if(systemName != null) { sb.AppendFormat (" {0}=\"{1}\"", "systemName", SecurityElement.Escape (systemName)); }
-		 sb.AppendFormat (" {0}=\"{1}\"", "scaleToFit", scaleToFit.ToString().ToLower()); 
+		if(emitMode != null) { sb.AppendFormat (" {0}=\"{1}\"", "emitMode", (int)emitMode); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "adjustToFPS", adjustToFPS.ToString().ToLower()); 
 		if(customScale != null) { sb.AppendFormat (" {0}=\"{1}\"", "customScale", customScale.Value.PUToString()); }
 

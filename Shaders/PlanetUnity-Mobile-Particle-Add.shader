@@ -38,7 +38,7 @@ Properties
 			WriteMask [_StencilWriteMask]
 		}
 
-		Cull Back
+		Cull Off
 		Lighting Off
 		ZWrite Off
 		ZTest [unity_GUIZTestMode]

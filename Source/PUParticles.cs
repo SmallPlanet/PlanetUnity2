@@ -17,6 +17,9 @@ public partial class PUParticles : PUParticlesBase {
 	private float[] sizeLUT = new float[lutMax];
 	private Vector4[] sheetLUT = new Vector4[lutMax];
 
+	private const int posMax = 1000;
+	private Vector3[] positionLUT = new Vector3[posMax];
+
 	private int designedMaxParticles;
 
 
@@ -43,7 +46,7 @@ public partial class PUParticles : PUParticlesBase {
 				// create the LUTs for less CPU usages during mesh generation
 				for (int i = 0; i < lutMax; i++) {
 					colorLUT [i] = particleSystem.startColor;
-					sizeLUT [i] = particleSystem.startSize;
+					sizeLUT [i] = particleSystem.startSize * 0.5f;
 				}
 
 				// support changing color over lifetime
@@ -56,7 +59,7 @@ public partial class PUParticles : PUParticlesBase {
 				// support changing size over lifetime
 				if (particleSystem.sizeOverLifetime.enabled) {
 					for (int i = 0; i < lutMax; i++) {
-						sizeLUT [i] = particleSystem.sizeOverLifetime.size.Evaluate ((float)i / (float)lutMax);
+						sizeLUT [i] = particleSystem.sizeOverLifetime.size.Evaluate ((float)i / (float)lutMax) * 0.5f;
 					}
 				}
 					
@@ -100,6 +103,8 @@ public partial class PUParticles : PUParticlesBase {
 					}
 				}
 
+				// If we have one of our custom UI emitters, then fill the positionLUT to allow quick spawning
+				UpdatePositionTable ();
 
 			}
 
@@ -107,6 +112,53 @@ public partial class PUParticles : PUParticlesBase {
 
 		ScheduleForUpdate ();
 	}
+
+
+	private void UpdatePositionTable() {
+
+		Vector3 rectCenter = rectTransform.rect.center;
+
+		for (int i = 0; i < posMax; i++) {
+
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
+				float s = 0.5f;
+				// add a random position around the edge of the quad
+				switch (UnityEngine.Random.Range (0, 4)) {
+				case 0:
+					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), -s, 0.0f);
+					break;
+				case 1:
+					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), s, 0.0f);
+					break;
+				case 2:
+					positionLUT [i] = new Vector3 (-s, UnityEngine.Random.Range (-s, s), 0.0f);
+					break;
+				case 3:
+					positionLUT [i] = new Vector3 (s, UnityEngine.Random.Range (-s, s), 0.0f);
+					break;
+				}
+			}
+
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+				// add a random position on the interior of the quad
+				float s = 0.45f;
+
+				positionLUT [i] = new Vector3 (
+					UnityEngine.Random.Range (-s, s), 
+					UnityEngine.Random.Range (s, s), 
+					0.0f);
+			}
+
+			// TODO: particles positions based on an image in the quad
+			/*
+				if (emitMode == PlanetUnity2.ParticleEmitMode.Image) {
+					// add a random position on the interior of the quad
+				}*/
+		}
+	}
+
+
+
 
 	private int skipFramesMax;
 	private int skipFramesCounter;
@@ -116,14 +168,31 @@ public partial class PUParticles : PUParticlesBase {
 	private float fps = 0.0f;
 	private float updateRate = 2.0f;
 
+	private float emitRate;
+
 
 	public override void Update() {
 		if (particleSystem != null) {
-			
+
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge || emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+
+				// In these modes, we are responsible for emitting the particles so that we can position them exactly
+				// first, make sure normal emissions are turned off
+				particleSystem.enableEmission = false;
+					
+				emitRate += particleSystem.emission.rate.Evaluate(0) * Time.deltaTime;
+
+				while (emitRate > 1.0f) {
+					emitRate -= 1.0f;
+					ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
+					eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
+					particleSystem.Emit (eParams, 1);
+				}
+			}
 
 			if (adjustToFPS) {
 				const float fpsCutoff = 50.0f;
-				const int maxFrameSkipAllowed = 5;
+				const int maxFrameSkipAllowed = 3;
 
 				// Get a running average of FPS to know if we should adjust things
 				frameCount++;
@@ -155,6 +224,9 @@ public partial class PUParticles : PUParticlesBase {
 					}
 					if (particleSystem.maxParticles < designedMaxParticles / 4) {
 						particleSystem.maxParticles = designedMaxParticles / 4;
+					}
+					if (particleSystem.maxParticles < 1) {
+						particleSystem.maxParticles = 1;
 					}
 
 					// We skip frames first; if that doesn't work, then we lower
@@ -192,10 +264,15 @@ public partial class PUParticles : PUParticlesBase {
 			Array.Resize (ref particleArray, particleSystem.maxParticles);
 		}
 
-		float shapeSizeX = 1.0f;
-		float shapeSizeY = 1.0f;
+		float shapeSizeX = rectTransform.rect.width;
+		float shapeSizeY = rectTransform.rect.height;
 
-		if (scaleToFit) {
+		float positionScaleX = 1.0f;
+		float positionScaleY = 1.0f;
+
+		if (emitMode == PlanetUnity2.ParticleEmitMode.SystemScaled || 
+			emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+			emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
 			if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
 				shapeSizeX = particleSystem.shape.box.x;
 				shapeSizeY = particleSystem.shape.box.y;
@@ -210,7 +287,20 @@ public partial class PUParticles : PUParticlesBase {
 				shapeSizeX = particleSystem.shape.radius * 2.0f;
 				shapeSizeY = particleSystem.shape.radius * 2.0f;
 			}
-		} else if (customScale != null) {
+
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+			   	emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
+				// for these modes, we want to normalize to the [-1,1] space
+				positionScaleX = shapeSizeX;
+				positionScaleY = shapeSizeY;
+			}
+
+		} else if (emitMode == PlanetUnity2.ParticleEmitMode.SystemNone) {
+			shapeSizeX = rectTransform.rect.width;
+			shapeSizeY = rectTransform.rect.height;
+		}
+
+		if (customScale != null) {
 			shapeSizeX = customScale.Value.x;
 			shapeSizeY = customScale.Value.y;
 		}
@@ -235,16 +325,15 @@ public partial class PUParticles : PUParticlesBase {
 				UIVertex.simpleVert
 			};
 
-			quad [0].uv0 = new Vector2 (0f, 0f);
-			quad [1].uv0 = new Vector2 (0f, 1f);
-			quad [2].uv0 = new Vector2 (1f, 1f);
-			quad [3].uv0 = new Vector2 (1f, 0f);
+			Vector2 uvA = new Vector2 (0f, 0f);
+			Vector2 uvB = new Vector2 (0f, 1f);
+			Vector2 uvC = new Vector2 (1f, 1f);
+			Vector2 uvD = new Vector2 (1f, 0f);
 
-			quad [0].normal = new Vector3 (-1.0f, -1.0f, 0.0f);
-			quad [1].normal = new Vector3 (-1.0f, 1.0f, 0.0f);
-			quad [2].normal = new Vector3 (1.0f, 1.0f, 0.0f);
-			quad [3].normal = new Vector3 (1.0f, -1.0f, 0.0f);
-
+			Vector3 normalA = new Vector3 (-1.0f, -1.0f, 0.0f);
+			Vector3 normalB = new Vector3 (-1.0f, 1.0f, 0.0f);
+			Vector3 normalC = new Vector3 (1.0f, 1.0f, 0.0f);
+			Vector3 normalD = new Vector3 (1.0f, -1.0f, 0.0f);
 
 			for (int i = 0; i < liveParticleCount; i++) {
 				ParticleSystem.Particle p = particleArray [i];
@@ -256,21 +345,31 @@ public partial class PUParticles : PUParticlesBase {
 
 					Vector4 uvs = sheetLUT[lutIdx];
 
-					quad [0].uv0.x = uvs.x;
-					quad [0].uv0.y = uvs.w;
-					quad [1].uv0.x = uvs.x;
-					quad [1].uv0.y = uvs.y;
-					quad [2].uv0.x = uvs.z;
-					quad [2].uv0.y = uvs.y;
-					quad [3].uv0.x = uvs.z;
-					quad [3].uv0.y = uvs.w;
+					uvA.x = uvs.x;
+					uvA.y = uvs.w;
+					uvB.x = uvs.x;
+					uvB.y = uvs.y;
+					uvC.x = uvs.z;
+					uvC.y = uvs.y;
+					uvD.x = uvs.z;
+					uvD.y = uvs.w;
 				}
 
-				quad [0].position = quad [1].position = quad [2].position = quad [3].position = new Vector3 (p.position.x * scaleX + rectCenter.x, p.position.y * scaleY + rectCenter.y, p.position.z);
-				quad [0].color = quad [1].color = quad [2].color = quad [3].color = colorLUT [lutIdx];
-				quad [0].uv1 = quad [1].uv1 = quad [2].uv1 = quad [3].uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
 
-				vh.AddUIVertexQuad (quad);
+				Vector3 position = new Vector3 (p.position.x * scaleX * positionScaleX + rectCenter.x, p.position.y * scaleY * positionScaleY + rectCenter.y, p.position.z);
+				Color c = colorLUT [lutIdx];
+				Vector2 uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
+
+				int startIndex = vh.currentVertCount;
+
+				vh.AddVert (position, c, uvA, uv1, normalA, Vector4.zero);
+				vh.AddVert (position, c, uvB, uv1, normalB, Vector4.zero);
+				vh.AddVert (position, c, uvC, uv1, normalC, Vector4.zero);
+				vh.AddVert (position, c, uvD, uv1, normalD, Vector4.zero);
+
+				vh.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
+				vh.AddTriangle(startIndex + 2, startIndex + 3, startIndex);
+
 			}
 
 		} else {
@@ -284,8 +383,11 @@ public partial class PUParticles : PUParticlesBase {
 				Color color = p.GetCurrentColor (particleSystem);
 				float rotation = p.rotation * Mathf.Deg2Rad;
 
-				pos.x *= scaleX;
-				pos.y *= scaleY;
+				pos.x *= scaleX * positionScaleX;
+				pos.y *= scaleY * positionScaleY;
+
+				pos.x += rectCenter.x;
+				pos.y += rectCenter.y;
 
 				sizeX *= avgScale;
 				sizeY *= avgScale;

@@ -73,6 +73,13 @@ public class PlanetUnity2 {
 	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
 	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
 
+	public enum ParticleEmitMode {
+		SystemNone,
+		SystemScaled,
+		Edge,
+		Fill,
+	};
+
 	public enum TextOverflowVertical {
 		truncate,
 		overflow,
