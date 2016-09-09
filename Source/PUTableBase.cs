@@ -37,6 +37,7 @@ public partial class PUTable : PUTableBase {
 			string anchor,
 			bool active,
 			bool mask,
+			bool showMaskGraphic,
 			Vector4 maskInset,
 			bool outline,
 			float lastY,
@@ -78,6 +79,8 @@ public partial class PUTable : PUTableBase {
 		this.active = active;
 
 		this.mask = mask;
+
+		this.showMaskGraphic = showMaskGraphic;
 
 		this.maskInset = maskInset;
 

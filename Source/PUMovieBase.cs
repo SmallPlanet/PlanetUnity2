@@ -53,6 +53,7 @@ public partial class PUMovie : PUMovieBase {
 			string anchor,
 			bool active,
 			bool mask,
+			bool showMaskGraphic,
 			Vector4 maskInset,
 			bool outline,
 			float lastY,
@@ -94,6 +95,8 @@ public partial class PUMovie : PUMovieBase {
 		this.active = active;
 
 		this.mask = mask;
+
+		this.showMaskGraphic = showMaskGraphic;
 
 		this.maskInset = maskInset;
 

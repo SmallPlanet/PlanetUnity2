@@ -202,7 +202,7 @@ public partial class PUGameObject : PUGameObjectBase {
 
 		if (mask) {
 			Mask maskComponent = gameObject.AddComponent<Mask> ();
-			maskComponent.showMaskGraphic = false;
+			maskComponent.showMaskGraphic = showMaskGraphic;
 
 			// Mask requires a Graphic; if we don't have one, add one and tell it now to draw it...
 			if (gameObject.GetComponent<Graphic> () == null) {

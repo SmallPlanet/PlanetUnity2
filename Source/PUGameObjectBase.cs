@@ -35,6 +35,8 @@ public partial class PUGameObject : PUGameObjectBase {
 		if(attr != null) { anchor = attr; } 
 		attr = "true";
 		if(attr != null) { active = bool.Parse(attr); } 
+		attr = "false";
+		if(attr != null) { showMaskGraphic = bool.Parse(attr); } 
 
 	}
 	
@@ -49,6 +51,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			string anchor,
 			bool active,
 			bool mask,
+			bool showMaskGraphic,
 			Vector4 maskInset,
 			bool outline,
 			float lastY,
@@ -74,6 +77,8 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.active = active;
 
 		this.mask = mask;
+
+		this.showMaskGraphic = showMaskGraphic;
 
 		this.maskInset = maskInset;
 
@@ -102,6 +107,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			string anchor,
 			bool active,
 			bool mask,
+			bool showMaskGraphic,
 			Vector4 maskInset,
 			bool outline,
 			float lastY,
@@ -135,6 +141,8 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.active = active;
 
 		this.mask = mask;
+
+		this.showMaskGraphic = showMaskGraphic;
 
 		this.maskInset = maskInset;
 
@@ -190,6 +198,7 @@ public class PUGameObjectBase : PUObject {
 	public string anchor;
 	public bool active;
 	public bool mask;
+	public bool showMaskGraphic;
 	public Vector4? maskInset;
 	public bool outline;
 	public float? lastY;
@@ -325,6 +334,11 @@ public class PUGameObjectBase : PUObject {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { mask = bool.Parse(attr); } 
 		
+		attr = reader.GetAttribute("showMaskGraphic");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr == null) { attr = "false"; }
+		if(attr != null) { showMaskGraphic = bool.Parse(attr); } 
+		
 		attr = reader.GetAttribute("maskInset");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { maskInset = new Vector4().PUParse(attr); } 
@@ -375,6 +389,7 @@ public class PUGameObjectBase : PUObject {
 		if(anchor != null) { sb.AppendFormat (" {0}=\"{1}\"", "anchor", SecurityElement.Escape (anchor)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "active", active.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "mask", mask.ToString().ToLower()); 
+		 sb.AppendFormat (" {0}=\"{1}\"", "showMaskGraphic", showMaskGraphic.ToString().ToLower()); 
 		if(maskInset != null) { sb.AppendFormat (" {0}=\"{1}\"", "maskInset", maskInset.Value.PUToString()); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "outline", outline.ToString().ToLower()); 
 		if(lastY != null) { sb.AppendFormat (" {0}=\"{1}\"", "lastY", lastY.Value.ToString ("0.##")); }

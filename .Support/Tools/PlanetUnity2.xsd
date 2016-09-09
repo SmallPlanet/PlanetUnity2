@@ -83,6 +83,7 @@
 				
 				<attribute name="active" type="boolean" use="optional" default="true" />
 				<attribute name="mask" type="boolean" use="optional" />
+				<attribute name="showMaskGraphic" type="boolean" use="optional" default="false" />
 				<attribute name="maskInset" type="planet:vec4" use="optional" />
 				<attribute name="outline" type="boolean" use="optional" />
 				<attribute name="lastY" type="float" use="optional" />

@@ -49,6 +49,7 @@ public partial class PURawImage : PURawImageBase {
 			string anchor,
 			bool active,
 			bool mask,
+			bool showMaskGraphic,
 			Vector4 maskInset,
 			bool outline,
 			float lastY,
@@ -88,6 +89,8 @@ public partial class PURawImage : PURawImageBase {
 		this.active = active;
 
 		this.mask = mask;
+
+		this.showMaskGraphic = showMaskGraphic;
 
 		this.maskInset = maskInset;
 
