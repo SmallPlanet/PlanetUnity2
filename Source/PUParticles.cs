@@ -145,7 +145,7 @@ public partial class PUParticles : PUParticlesBase {
 
 				positionLUT [i] = new Vector3 (
 					UnityEngine.Random.Range (-s, s), 
-					UnityEngine.Random.Range (s, s), 
+					UnityEngine.Random.Range (-s, s), 
 					0.0f);
 			}
 
