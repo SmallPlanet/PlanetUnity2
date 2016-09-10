@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Threading;
+using System.Collections.Generic;
 
 public partial class PUParticles : PUParticlesBase {
 
 	ParticleSystemRenderer particleRenderer;
 	ParticleSystem particleSystem;
-	ParticleSystem.Particle[] particleArray;
 
 	private ParticleSystem.TextureSheetAnimationModule textureSheetAnimation;
 	private int textureSheetAnimationFrames;
@@ -22,12 +23,19 @@ public partial class PUParticles : PUParticlesBase {
 
 	private int designedMaxParticles;
 
+	private Thread workerThread;
 
 	public override void gaxb_init () {
 		base.gaxb_init ();
 		gameObject.name = "<Particles/>";
 	}
 
+	public override void gaxb_unload() {
+		if (workerThread != null) {
+			workerThread.Abort ();
+			workerThread = null;
+		}
+	}
 
 	public override void gaxb_complete() {
 		if (systemName != null) {
@@ -106,6 +114,11 @@ public partial class PUParticles : PUParticlesBase {
 				// If we have one of our custom UI emitters, then fill the positionLUT to allow quick spawning
 				UpdatePositionTable ();
 
+				autoEvent = new AutoResetEvent(false);
+
+				workerThread = new Thread (ParticleThread);
+				workerThread.Name = "PUParticles";
+				workerThread.Start ();
 			}
 
 		}
@@ -156,12 +169,8 @@ public partial class PUParticles : PUParticlesBase {
 				}*/
 		}
 	}
+		
 
-
-
-
-	private int skipFramesMax;
-	private int skipFramesCounter;
 
 	private int frameCount = 0;
 	private float dt = 0.0f;
@@ -184,15 +193,17 @@ public partial class PUParticles : PUParticlesBase {
 
 				while (emitRate > 1.0f) {
 					emitRate -= 1.0f;
-					ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
-					eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
-					particleSystem.Emit (eParams, 1);
+
+					if (particleSystem.particleCount < particleSystem.maxParticles) {
+						ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
+						eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
+						particleSystem.Emit (eParams, 1);
+					}
 				}
 			}
 
 			if (adjustToFPS) {
-				const float fpsCutoff = 50.0f;
-				const int maxFrameSkipAllowed = 3;
+				const float fpsCutoff = 30.0f;
 
 				// Get a running average of FPS to know if we should adjust things
 				frameCount++;
@@ -205,46 +216,297 @@ public partial class PUParticles : PUParticlesBase {
 					int particleAdjust = Mathf.CeilToInt (particleSystem.maxParticles * 0.02f);
 
 					if (fps < fpsCutoff) {
-						skipFramesMax++;
 						particleSystem.maxParticles -= particleAdjust;
 					} else {
-						skipFramesMax--;
 						particleSystem.maxParticles += particleAdjust;
-					}
-
-					if (skipFramesMax < 1) {
-						skipFramesMax = 1;
-					}
-					if (skipFramesMax > maxFrameSkipAllowed) {
-						skipFramesMax = maxFrameSkipAllowed;
 					}
 
 					if (particleSystem.maxParticles > designedMaxParticles) {
 						particleSystem.maxParticles = designedMaxParticles;
 					}
-					if (particleSystem.maxParticles < designedMaxParticles / 4) {
-						particleSystem.maxParticles = designedMaxParticles / 4;
+					if (particleSystem.maxParticles < designedMaxParticles / 8) {
+						particleSystem.maxParticles = designedMaxParticles / 8;
 					}
 					if (particleSystem.maxParticles < 1) {
 						particleSystem.maxParticles = 1;
 					}
-
-					// We skip frames first; if that doesn't work, then we lower
-					// the max number of particles in the system
-					if (particleSystem.maxParticles < designedMaxParticles) {
-						skipFramesMax = maxFrameSkipAllowed;
-					}
 				}
-
-				skipFramesCounter--;
-				if (skipFramesCounter > 0) {
-					return;
-				}
-				skipFramesCounter = skipFramesMax;
 			}
 
-			//Debug.Log (string.Format ("***** {0} :: {1} fps :: {2} skips", particleSystem.maxParticles, fps, skipFramesMax));
-			SetVerticesDirty ();
+
+			// Ok, the idea here is to have one worker thread always working at converting the particles to a data format suitable for submitting to a
+			// vertexhelper quickly.  So here we make sure our worker thread is properly fed, and we ensure that the geometry gets updated if it need
+			// to be
+			if (particleArrayThreadCommState == 0) {
+				if (particleArray == null) {
+					particleArray = new ParticleSystem.Particle[particleSystem.maxParticles];
+				}
+				if (particleArray.Length < particleSystem.maxParticles) {
+					Array.Resize (ref particleArray, particleSystem.maxParticles);
+				}
+
+				liveParticleCount = particleSystem.GetParticles (particleArray);
+				maxParticleCount = particleSystem.maxParticles;
+
+				usesOptimizedShader = shim.material.shader.name.StartsWith ("PlanetUnity/Mobile/Particles/");
+
+				rectForThread = rectTransform.rect;
+
+
+				shapeSizeXForThread = rectForThread.width;
+				shapeSizeYForThread = rectForThread.height;
+
+				positionScaleXForThread = 1.0f;
+				positionScaleYForThread = 1.0f;
+
+				if (emitMode == PlanetUnity2.ParticleEmitMode.SystemScaled || 
+					emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+					emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
+					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
+						shapeSizeXForThread = particleSystem.shape.box.x;
+						shapeSizeYForThread = particleSystem.shape.box.y;
+					} else if (particleSystem.shape.shapeType == ParticleSystemShapeType.Sphere ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.SphereShell ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.Hemisphere ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.HemisphereShell ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.Cone ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.ConeShell ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.ConeVolume ||
+						particleSystem.shape.shapeType == ParticleSystemShapeType.ConeVolumeShell) {
+						shapeSizeXForThread = particleSystem.shape.radius * 2.0f;
+						shapeSizeYForThread = particleSystem.shape.radius * 2.0f;
+					}
+
+					if (emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+						emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
+						// for these modes, we want to normalize to the [-1,1] space
+						positionScaleXForThread = shapeSizeXForThread;
+						positionScaleYForThread = shapeSizeYForThread;
+					}
+
+				} else if (emitMode == PlanetUnity2.ParticleEmitMode.SystemNone) {
+					shapeSizeXForThread = rectForThread.width;
+					shapeSizeYForThread = rectForThread.height;
+				}
+
+				if (customScale != null) {
+					shapeSizeXForThread = customScale.Value.x;
+					shapeSizeYForThread = customScale.Value.y;
+				}
+
+				textureSheetAnimationEnabledForThread = textureSheetAnimation.enabled;
+
+				particleArrayThreadCommState = 1;
+				autoEvent.Set();
+			}
+
+			if (particleArrayThreadCommState == 2) {
+				SetVerticesDirty ();
+			}
+
+
+		}
+	}
+
+
+	private ParticleSystem.Particle[] particleArray;
+	private int liveParticleCount = 0;
+	private int maxParticleCount = 0;
+	private Rect rectForThread;
+	private int particleArrayThreadCommState = 0;
+	private bool usesOptimizedShader = false;
+	private float shapeSizeXForThread;
+	private float shapeSizeYForThread;
+	private float positionScaleXForThread;
+	private float positionScaleYForThread;
+	private bool textureSheetAnimationEnabledForThread;
+
+	private List<UIVertex> particlesFromThread = new List<UIVertex> ();
+	private List<int> particleIndicesFromThread = new List<int> ();
+
+	private AutoResetEvent autoEvent;
+
+	private void ParticleThread() {
+
+		while (true) {
+
+			// Wait until we have stuff to process
+			if (particleArrayThreadCommState != 1) {
+				autoEvent.WaitOne();
+				continue;
+			}
+
+			int localMaxParticleCount = maxParticleCount;
+			if (liveParticleCount > localMaxParticleCount) {
+				localMaxParticleCount = liveParticleCount;
+			}
+
+			// 0) resize our lists to match the new live particle count, filling in base information for
+			// the new particles
+			if (particlesFromThread.Count > localMaxParticleCount * 4) {
+				particlesFromThread.RemoveRange (0, (particlesFromThread.Count - localMaxParticleCount * 4));
+			}
+			if (particlesFromThread.Count < localMaxParticleCount * 4) {
+				UIVertex a = UIVertex.simpleVert;
+				a.uv0 = new Vector2 (0f, 0f);
+				a.normal = new Vector3 (-1.0f, -1.0f, 0.0f);
+
+				UIVertex b = UIVertex.simpleVert;
+				b.uv0 = new Vector2 (0f, 1f);
+				b.normal = new Vector3 (-1.0f, 1.0f, 0.0f);
+
+				UIVertex c = UIVertex.simpleVert;
+				c.uv0 = new Vector2 (1f, 1f);
+				c.normal = new Vector3 (1.0f, 1.0f, 0.0f);
+
+				UIVertex d = UIVertex.simpleVert;
+				d.uv0 = new Vector2 (1f, 0f);
+				d.normal = new Vector3 (1.0f, -1.0f, 0.0f);
+
+				while (particlesFromThread.Count < localMaxParticleCount * 4) {
+					particlesFromThread.Add (a);
+					particlesFromThread.Add (b);
+					particlesFromThread.Add (c);
+					particlesFromThread.Add (d);
+				}
+
+				Debug.Log ("resized particlesFromThread list to " + particlesFromThread.Count);
+			}
+
+			if (particleIndicesFromThread.Count > localMaxParticleCount * 6) {
+				int n = (particleIndicesFromThread.Count - localMaxParticleCount * 6);
+				particleIndicesFromThread.RemoveRange (particleIndicesFromThread.Count - n, n);
+			}
+			if (particleIndicesFromThread.Count < localMaxParticleCount * 6) {
+				int n = 0;
+				if (particleIndicesFromThread.Count > 0) {
+					n = particleIndicesFromThread [particleIndicesFromThread.Count - 1] + 4;
+				}
+
+				while (particleIndicesFromThread.Count < localMaxParticleCount * 6) {
+					particleIndicesFromThread.Add (n);
+					particleIndicesFromThread.Add (n + 1);
+					particleIndicesFromThread.Add (n + 2);
+					particleIndicesFromThread.Add (n + 2);
+					particleIndicesFromThread.Add (n + 3);
+					particleIndicesFromThread.Add (n);
+					n += 4;
+				}
+
+				Debug.Log ("resized particleIndicesFromThread list to " + particleIndicesFromThread.Count);
+			}
+
+
+
+				
+			// figure out any modifications to our shape / sizes
+			float scaleX = rectForThread.width / shapeSizeXForThread;
+			float scaleY = rectForThread.height / shapeSizeYForThread;
+
+			Vector2 rectCenter = rectForThread.center;
+
+			float avgScale = (scaleX + scaleY) * 0.5f;
+
+			if (usesOptimizedShader) {
+
+				// special vertex shader which moves some calculations off of the CPU
+
+				int vIdx = 0;
+				int lutIdx = 0;
+
+				for (int i = 0; i < liveParticleCount; i++) {
+					ParticleSystem.Particle p = particleArray [i];
+
+					lutIdx = (int) ((p.lifetime / p.startLifetime) * (lutMax - 1));
+
+					UIVertex a = particlesFromThread [vIdx + 0];
+					UIVertex b = particlesFromThread [vIdx + 1];
+					UIVertex c = particlesFromThread [vIdx + 2];
+					UIVertex d = particlesFromThread [vIdx + 3];
+
+					if (textureSheetAnimationEnabledForThread) {
+
+						Vector4 uvs = sheetLUT[lutIdx];
+
+						a.uv0.x = uvs.x;
+						a.uv0.y = uvs.w;
+						b.uv0.x = uvs.x;
+						b.uv0.y = uvs.y;
+						c.uv0.x = uvs.z;
+						c.uv0.y = uvs.y;
+						d.uv0.x = uvs.z;
+						d.uv0.y = uvs.w;
+					}
+
+					a.position = b.position = c.position = d.position = new Vector3 (p.position.x * scaleX * positionScaleXForThread + rectCenter.x, p.position.y * scaleY * positionScaleYForThread + rectCenter.y, p.position.z);
+					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
+					a.uv1 = b.uv1 = c.uv1 = d.uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
+
+					particlesFromThread [vIdx + 0] = a;
+					particlesFromThread [vIdx + 1] = b;
+					particlesFromThread [vIdx + 2] = c;
+					particlesFromThread [vIdx + 3] = d;
+
+					vIdx += 4;
+				}
+
+			} else {
+
+				for (int i = 0; i < liveParticleCount; i++) {
+					ParticleSystem.Particle p = particleArray [i];
+
+					int vIdx = i * 4;
+
+					float frameProgress = (p.lifetime / p.startLifetime);
+					int lutIdx = (int) (frameProgress * (lutMax - 1));
+
+					Vector3 pos = p.position;
+					float sizeX = sizeLUT [lutIdx];
+					float sizeY = sizeX;
+					float rotation = p.rotation * Mathf.Deg2Rad;
+
+					pos.x *= scaleX * positionScaleXForThread;
+					pos.y *= scaleY * positionScaleYForThread;
+
+					pos.x += rectCenter.x;
+					pos.y += rectCenter.y;
+
+					sizeX *= avgScale;
+					sizeY *= avgScale;
+
+					UIVertex a = particlesFromThread [vIdx + 0];
+					UIVertex b = particlesFromThread [vIdx + 1];
+					UIVertex c = particlesFromThread [vIdx + 2];
+					UIVertex d = particlesFromThread [vIdx + 3];
+
+					if (textureSheetAnimationEnabledForThread) {
+						Vector4 uvs = sheetLUT[lutIdx];
+
+						a.uv0.x = uvs.x;
+						a.uv0.y = uvs.w;
+						b.uv0.x = uvs.x;
+						b.uv0.y = uvs.y;
+						c.uv0.x = uvs.z;
+						c.uv0.y = uvs.y;
+						d.uv0.x = uvs.z;
+						d.uv0.y = uvs.w;
+					}
+
+					a.position = pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation);
+					b.position = pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation);
+					c.position = pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation);
+					d.position = pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation);
+
+					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
+
+					particlesFromThread [vIdx + 0] = a;
+					particlesFromThread [vIdx + 1] = b;
+					particlesFromThread [vIdx + 2] = c;
+					particlesFromThread [vIdx + 3] = d;
+				}
+			}
+
+			particleArrayThreadCommState = 2;
 		}
 	}
 
@@ -256,173 +518,13 @@ public partial class PUParticles : PUParticlesBase {
 			return;
 		}
 
-		// do we need to allocate / resize our particle array?
-		if (particleArray == null) {
-			particleArray = new ParticleSystem.Particle[particleSystem.maxParticles];
-		}
-		if (particleArray.Length < particleSystem.maxParticles) {
-			Array.Resize (ref particleArray, particleSystem.maxParticles);
+		if (usesOptimizedShader) {
+			shim.material.SetVector ("_ScaleInfo", new Vector4 (rectForThread.width / shapeSizeXForThread, rectForThread.height / shapeSizeYForThread, 0, 0));
 		}
 
-		float shapeSizeX = rectTransform.rect.width;
-		float shapeSizeY = rectTransform.rect.height;
+		vh.AddUIVertexStream (particlesFromThread, particleIndicesFromThread);
 
-		float positionScaleX = 1.0f;
-		float positionScaleY = 1.0f;
-
-		if (emitMode == PlanetUnity2.ParticleEmitMode.SystemScaled || 
-			emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
-			emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
-			if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
-				shapeSizeX = particleSystem.shape.box.x;
-				shapeSizeY = particleSystem.shape.box.y;
-			} else if (particleSystem.shape.shapeType == ParticleSystemShapeType.Sphere ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.SphereShell ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.Hemisphere ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.HemisphereShell ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.Cone ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.ConeShell ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.ConeVolume ||
-			           particleSystem.shape.shapeType == ParticleSystemShapeType.ConeVolumeShell) {
-				shapeSizeX = particleSystem.shape.radius * 2.0f;
-				shapeSizeY = particleSystem.shape.radius * 2.0f;
-			}
-
-			if (emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
-			   	emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
-				// for these modes, we want to normalize to the [-1,1] space
-				positionScaleX = shapeSizeX;
-				positionScaleY = shapeSizeY;
-			}
-
-		} else if (emitMode == PlanetUnity2.ParticleEmitMode.SystemNone) {
-			shapeSizeX = rectTransform.rect.width;
-			shapeSizeY = rectTransform.rect.height;
-		}
-
-		if (customScale != null) {
-			shapeSizeX = customScale.Value.x;
-			shapeSizeY = customScale.Value.y;
-		}
-
-		int liveParticleCount = particleSystem.GetParticles (particleArray);
-		float scaleX = rectTransform.rect.width / shapeSizeX;
-		float scaleY = rectTransform.rect.height / shapeSizeY;
-
-		Vector2 rectCenter = rectTransform.rect.center;
-
-		float avgScale = (scaleX + scaleY) * 0.5f;
-
-		if (shim.material.HasProperty("_ScaleInfo")) {
-			
-			// special vertex shader which moves some calculations off of the CPU
-			shim.material.SetVector ("_ScaleInfo", new Vector4 (scaleX, scaleY, 0, 0));
-
-			UIVertex[] quad = new UIVertex[4] {
-				UIVertex.simpleVert,
-				UIVertex.simpleVert,
-				UIVertex.simpleVert,
-				UIVertex.simpleVert
-			};
-
-			Vector2 uvA = new Vector2 (0f, 0f);
-			Vector2 uvB = new Vector2 (0f, 1f);
-			Vector2 uvC = new Vector2 (1f, 1f);
-			Vector2 uvD = new Vector2 (1f, 0f);
-
-			Vector3 normalA = new Vector3 (-1.0f, -1.0f, 0.0f);
-			Vector3 normalB = new Vector3 (-1.0f, 1.0f, 0.0f);
-			Vector3 normalC = new Vector3 (1.0f, 1.0f, 0.0f);
-			Vector3 normalD = new Vector3 (1.0f, -1.0f, 0.0f);
-
-			for (int i = 0; i < liveParticleCount; i++) {
-				ParticleSystem.Particle p = particleArray [i];
-
-				float frameProgress = (p.lifetime / p.startLifetime);
-				int lutIdx = Mathf.FloorToInt (frameProgress * (lutMax - 1));
-
-				if (textureSheetAnimation.enabled) {
-
-					Vector4 uvs = sheetLUT[lutIdx];
-
-					uvA.x = uvs.x;
-					uvA.y = uvs.w;
-					uvB.x = uvs.x;
-					uvB.y = uvs.y;
-					uvC.x = uvs.z;
-					uvC.y = uvs.y;
-					uvD.x = uvs.z;
-					uvD.y = uvs.w;
-				}
-
-
-				Vector3 position = new Vector3 (p.position.x * scaleX * positionScaleX + rectCenter.x, p.position.y * scaleY * positionScaleY + rectCenter.y, p.position.z);
-				Color c = colorLUT [lutIdx];
-				Vector2 uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
-
-				int startIndex = vh.currentVertCount;
-
-				vh.AddVert (position, c, uvA, uv1, normalA, Vector4.zero);
-				vh.AddVert (position, c, uvB, uv1, normalB, Vector4.zero);
-				vh.AddVert (position, c, uvC, uv1, normalC, Vector4.zero);
-				vh.AddVert (position, c, uvD, uv1, normalD, Vector4.zero);
-
-				vh.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
-				vh.AddTriangle(startIndex + 2, startIndex + 3, startIndex);
-
-			}
-
-		} else {
-
-			for (int i = 0; i < liveParticleCount; i++) {
-				ParticleSystem.Particle p = particleArray [i];
-
-				Vector3 pos = p.position;
-				float sizeX = p.GetCurrentSize (particleSystem) / 2.0f;
-				float sizeY = sizeX;
-				Color color = p.GetCurrentColor (particleSystem);
-				float rotation = p.rotation * Mathf.Deg2Rad;
-
-				pos.x *= scaleX * positionScaleX;
-				pos.y *= scaleY * positionScaleY;
-
-				pos.x += rectCenter.x;
-				pos.y += rectCenter.y;
-
-				sizeX *= avgScale;
-				sizeY *= avgScale;
-
-				int idx = vh.currentVertCount;
-
-
-				if (textureSheetAnimation.enabled) {
-					float frameProgress = (p.lifetime / p.startLifetime);
-					int lutIdx = Mathf.FloorToInt (frameProgress * (lutMax - 1));
-
-					Vector4 uvs = sheetLUT [lutIdx];
-
-					vh.AddVert (pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (uvs.x, uvs.y));
-					vh.AddVert (pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (uvs.x, uvs.w));
-					vh.AddVert (pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (uvs.z, uvs.w));
-					vh.AddVert (pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (uvs.z, uvs.y));
-
-				} else {
-					
-					vh.AddVert (pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (0f, 0f));
-					vh.AddVert (pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (0f, 1f));
-					vh.AddVert (pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation), color, new Vector2 (1f, 1f));
-					vh.AddVert (pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation), color, new Vector2 (1f, 0f));
-
-				}
-
-
-
-
-				vh.AddTriangle (idx + 0, idx + 1, idx + 2);
-				vh.AddTriangle (idx + 2, idx + 3, idx + 0);
-			}
-		}
-
+		particleArrayThreadCommState = 0;
 	}
 
 }
