@@ -13,7 +13,7 @@ public partial class PUParticles : PUParticlesBase {
 	private int textureSheetAnimationFrames;
 	private Vector2 textureSheedAnimationFrameSize;
 
-	private const int lutMax = 100;
+	private const int lutMax = 1000;
 	private Color[] colorLUT = new Color[lutMax];
 	private float[] sizeLUT = new float[lutMax];
 	private Vector4[] sheetLUT = new Vector4[lutMax];
@@ -60,14 +60,14 @@ public partial class PUParticles : PUParticlesBase {
 				// support changing color over lifetime
 				if (particleSystem.colorOverLifetime.enabled) {
 					for (int i = 0; i < lutMax; i++) {
-						colorLUT [i] = particleSystem.colorOverLifetime.color.Evaluate ((float)i / (float)lutMax);
+						colorLUT [i] = particleSystem.colorOverLifetime.color.Evaluate (1.0f - (float)i / (float)lutMax);
 					}
 				}
 
 				// support changing size over lifetime
 				if (particleSystem.sizeOverLifetime.enabled) {
 					for (int i = 0; i < lutMax; i++) {
-						sizeLUT [i] = particleSystem.sizeOverLifetime.size.Evaluate ((float)i / (float)lutMax) * 0.5f;
+						sizeLUT [i] = particleSystem.sizeOverLifetime.size.Evaluate (1.0f - (float)i / (float)lutMax) * 0.5f;
 					}
 				}
 					
@@ -138,16 +138,16 @@ public partial class PUParticles : PUParticlesBase {
 				// add a random position around the edge of the quad
 				switch (UnityEngine.Random.Range (0, 4)) {
 				case 0:
-					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), -s, 0.0f);
+					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), 0.0f, -s);
 					break;
 				case 1:
-					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), s, 0.0f);
+					positionLUT [i] = new Vector3 (UnityEngine.Random.Range (-s, s), 0.0f, s);
 					break;
 				case 2:
-					positionLUT [i] = new Vector3 (-s, UnityEngine.Random.Range (-s, s), 0.0f);
+					positionLUT [i] = new Vector3 (-s, 0.0f, UnityEngine.Random.Range (-s, s));
 					break;
 				case 3:
-					positionLUT [i] = new Vector3 (s, UnityEngine.Random.Range (-s, s), 0.0f);
+					positionLUT [i] = new Vector3 (s, 0.0f, UnityEngine.Random.Range (-s, s));
 					break;
 				}
 			}
@@ -158,8 +158,9 @@ public partial class PUParticles : PUParticlesBase {
 
 				positionLUT [i] = new Vector3 (
 					UnityEngine.Random.Range (-s, s), 
-					UnityEngine.Random.Range (-s, s), 
-					0.0f);
+					0.0f,
+					UnityEngine.Random.Range (-s, s)
+					);
 			}
 
 			// TODO: particles positions based on an image in the quad
@@ -247,7 +248,7 @@ public partial class PUParticles : PUParticlesBase {
 
 				liveParticleCount = particleSystem.GetParticles (particleArray);
 				maxParticleCount = particleSystem.maxParticles;
-
+				
 				usesOptimizedShader = shim.material.shader.name.StartsWith ("PlanetUnity/Mobile/Particles/");
 
 				rectForThread = rectTransform.rect;
@@ -350,18 +351,22 @@ public partial class PUParticles : PUParticlesBase {
 				UIVertex a = UIVertex.simpleVert;
 				a.uv0 = new Vector2 (0f, 0f);
 				a.normal = new Vector3 (-1.0f, -1.0f, 0.0f);
+				a.tangent = Vector4.zero;
 
 				UIVertex b = UIVertex.simpleVert;
 				b.uv0 = new Vector2 (0f, 1f);
 				b.normal = new Vector3 (-1.0f, 1.0f, 0.0f);
+				b.tangent = Vector4.zero;
 
 				UIVertex c = UIVertex.simpleVert;
 				c.uv0 = new Vector2 (1f, 1f);
 				c.normal = new Vector3 (1.0f, 1.0f, 0.0f);
+				c.tangent = Vector4.zero;
 
 				UIVertex d = UIVertex.simpleVert;
 				d.uv0 = new Vector2 (1f, 0f);
 				d.normal = new Vector3 (1.0f, -1.0f, 0.0f);
+				d.tangent = Vector4.zero;
 
 				while (particlesFromThread.Count < localMaxParticleCount * 4) {
 					particlesFromThread.Add (a);
@@ -369,8 +374,6 @@ public partial class PUParticles : PUParticlesBase {
 					particlesFromThread.Add (c);
 					particlesFromThread.Add (d);
 				}
-
-				Debug.Log ("resized particlesFromThread list to " + particlesFromThread.Count);
 			}
 
 			if (particleIndicesFromThread.Count > localMaxParticleCount * 6) {
@@ -392,8 +395,6 @@ public partial class PUParticles : PUParticlesBase {
 					particleIndicesFromThread.Add (n);
 					n += 4;
 				}
-
-				Debug.Log ("resized particleIndicesFromThread list to " + particleIndicesFromThread.Count);
 			}
 
 
@@ -402,6 +403,10 @@ public partial class PUParticles : PUParticlesBase {
 			// figure out any modifications to our shape / sizes
 			float scaleX = rectForThread.width / shapeSizeXForThread;
 			float scaleY = rectForThread.height / shapeSizeYForThread;
+
+			float hw = rectForThread.width;
+			float hh = rectForThread.height;
+			float particleSize;
 
 			Vector2 rectCenter = rectForThread.center;
 
@@ -417,7 +422,7 @@ public partial class PUParticles : PUParticlesBase {
 				for (int i = 0; i < liveParticleCount; i++) {
 					ParticleSystem.Particle p = particleArray [i];
 
-					lutIdx = (int) ((p.lifetime / p.startLifetime) * (lutMax - 1));
+					lutIdx = (int)((p.lifetime / p.startLifetime) * ((float)lutMax - 1.0f));
 
 					UIVertex a = particlesFromThread [vIdx + 0];
 					UIVertex b = particlesFromThread [vIdx + 1];
@@ -426,7 +431,7 @@ public partial class PUParticles : PUParticlesBase {
 
 					if (textureSheetAnimationEnabledForThread) {
 
-						Vector4 uvs = sheetLUT[lutIdx];
+						Vector4 uvs = sheetLUT [lutIdx];
 
 						a.uv0.x = uvs.x;
 						a.uv0.y = uvs.w;
@@ -438,9 +443,19 @@ public partial class PUParticles : PUParticlesBase {
 						d.uv0.y = uvs.w;
 					}
 
-					a.position = b.position = c.position = d.position = new Vector3 (p.position.x * scaleX * positionScaleXForThread + rectCenter.x, p.position.y * scaleY * positionScaleYForThread + rectCenter.y, p.position.z);
+					particleSize = sizeLUT [lutIdx] * avgScale;
+
+					a.position = b.position = c.position = d.position = new Vector3 (p.position.x * scaleX * positionScaleXForThread + rectCenter.x, p.position.z * scaleY * positionScaleYForThread + rectCenter.y, p.position.y);
 					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
 					a.uv1 = b.uv1 = c.uv1 = d.uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
+
+					if (limitToInside) {
+						if ((a.position.x > (hw + particleSize) || a.position.x < (-particleSize)) || (a.position.y > (hh + particleSize) || a.position.y < (-particleSize))) {
+							a.tangent.x = 99;
+						} else {
+							a.tangent.x = 0;
+						}
+					}
 
 					particlesFromThread [vIdx + 0] = a;
 					particlesFromThread [vIdx + 1] = b;
@@ -458,9 +473,9 @@ public partial class PUParticles : PUParticlesBase {
 					int vIdx = i * 4;
 
 					float frameProgress = (p.lifetime / p.startLifetime);
-					int lutIdx = (int) (frameProgress * (lutMax - 1));
+					int lutIdx = (int)(frameProgress * (lutMax - 1));
 
-					Vector3 pos = p.position;
+					Vector3 pos = new Vector3 (p.position.x, p.position.z, p.position.y);
 					float sizeX = sizeLUT [lutIdx];
 					float sizeY = sizeX;
 					float rotation = p.rotation * Mathf.Deg2Rad;
@@ -480,7 +495,7 @@ public partial class PUParticles : PUParticlesBase {
 					UIVertex d = particlesFromThread [vIdx + 3];
 
 					if (textureSheetAnimationEnabledForThread) {
-						Vector4 uvs = sheetLUT[lutIdx];
+						Vector4 uvs = sheetLUT [lutIdx];
 
 						a.uv0.x = uvs.x;
 						a.uv0.y = uvs.w;
@@ -498,6 +513,14 @@ public partial class PUParticles : PUParticlesBase {
 					d.position = pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation);
 
 					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
+
+					if (limitToInside) {
+						if ((a.position.x > (hw + sizeX * 2.0f) || a.position.x < (-sizeX * 2.0f)) || (a.position.y > (hh + sizeY * 2.0f) || a.position.y < (-sizeY * 2.0f))) {
+							a.tangent.x = 99;
+						} else {
+							a.tangent.x = 0;
+						}
+					}
 
 					particlesFromThread [vIdx + 0] = a;
 					particlesFromThread [vIdx + 1] = b;
@@ -523,6 +546,20 @@ public partial class PUParticles : PUParticlesBase {
 		}
 
 		vh.AddUIVertexStream (particlesFromThread, particleIndicesFromThread);
+
+		if (limitToInside) {
+			// run through all of the particlesFromThread, if the first vertex tangent x is not zero, this particle should be removed.
+			ParticleSystem.Particle[] removeParticles = new ParticleSystem.Particle[particleSystem.particleCount];
+			particleSystem.GetParticles (removeParticles);
+			int lastIdx = removeParticles.Length;
+			for (int i = removeParticles.Length-1; i >= 0; i--) {
+				if (particlesFromThread [i << 2].tangent.x == 99) {
+					lastIdx--;
+					removeParticles [i] = removeParticles [lastIdx];
+				}
+			}
+			particleSystem.SetParticles (removeParticles, lastIdx);
+		}
 
 		particleArrayThreadCommState = 0;
 	}

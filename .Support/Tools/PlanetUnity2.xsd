@@ -154,6 +154,7 @@
 			<extension base="planet:CustomGeometry">
 				<attribute name="systemName" type="string" use="required" />
 				
+				<attribute name="limitToInside" type="boolean" use="optional" default="true" />
 				<attribute name="emitMode" type="planet:ParticleEmitMode" use="optional" default="SystemScaled" />
 				<attribute name="adjustToFPS" type="boolean" use="optional" default="true" />
 				<attribute name="customScale" type="planet:vec2" use="optional" />
