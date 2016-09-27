@@ -145,6 +145,7 @@
 			<enumeration value = "SystemScaled"/>
 			<enumeration value = "Edge"/>
 			<enumeration value = "Fill"/>
+			<enumeration value = "Center"/>
 		</restriction>
     </simpleType>
 	

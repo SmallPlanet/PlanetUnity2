@@ -163,6 +163,11 @@ public partial class PUParticles : PUParticlesBase {
 					);
 			}
 
+
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Center) {
+				positionLUT [i] = Vector3.zero;
+			}
+
 			// TODO: particles positions based on an image in the quad
 			/*
 				if (emitMode == PlanetUnity2.ParticleEmitMode.Image) {
@@ -184,7 +189,9 @@ public partial class PUParticles : PUParticlesBase {
 	public override void Update() {
 		if (particleSystem != null) {
 
-			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge || emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge || 
+				emitMode == PlanetUnity2.ParticleEmitMode.Center || 
+				emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
 
 				// In these modes, we are responsible for emitting the particles so that we can position them exactly
 				// first, make sure normal emissions are turned off
@@ -262,7 +269,8 @@ public partial class PUParticles : PUParticlesBase {
 
 				if (emitMode == PlanetUnity2.ParticleEmitMode.SystemScaled || 
 					emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
-					emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
+					emitMode == PlanetUnity2.ParticleEmitMode.Edge ||
+					emitMode == PlanetUnity2.ParticleEmitMode.Center) {
 					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
 						shapeSizeXForThread = particleSystem.shape.box.x;
 						shapeSizeYForThread = particleSystem.shape.box.y;
@@ -279,6 +287,7 @@ public partial class PUParticles : PUParticlesBase {
 					}
 
 					if (emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+						emitMode == PlanetUnity2.ParticleEmitMode.Center ||
 						emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
 						// for these modes, we want to normalize to the [-1,1] space
 						positionScaleXForThread = shapeSizeXForThread;
