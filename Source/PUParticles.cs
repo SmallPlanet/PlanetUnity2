@@ -562,7 +562,7 @@ public partial class PUParticles : PUParticlesBase {
 			particleSystem.GetParticles (removeParticles);
 			int lastIdx = removeParticles.Length;
 			for (int i = removeParticles.Length-1; i >= 0; i--) {
-				if (particlesFromThread [i << 2].tangent.x == 99) {
+				if (particlesFromThread.Count > (i << 2) && particlesFromThread [i << 2].tangent.x == 99) {
 					lastIdx--;
 					removeParticles [i] = removeParticles [lastIdx];
 				}
