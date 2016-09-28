@@ -124,9 +124,17 @@ public partial class PUParticles : PUParticlesBase {
 		}
 
 		ScheduleForUpdate ();
+
+
+		// If we emit particles ourselves, we need to clear any particles which the system may have already spawned
+		if (emitMode == PlanetUnity2.ParticleEmitMode.Edge ||
+		    emitMode == PlanetUnity2.ParticleEmitMode.Center ||
+		    emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+			particleSystem.enableEmission = false;
+			particleSystem.Clear (true);
+		}
 	}
-
-
+		
 	private void UpdatePositionTable() {
 
 		Vector3 rectCenter = rectTransform.rect.center;
