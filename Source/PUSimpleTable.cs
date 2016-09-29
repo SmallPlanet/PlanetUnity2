@@ -132,6 +132,18 @@ public class PUSimpleTableCell : PUTableCell {
 	public static Vector2 CellSize(RectTransform tableTransform) {
 		return new Vector2 (tableTransform.rect.width, 60.0f);
 	}
+
+	public override void LoadIntoPUGameObject(PUScrollRect parent, object data) {
+		base.LoadIntoPUGameObject(parent, data);
+
+		if (puGameObject.rectTransform.rect.width == 0) {
+			if (IsHeader ()) {
+				puGameObject.rectTransform.sizeDelta = simpleTable.headerSize.Value;
+			} else {
+				puGameObject.rectTransform.sizeDelta = simpleTable.cellSize.Value;
+			}
+		}
+	}
 }
 
 

@@ -134,7 +134,7 @@ public class PUTableCell {
 			}
 		} else {
 			puGameObject = new PUGameObject ();
-			puGameObject.SetFrame (0, 0, 0, 60, 0, 0, "bottom,stretch");
+			puGameObject.SetFrame (0, 0, 0, 60, 0, 0, "bottom,left");
 			puGameObject.LoadIntoPUGameObject (parent);
 			puGameObject.gameObject.transform.SetParent(parent.contentObject.transform, false);
 		}
