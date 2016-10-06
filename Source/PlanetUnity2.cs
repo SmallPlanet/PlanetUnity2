@@ -25,6 +25,29 @@ interface IPlanetUnity2
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
+	public enum FontStyle {
+		normal,
+		bold,
+		italic,
+		boldAndItalic,
+	};
+
+	public enum GridTableHeuristic {
+		RectBestShortSideFit,
+		RectBestLongSideFit,
+		RectBestAreaFit,
+		RectBottomLeftRule,
+		RectContactPointRule,
+	};
+
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
+	};
+
 	public enum GridLayoutChildAlignment {
 		upperLeft,
 		upperCenter,
@@ -43,6 +66,24 @@ public class PlanetUnity2 {
 		Edge,
 		Fill,
 		Center,
+		Image,
+	};
+
+	public enum TextAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
+	};
+
+	public enum GridLayoutStartAxis {
+		horizontal,
+		vertical,
 	};
 
 	public enum TextOverflowHorizontal {
@@ -57,32 +98,10 @@ public class PlanetUnity2 {
 		TopToBottom,
 	};
 
-	public enum ImageType {
-		simple,
-		filled,
-		sliced,
-		tiled,
-		aspectFilled,
-	};
-
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
-	};
-
-	public enum FontStyle {
-		normal,
-		bold,
-		italic,
-		boldAndItalic,
-	};
-
-	public enum TextOverflowVertical {
-		truncate,
-		overflow,
+	public enum InputFieldLineType {
+		single,
+		multiSubmit,
+		multiNewline,
 	};
 
 	public enum InputFieldContentType {
@@ -98,6 +117,13 @@ public class PlanetUnity2 {
 		custom,
 	};
 
+	public enum GridLayoutStartCorner {
+		upperLeft,
+		upperRight,
+		lowerLeft,
+		lowerRight,
+	};
+
 	public const string USERSTRINGINPUT = "UserStringInput";
 	public const string USERCHARINPUT = "UserCharInput";
 	public const string USERINPUTCANCELLED = "UserInputCancelled";
@@ -107,48 +133,23 @@ public class PlanetUnity2 {
 	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
 	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
 
-	public enum GridLayoutStartCorner {
-		upperLeft,
-		upperRight,
-		lowerLeft,
-		lowerRight,
-	};
-
 	public enum CanvasRenderMode {
 		ScreenSpaceOverlay,
 		ScreenSpaceCamera,
 		WorldSpace,
 	};
 
-	public enum TextAlignment {
-		upperLeft,
-		upperCenter,
-		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
-		lowerLeft,
-		lowerCenter,
-		lowerRight,
+	public enum ImageType {
+		simple,
+		filled,
+		sliced,
+		tiled,
+		aspectFilled,
 	};
 
-	public enum InputFieldLineType {
-		single,
-		multiSubmit,
-		multiNewline,
-	};
-
-	public enum GridLayoutStartAxis {
-		horizontal,
-		vertical,
-	};
-
-	public enum GridTableHeuristic {
-		RectBestShortSideFit,
-		RectBestLongSideFit,
-		RectBestAreaFit,
-		RectBottomLeftRule,
-		RectContactPointRule,
+	public enum TextOverflowVertical {
+		truncate,
+		overflow,
 	};
 
 

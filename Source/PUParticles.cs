@@ -139,6 +139,15 @@ public partial class PUParticles : PUParticlesBase {
 
 		Vector3 rectCenter = rectTransform.rect.center;
 
+		Color[] pixelArray = null;
+		Texture2D imageMask = null;
+		if (imageMaskPath != null) {
+			imageMask = PlanetUnityResourceCache.GetTexture (imageMaskPath);
+			if (imageMask != null) {
+				pixelArray = imageMask.GetPixels ();
+			}
+		}
+
 		for (int i = 0; i < posMax; i++) {
 
 			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
@@ -171,16 +180,37 @@ public partial class PUParticles : PUParticlesBase {
 					);
 			}
 
+			if (emitMode == PlanetUnity2.ParticleEmitMode.Image) {
+				// add a random position on the interior of the supplied image
 
-			if (emitMode == PlanetUnity2.ParticleEmitMode.Center) {
-				positionLUT [i] = Vector3.zero;
+				if (pixelArray == null) {
+					
+					float s = 0.5f;
+					positionLUT [i] = new Vector3 (
+						UnityEngine.Random.Range (-s, s), 
+						0.0f,
+						UnityEngine.Random.Range (-s, s)
+					);
+
+				} else {
+
+					int bail = 500;
+					while (bail-- > 0) {
+						int x = UnityEngine.Random.Range (0, imageMask.width);
+						int y = UnityEngine.Random.Range (0, imageMask.height);
+						Color c = pixelArray [y * imageMask.width + x];
+						if (c.a >= 0.3f) {
+							positionLUT [i] = new Vector3 (
+								((float)x / (float)imageMask.width) - 0.5f, 
+								0.0f,
+								((float)y / (float)imageMask.height) - 0.5f
+							);
+							break;
+						}
+					}
+				}
+
 			}
-
-			// TODO: particles positions based on an image in the quad
-			/*
-				if (emitMode == PlanetUnity2.ParticleEmitMode.Image) {
-					// add a random position on the interior of the quad
-				}*/
 		}
 	}
 		
@@ -199,7 +229,8 @@ public partial class PUParticles : PUParticlesBase {
 
 			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge || 
 				emitMode == PlanetUnity2.ParticleEmitMode.Center || 
-				emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+				emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+				emitMode == PlanetUnity2.ParticleEmitMode.Image) {
 
 				// In these modes, we are responsible for emitting the particles so that we can position them exactly
 				// first, make sure normal emissions are turned off
@@ -213,6 +244,10 @@ public partial class PUParticles : PUParticlesBase {
 					if (particleSystem.particleCount < particleSystem.maxParticles) {
 						ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
 						eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
+
+						if (particleSystem.shape.randomDirection) {
+							eParams.velocity = new Vector3 (UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f)) * particleSystem.startSpeed;
+						}
 						particleSystem.Emit (eParams, 1);
 					}
 				}
@@ -278,6 +313,7 @@ public partial class PUParticles : PUParticlesBase {
 				if (emitMode == PlanetUnity2.ParticleEmitMode.SystemScaled || 
 					emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
 					emitMode == PlanetUnity2.ParticleEmitMode.Edge ||
+					emitMode == PlanetUnity2.ParticleEmitMode.Image ||
 					emitMode == PlanetUnity2.ParticleEmitMode.Center) {
 					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
 						shapeSizeXForThread = particleSystem.shape.box.x;
@@ -296,6 +332,7 @@ public partial class PUParticles : PUParticlesBase {
 
 					if (emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
 						emitMode == PlanetUnity2.ParticleEmitMode.Center ||
+						emitMode == PlanetUnity2.ParticleEmitMode.Image ||
 						emitMode == PlanetUnity2.ParticleEmitMode.Edge) {
 						// for these modes, we want to normalize to the [-1,1] space
 						positionScaleXForThread = shapeSizeXForThread;

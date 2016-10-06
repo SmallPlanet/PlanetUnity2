@@ -36,7 +36,8 @@ public partial class PUParticles : PUParticlesBase {
 			bool limitToInside,
 			PlanetUnity2.ParticleEmitMode emitMode,
 			bool adjustToFPS,
-			Vector2 customScale ) : this()
+			Vector2 customScale,
+			string imageMaskPath ) : this()
 	{
 		this.systemName = systemName;
 
@@ -47,6 +48,8 @@ public partial class PUParticles : PUParticlesBase {
 		this.adjustToFPS = adjustToFPS;
 
 		this.customScale = customScale;
+
+		this.imageMaskPath = imageMaskPath;
 	}
 
 	
@@ -57,6 +60,7 @@ public partial class PUParticles : PUParticlesBase {
 			PlanetUnity2.ParticleEmitMode emitMode,
 			bool adjustToFPS,
 			Vector2 customScale,
+			string imageMaskPath,
 			Vector4 bounds,
 			Vector3 position,
 			Vector2 size,
@@ -92,6 +96,8 @@ public partial class PUParticles : PUParticlesBase {
 		this.adjustToFPS = adjustToFPS;
 
 		this.customScale = customScale;
+
+		this.imageMaskPath = imageMaskPath;
 
 		this.bounds = bounds;
 
@@ -163,6 +169,7 @@ public class PUParticlesBase : PUCustomGeometry {
 	public PlanetUnity2.ParticleEmitMode? emitMode;
 	public bool adjustToFPS;
 	public Vector2? customScale;
+	public string imageMaskPath;
 
 
 
@@ -271,6 +278,10 @@ public class PUParticlesBase : PUCustomGeometry {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { customScale = new Vector2().PUParse(attr); } 
 		
+		attr = reader.GetAttribute("imageMaskPath");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr != null) { imageMaskPath = unescape(attr); } 
+		
 
 	}
 	
@@ -289,6 +300,7 @@ public class PUParticlesBase : PUCustomGeometry {
 		if(emitMode != null) { sb.AppendFormat (" {0}=\"{1}\"", "emitMode", (int)emitMode); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "adjustToFPS", adjustToFPS.ToString().ToLower()); 
 		if(customScale != null) { sb.AppendFormat (" {0}=\"{1}\"", "customScale", customScale.Value.PUToString()); }
+		if(imageMaskPath != null) { sb.AppendFormat (" {0}=\"{1}\"", "imageMaskPath", SecurityElement.Escape (imageMaskPath)); }
 
 	}
 	
