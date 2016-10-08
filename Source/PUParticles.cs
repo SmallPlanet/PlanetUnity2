@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 public partial class PUParticles : PUParticlesBase {
 
+
+	public Color systemColor = Color.white;
+
 	ParticleSystemRenderer particleRenderer;
 	ParticleSystem particleSystem;
 
@@ -501,7 +504,7 @@ public partial class PUParticles : PUParticlesBase {
 					particleSize = sizeLUT [lutIdx] * avgScale;
 
 					a.position = b.position = c.position = d.position = new Vector3 (p.position.x * scaleX * positionScaleXForThread + rectCenter.x, p.position.z * scaleY * positionScaleYForThread + rectCenter.y, p.position.y);
-					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
+					a.color = b.color = c.color = d.color = colorLUT [lutIdx] * systemColor;
 					a.uv1 = b.uv1 = c.uv1 = d.uv1 = new Vector2 (sizeLUT [lutIdx], p.rotation);
 
 					if (limitToInside) {
@@ -567,7 +570,7 @@ public partial class PUParticles : PUParticlesBase {
 					c.position = pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation);
 					d.position = pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation);
 
-					a.color = b.color = c.color = d.color = colorLUT [lutIdx];
+					a.color = b.color = c.color = d.color = colorLUT [lutIdx] * systemColor;
 
 					if (limitToInside) {
 						if ((a.position.x > (hw + sizeX * 2.0f) || a.position.x < (-sizeX * 2.0f)) || (a.position.y > (hh + sizeY * 2.0f) || a.position.y < (-sizeY * 2.0f))) {
