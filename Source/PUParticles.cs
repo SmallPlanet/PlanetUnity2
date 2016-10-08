@@ -129,7 +129,8 @@ public partial class PUParticles : PUParticlesBase {
 		// If we emit particles ourselves, we need to clear any particles which the system may have already spawned
 		if (emitMode == PlanetUnity2.ParticleEmitMode.Edge ||
 		    emitMode == PlanetUnity2.ParticleEmitMode.Center ||
-		    emitMode == PlanetUnity2.ParticleEmitMode.Fill) {
+		    emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+			emitMode == PlanetUnity2.ParticleEmitMode.Image) {
 			particleSystem.enableEmission = false;
 			particleSystem.Clear (true);
 		}
