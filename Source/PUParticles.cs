@@ -394,7 +394,11 @@ public partial class PUParticles : PUParticlesBase {
 
 			// Wait until we have stuff to process
 			if (particleArrayThreadCommState != 1) {
-				autoEvent.WaitOne();
+				try {
+					autoEvent.WaitOne();
+				}catch(Exception e){
+					return;
+				}
 				continue;
 			}
 
