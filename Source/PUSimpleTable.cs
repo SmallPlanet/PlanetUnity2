@@ -91,34 +91,6 @@ public class PUSimpleTableCellEditHandle : MonoBehaviour, IDragHandler, IEndDrag
 }
 
 
-
-public class PUSimpleTableUpdateScript : MonoBehaviour {
-
-	public PUSimpleTable table;
-
-	public void LateUpdate() {
-		if (table != null) {
-			table.LateUpdate ();
-		}
-	}
-
-	public IEnumerator ReloadTableCellsCoroutine() {
-		return table.ReloadTableAsync ();
-	}
-
-	public void StopReloadTableCells() {
-		StopCoroutine("ReloadTableCellsCoroutine");
-	}
-
-	public void ReloadTableCells() {
-		StopCoroutine("ReloadTableCellsCoroutine");
-		if (gameObject.activeSelf) {
-			StartCoroutine ("ReloadTableCellsCoroutine");
-		}
-	}
-
-}
-
 public class PUSimpleTableCell : PUTableCell {
 
 	public bool isEdit;
@@ -159,8 +131,6 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	int currentScrollHeight = -1;
 
 	public List<List<object>> allSegmentedObjects = null;
-
-	PUSimpleTableUpdateScript tableUpdateScript;
 
 	public void SetObjectList(List<object> objects) {
 		allSegmentedObjects = new List<List<object>> ();
@@ -209,8 +179,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	}
 
 	public void EmptyTable() {
-		if (tableUpdateScript != null)
-			tableUpdateScript.StopReloadTableCells();
+		// TODO: cancel any background loads
+		//if (tableUpdateScript != null)
+		//	tableUpdateScript.StopReloadTableCells();
 		
 		// When the table size changes, we need to not reuse table cells...
 		for(int i = activeTableCells.Count-1; i >= 0; i--) {
@@ -271,22 +242,17 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 
 	private int totalCellsChecked = 0;
-	private bool isReloadingTableAsync = false;
 
-	public IEnumerator ReloadTableAsync() {
-
-		isReloadingTableAsync = true;
-
-		yield return null;
+	public void ReloadTable() {
 
 		if (rectTransform == null) {
-			yield break;
+			return;
 		}
 
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 		contentRectTransform.sizeDelta = new Vector2(rectTransform.rect.width, 0 + _ContentOffset.y);
 		//if (TableHeader != null) {
-			//contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
+		//contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
 		//}
 		totalCellsChecked = 0;
 
@@ -306,16 +272,13 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		if (TableHeader != null) {
 			TableHeader.rectTransform.SetParent(contentObject.transform, false);
 			TableHeader.rectTransform.anchoredPosition = new Vector2(0,0);
-			
+
 			contentRectTransform.sizeDelta += new Vector2(0, TableHeader.rectTransform.rect.height);
 		}
 
 		if (allSegmentedObjects != null) {
 			foreach (List<object> subtableObjects in allSegmentedObjects) {
-
-				IEnumerator e = ReloadSubtable (subtableObjects, visibleCells);
-				while (e.MoveNext())
-					yield return e.Current;
+				ReloadSubtable (subtableObjects, visibleCells);
 			}
 		}
 
@@ -331,12 +294,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 			contentRectTransform.sizeDelta += new Vector2(0, TableFooter.rectTransform.rect.height);
 		}
-
-		isReloadingTableAsync = false;
 	}
 
-
-	public IEnumerator ReloadSubtable(List<object> subtableObjects, Dictionary<object,PUSimpleTableCell> visibleCells) {
+	public void ReloadSubtable(List<object> subtableObjects, Dictionary<object,PUSimpleTableCell> visibleCells) {
 
 		RectTransform contentRectTransform = contentObject.transform as RectTransform;
 
@@ -352,6 +312,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		float cellWidth = MathParser.step(contentRectTransform.sizeDelta.x, cellSize.Value.x);
 		if (expandCellWidth == false) {
 			cellWidth = cellSize.Value.x;
+		}
+		if (cellWidth <= 0) {
+			cellWidth = rectTransform.rect.width;
 		}
 
 		float cellHeight = cellSize.Value.y;
@@ -409,7 +372,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		if (hasHeader == 1) {
 			firstVisibleCell += 1;
 		}
-
+		
 		for(int i = firstVisibleCell; i < firstVisibleCell + totalVisibleCells; i++) {
 			if (i < subtableObjects.Count) {
 				object myCellData = subtableObjects [i];
@@ -437,11 +400,24 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 				x += cellWidth;
 				nextY = currentLayoutY - cellHeight;
-
-				yield return null;
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public int RowIndexForPosition(Vector2 pos) {
 
@@ -463,28 +439,6 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 		return (Mathf.FloorToInt((Mathf.Abs (contentRectTransform.anchoredPosition.y) + currentLayoutY - cellHeight) / cellHeight) * cellsPerRow) + 1;
 	}
-
-	private void ReloadTableCells() {
-		if (asynchronous && tableUpdateScript != null) {
-			tableUpdateScript.ReloadTableCells ();
-		} else {
-			IEnumerator t = ReloadTableAsync();
-			while (t.MoveNext ()) {}
-		}
-	}
-
-	public void ReloadTable() {
-		if (gameObject != null) {
-			if (gameObject.GetComponent<PUSimpleTableUpdateScript> () == null) {
-				tableUpdateScript = (PUSimpleTableUpdateScript)gameObject.AddComponent (typeof(PUSimpleTableUpdateScript));
-				tableUpdateScript.table = this;
-			}
-
-			ClearTable ();
-			ReloadTableCells ();
-		}
-	}
-
 
 	private bool didPullToRefresh = false;
 	private float lastTableHeight = 0;
@@ -519,22 +473,20 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 
 		// If we've scrolled, retest cells to see who needs to load/unload
-		if (isReloadingTableAsync == false) {
-			if (currentScrollY != (int)tableContentTransform.anchoredPosition.y ||
-			    currentScrollHeight != (int)rectTransform.rect.height ||
-			    isEdit == true) {
 
-				LayoutChildren();
-			}
+		// TODO: are we currently reloading in the background?
+		if (currentScrollY != (int)tableContentTransform.anchoredPosition.y ||
+		    currentScrollHeight != (int)rectTransform.rect.height ||
+		    isEdit == true) {
+
+			LayoutChildren();
 		}
 	}
 
 	public void LayoutChildren() {
 		RectTransform tableContentTransform = contentObject.transform as RectTransform;
 
-		IEnumerator t = ReloadTableAsync ();
-		while (t.MoveNext ()) {
-		}
+		ReloadTable ();
 
 		currentScrollY = (int)tableContentTransform.anchoredPosition.y;
 		currentScrollHeight = (int)rectTransform.rect.height;
@@ -548,15 +500,16 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 			EmptyTable();
 
-			ReloadTableCells();
+			ReloadTable();
 		});
 
 	}
 
 	public override void unload() {
 
-		if (tableUpdateScript != null)
-			tableUpdateScript.StopReloadTableCells();
+		// TODO: cancel any background loads
+		//if (tableUpdateScript != null)
+		//	tableUpdateScript.StopReloadTableCells();
 
 		foreach (PUSimpleTableCell cell in activeTableCells) {
 			cell.unload ();
