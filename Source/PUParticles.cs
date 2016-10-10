@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public partial class PUParticles : PUParticlesBase {
 
+	public bool emitting = true;
 
 	public Color systemColor = Color.white;
 
@@ -231,28 +232,30 @@ public partial class PUParticles : PUParticlesBase {
 	public override void Update() {
 		if (particleSystem != null) {
 
-			if (emitMode == PlanetUnity2.ParticleEmitMode.Edge || 
-				emitMode == PlanetUnity2.ParticleEmitMode.Center || 
-				emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
-				emitMode == PlanetUnity2.ParticleEmitMode.Image) {
+			if (emitting) {
+				if (emitMode == PlanetUnity2.ParticleEmitMode.Edge ||
+				   emitMode == PlanetUnity2.ParticleEmitMode.Center ||
+				   emitMode == PlanetUnity2.ParticleEmitMode.Fill ||
+				   emitMode == PlanetUnity2.ParticleEmitMode.Image) {
 
-				// In these modes, we are responsible for emitting the particles so that we can position them exactly
-				// first, make sure normal emissions are turned off
-				particleSystem.enableEmission = false;
+					// In these modes, we are responsible for emitting the particles so that we can position them exactly
+					// first, make sure normal emissions are turned off
+					particleSystem.enableEmission = false;
 					
-				emitRate += particleSystem.emission.rate.Evaluate(0) * Time.deltaTime;
+					emitRate += particleSystem.emission.rate.Evaluate (0) * Time.deltaTime;
 
-				while (emitRate > 1.0f) {
-					emitRate -= 1.0f;
+					while (emitRate > 1.0f) {
+						emitRate -= 1.0f;
 
-					if (particleSystem.particleCount < particleSystem.maxParticles) {
-						ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
-						eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
+						if (particleSystem.particleCount < particleSystem.maxParticles) {
+							ParticleSystem.EmitParams eParams = new ParticleSystem.EmitParams ();
+							eParams.position = positionLUT [UnityEngine.Random.Range (0, posMax)];
 
-						if (particleSystem.shape.randomDirection) {
-							eParams.velocity = new Vector3 (UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f)) * particleSystem.startSpeed;
+							if (particleSystem.shape.randomDirection) {
+								eParams.velocity = new Vector3 (UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f), UnityEngine.Random.Range (-1.0f, 1.0f)) * particleSystem.startSpeed;
+							}
+							particleSystem.Emit (eParams, 1);
 						}
-						particleSystem.Emit (eParams, 1);
 					}
 				}
 			}
@@ -395,10 +398,7 @@ public partial class PUParticles : PUParticlesBase {
 				continue;
 			}
 
-			int localMaxParticleCount = maxParticleCount;
-			if (liveParticleCount > localMaxParticleCount) {
-				localMaxParticleCount = liveParticleCount;
-			}
+			int localMaxParticleCount = liveParticleCount;
 
 			// 0) resize our lists to match the new live particle count, filling in base information for
 			// the new particles
@@ -536,7 +536,7 @@ public partial class PUParticles : PUParticlesBase {
 					Vector3 pos = new Vector3 (p.position.x, p.position.z, p.position.y);
 					float sizeX = sizeLUT [lutIdx];
 					float sizeY = sizeX;
-					float rotation = p.rotation * Mathf.Deg2Rad;
+					Quaternion rotation = Quaternion.Euler (p.rotation3D);
 
 					pos.x *= scaleX * positionScaleXForThread;
 					pos.y *= scaleY * positionScaleYForThread;
@@ -565,10 +565,10 @@ public partial class PUParticles : PUParticlesBase {
 						d.uv0.y = uvs.w;
 					}
 
-					a.position = pos + new Vector3 (-sizeX, -sizeY).RotateZ (rotation);
-					b.position = pos + new Vector3 (-sizeX, +sizeY).RotateZ (rotation);
-					c.position = pos + new Vector3 (+sizeX, +sizeY).RotateZ (rotation);
-					d.position = pos + new Vector3 (+sizeX, -sizeY).RotateZ (rotation);
+					a.position = pos + rotation * new Vector3 (-sizeX, -sizeY);
+					b.position = pos + rotation * new Vector3 (-sizeX, +sizeY);
+					c.position = pos + rotation * new Vector3 (+sizeX, +sizeY);
+					d.position = pos + rotation * new Vector3 (+sizeX, -sizeY);
 
 					a.color = b.color = c.color = d.color = colorLUT [lutIdx] * systemColor;
 
