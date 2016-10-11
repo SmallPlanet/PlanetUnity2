@@ -503,6 +503,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			ReloadTable();
 		});
 
+		ScheduleForLateUpdate ();
 	}
 
 	public override void unload() {
