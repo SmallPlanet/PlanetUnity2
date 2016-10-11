@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public partial class PUSwitcher : PUSwitcherBase {
 
-	private Action<PUGameObject, int> HideAnimation;
-	private Action<PUGameObject, int> ShowAnimation;
+	private Action<PUGameObject, int, int> HideAnimation;
+	private Action<PUGameObject, int, int> ShowAnimation;
 	private Action<PUGameObject, int, Action> CloseAnimation;
 
 	public override void gaxb_complete() {
 
-		HideAnimation = (x, idx) => {
+		HideAnimation = (x, idx, direction) => {
 			x.canvasGroup.alpha = 0;
 			x.gameObject.SetActive (false);
 		};
 
-		ShowAnimation = (x, idx) => {
+		ShowAnimation = (x, idx, direction) => {
 			x.canvasGroup.alpha = 1;
 			x.gameObject.SetActive (true);
 		};
@@ -40,7 +40,7 @@ public partial class PUSwitcher : PUSwitcherBase {
 		SwitchTo (initialIndex);
 	}
 
-	public void SetAnimationBlocks(Action<PUGameObject, int> hide, Action<PUGameObject, int> show, Action<PUGameObject, int, Action> close){
+	public void SetAnimationBlocks(Action<PUGameObject, int, int> hide, Action<PUGameObject, int, int> show, Action<PUGameObject, int, Action> close){
 		HideAnimation = hide;
 		ShowAnimation = show;
 		CloseAnimation = close;
@@ -55,22 +55,29 @@ public partial class PUSwitcher : PUSwitcherBase {
 			return;
 		}
 
-		HideIndex (currentIndex.Value, 0.0f);
+		int direction = i - currentIndex.Value;
+		if (direction < -1) {
+			direction = -1;
+		}
+		if (direction > 1) {
+			direction = 1;
+		}
+		HideIndex (currentIndex.Value, direction);
 		currentIndex = i;
-		ShowIndex (currentIndex.Value, 0.15f);
+		ShowIndex (currentIndex.Value, direction);
 	}
 
-	private void HideIndex(int idx, float delay) {
+	private void HideIndex(int idx, int direction) {
 		if (idx >= 0 && idx < children.Count) {
 			PUGameObject child = children [idx] as PUGameObject;
-			HideAnimation (child, idx);
+			HideAnimation (child, idx, direction);
 		}
 	}
 
-	private void ShowIndex(int idx, float delay) {
+	private void ShowIndex(int idx, int direction) {
 		if (idx >= 0 && idx < children.Count) {
 			PUGameObject child = children [idx] as PUGameObject;
-			ShowAnimation (child, idx);
+			ShowAnimation (child, idx, direction);
 		}
 	}
 
