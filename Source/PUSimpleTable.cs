@@ -282,6 +282,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			}
 		}
 
+		foreach (PUSimpleTableCell leftOverCell in visibleCells.Values) {
+			EnqueueTableCell (leftOverCell);
+		}
 
 		if (contentRectTransform.sizeDelta.y == 0) {
 			contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, rectTransform.rect.height + _ContentOffset.y);
@@ -349,6 +352,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			if (PUSimpleTableCell.TestForVisibility (currentLayoutY, headerSize.Value.y, rectTransform, contentRectTransform)) {
 				if (visibleCells.ContainsKey (myCellData)) {
 					cell = visibleCells [myCellData];
+					visibleCells.Remove (myCellData);
 				} else {
 					cell = DequeueTableCell (myCellData);
 				}
@@ -389,6 +393,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 				if (PUSimpleTableCell.TestForVisibility (currentLayoutY, cellHeight, rectTransform, contentRectTransform)) {
 					if (visibleCells.ContainsKey (myCellData)) {
 						cell = visibleCells [myCellData];
+						visibleCells.Remove (myCellData);
 					} else {
 						cell = DequeueTableCell (myCellData);
 					}
