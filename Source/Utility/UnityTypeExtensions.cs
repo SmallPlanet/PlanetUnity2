@@ -523,12 +523,16 @@ public static class ColorExtension
 	public static Color PUParse(this Color c, string value)
 	{
 		if (value.StartsWith ("#")) {
-			int argb = Int32.Parse(value.Substring(1), NumberStyles.HexNumber);
-			c.r = (float)((argb & 0xFF000000) >> 24) / 255.0f;
-			c.g = (float)((argb & 0x00FF0000) >> 16) / 255.0f;
-			c.b = (float)((argb & 0x0000FF00) >> 8) / 255.0f;
-			c.a = (float)((argb & 0x000000FF) >> 0) / 255.0f;
-			return c;
+			try{
+				int argb = Int32.Parse(value.Substring(1), NumberStyles.HexNumber);
+				c.r = (float)((argb & 0xFF000000) >> 24) / 255.0f;
+				c.g = (float)((argb & 0x00FF0000) >> 16) / 255.0f;
+				c.b = (float)((argb & 0x0000FF00) >> 8) / 255.0f;
+				c.a = (float)((argb & 0x000000FF) >> 0) / 255.0f;
+				return c;
+			}catch(Exception e){
+				return Color.black;
+			}
 		}
 
 		var elements = value.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
