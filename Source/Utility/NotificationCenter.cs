@@ -45,12 +45,18 @@ public class NotificationObserver
 		if (methodName != null) {
 			MethodInfo method = observerReference.Target.GetType ().GetMethod (methodName);
 			if (method != null) {
-				if (method.GetParameters ().Length == 2) {
-					method.Invoke (observerReference.Target, new [] { (object)args, (object)notificatioName });
-				} else if (method.GetParameters ().Length == 1) {
-					method.Invoke (observerReference.Target, new [] { args });
-				} else {
-					method.Invoke (observerReference.Target, null);
+
+				// don't let an exception being thrown in the observer hurt processing all notifications
+				try {
+					if (method.GetParameters ().Length == 2) {
+						method.Invoke (observerReference.Target, new [] { (object)args, (object)notificatioName });
+					} else if (method.GetParameters ().Length == 1) {
+						method.Invoke (observerReference.Target, new [] { args });
+					} else {
+						method.Invoke (observerReference.Target, null);
+					}
+				}catch(Exception e){
+					UnityEngine.Debug.LogError (e.ToString ());
 				}
 
 			} else {
