@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TBSharpXML;
 
 public partial class PURawImage : PURawImageBase {
 	
@@ -207,11 +208,11 @@ public class PURawImageBase : PUGameObject {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -221,19 +222,19 @@ public class PURawImageBase : PUGameObject {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("resourcePath");
+		attr = element.GetAttribute("resourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { resourcePath = unescape(attr); } 
 		
-		attr = reader.GetAttribute("color");
+		attr = element.GetAttribute("color");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { color = new Color().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("uvRect");
+		attr = element.GetAttribute("uvRect");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { uvRect = new Vector4().PUParse(attr); } 
 		

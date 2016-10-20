@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TBSharpXML;
 
 public partial class PUInputField : PUInputFieldBase {
 	
@@ -270,11 +271,11 @@ public class PUInputFieldBase : PUText {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -284,31 +285,31 @@ public class PUInputFieldBase : PUText {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("onValueChanged");
+		attr = element.GetAttribute("onValueChanged");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onValueChanged = unescape(attr); } 
 		
-		attr = reader.GetAttribute("placeholder");
+		attr = element.GetAttribute("placeholder");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { placeholder = unescape(attr); } 
 		
-		attr = reader.GetAttribute("limit");
+		attr = element.GetAttribute("limit");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { limit = (int)float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("contentType");
+		attr = element.GetAttribute("contentType");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { contentType = (PlanetUnity2.InputFieldContentType)Enum.Parse(typeof(PlanetUnity2.InputFieldContentType), attr); } 
 		
-		attr = reader.GetAttribute("lineType");
+		attr = element.GetAttribute("lineType");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { lineType = (PlanetUnity2.InputFieldLineType)Enum.Parse(typeof(PlanetUnity2.InputFieldLineType), attr); } 
 		
-		attr = reader.GetAttribute("selectionColor");
+		attr = element.GetAttribute("selectionColor");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { selectionColor = new Color().PUParse(attr); } 
 		

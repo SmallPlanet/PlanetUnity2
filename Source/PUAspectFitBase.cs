@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TBSharpXML;
 
 public partial class PUAspectFit : PUAspectFitBase {
 	
@@ -207,11 +208,11 @@ public class PUAspectFitBase : PUGameObject {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -221,16 +222,16 @@ public class PUAspectFitBase : PUGameObject {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("contentSize");
+		attr = element.GetAttribute("contentSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0"; }
 		if(attr != null) { contentSize = new Vector2().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("mode");
+		attr = element.GetAttribute("mode");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "FitInParent"; }
 		if(attr != null) { mode = (PlanetUnity2.AspectFitMode)Enum.Parse(typeof(PlanetUnity2.AspectFitMode), attr); } 

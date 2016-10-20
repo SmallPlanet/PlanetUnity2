@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TBSharpXML;
 
 public partial class PUGameObject : PUGameObjectBase {
 	
@@ -273,11 +274,11 @@ public class PUGameObjectBase : PUObject {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -287,83 +288,83 @@ public class PUGameObjectBase : PUObject {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("bounds");
+		attr = element.GetAttribute("bounds");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { bounds = new Vector4().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("position");
+		attr = element.GetAttribute("position");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0,0"; }
 		if(attr != null) { position = new Vector3().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("size");
+		attr = element.GetAttribute("size");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0"; }
 		if(attr != null) { size = new Vector2().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("rotation");
+		attr = element.GetAttribute("rotation");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0,0"; }
 		if(attr != null) { rotation = new Vector3().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("scale");
+		attr = element.GetAttribute("scale");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "1,1,1"; }
 		if(attr != null) { scale = new Vector3().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("pivot");
+		attr = element.GetAttribute("pivot");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0"; }
 		if(attr != null) { pivot = new Vector2().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("anchor");
+		attr = element.GetAttribute("anchor");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "bottom,left"; }
 		if(attr != null) { anchor = unescape(attr); } 
 		
-		attr = reader.GetAttribute("active");
+		attr = element.GetAttribute("active");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "true"; }
 		if(attr != null) { active = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("mask");
+		attr = element.GetAttribute("mask");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { mask = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("showMaskGraphic");
+		attr = element.GetAttribute("showMaskGraphic");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "false"; }
 		if(attr != null) { showMaskGraphic = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("maskInset");
+		attr = element.GetAttribute("maskInset");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { maskInset = new Vector4().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("outline");
+		attr = element.GetAttribute("outline");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { outline = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("lastY");
+		attr = element.GetAttribute("lastY");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { lastY = float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("lastX");
+		attr = element.GetAttribute("lastX");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { lastX = float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("shader");
+		attr = element.GetAttribute("shader");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { shader = unescape(attr); } 
 		
-		attr = reader.GetAttribute("ignoreMouse");
+		attr = element.GetAttribute("ignoreMouse");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { ignoreMouse = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("components");
+		attr = element.GetAttribute("components");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { components = unescape(attr); } 
 		
