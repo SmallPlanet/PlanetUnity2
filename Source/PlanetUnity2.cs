@@ -161,7 +161,7 @@ public class PlanetUnity2 {
 	}
 	
 	static public T clone<T>(T root) {
-		return (T)loadXML( writeXML (root), null, null);
+		return (T)loadXML( System.Text.Encoding.UTF8.GetBytes (writeXML (root)), null, null);
 	}
 	
 	static public string writeXML(object root) {
@@ -173,14 +173,14 @@ public class PlanetUnity2 {
 		return sb.ToString();
 	}
 
-	static public object loadXML(string xmlString, object parentObject, Hashtable args, Action<object,object,TBXMLElement> customBlock)
+	static public object loadXML(byte[] xmlBytes, object parentObject, Hashtable args, Action<object,object,TBXMLElement> customBlock)
 	{
 		object rootEntity = parentObject;
 		object returnEntity = null;
 
 		Stack<string> xmlNamespaces = new Stack<string> ();
 
-		new TBXMLReader (xmlString, (reader, element) => {
+		new TBXMLReader (xmlBytes, (reader, element) => {
 
 			string elementName = element.GetName ();
 
@@ -242,8 +242,8 @@ public class PlanetUnity2 {
 		return returnEntity;
 	}
 	
-	static public object loadXML(string xmlString, object parentObject, Hashtable args)
+	static public object loadXML(byte[] xmlBytes, object parentObject, Hashtable args)
 	{
-		return loadXML(xmlString, parentObject, args, null);
+		return loadXML(xmlBytes, parentObject, args, null);
 	}
 }

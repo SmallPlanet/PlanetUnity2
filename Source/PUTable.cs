@@ -91,7 +91,7 @@ public class PUTableCell {
 
 		if (xmlPath != null) {
 
-			puGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityOverride.xmlFromPath (xmlPath), parent.contentObject, null);
+			puGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityResourceCache.GetAsset<TextAsset>(xmlPath).bytes, parent.contentObject, null);
 
 			// Attach all of the PlanetUnity objects
 			try {
