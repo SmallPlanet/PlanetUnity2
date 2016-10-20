@@ -125,4 +125,25 @@ public class Profile
         output.Append(" seconds\n============================");
         UnityEngine.Debug.Log(output.ToString());
     }
+
+
+
+	// One off method for capturing total memory and time (ONLY ADVISABLE FOR PROFILING WORK AND NOT TO BE INCLUDE IN PRODUCTION BUILDS!)
+
+	private static Stopwatch sw;
+	private static long memoryBefore;
+	public static void BeginMemoryAndTimeOneOff(){
+		sw = new Stopwatch ();
+		GC.Collect ();
+		memoryBefore = GC.GetTotalMemory(false);
+		sw.Start ();
+	}
+
+	public static void EndMemoryAndTimeOneOff(string label){
+		sw.Stop ();
+		long memoryAfter = GC.GetTotalMemory(false);
+
+		UnityEngine.Debug.LogFormat ("[{0}] Memory usage during XML parse: {1} MB", label, (memoryAfter - memoryBefore) / 1024.0f / 1024.0f);
+		UnityEngine.Debug.LogFormat ("[{0}] Time to XML parse: {1} ms", label, sw.ElapsedMilliseconds); 
+	}
 }
