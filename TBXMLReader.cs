@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Unity.IL2CPP.CompilerServices;
 #endif
 
-namespace TBSharpXML
+namespace TB
 {
 	public struct TBXMLAttribute {
 		public long nameIdx;
@@ -86,7 +86,7 @@ namespace TBSharpXML
 		public byte[] bytes;
 		public long bytesLength;
 
-		public TBXMLReader(byte[] bytes, Action<TBXMLReader,TBXMLElement> onStartElement, Action<TBXMLReader,TBXMLElement> onEndElement, bool useDuplicateBytes = false) {
+		public TBXMLReader(byte[] bytes, Action<TBXMLElement> onStartElement, Action<TBXMLElement> onEndElement, bool useDuplicateBytes = false) {
 
 			// set up the bytes array
 			if (useDuplicateBytes) {
@@ -103,7 +103,7 @@ namespace TBSharpXML
 			DecodeBytes(onStartElement, onEndElement);
 		}
 			
-		public TBXMLReader(string xmlString, Action<TBXMLReader,TBXMLElement> onStartElement, Action<TBXMLReader,TBXMLElement> onEndElement) : this(Encoding.UTF8.GetBytes (xmlString), onStartElement, onEndElement, false) {
+		public TBXMLReader(string xmlString, Action<TBXMLElement> onStartElement, Action<TBXMLElement> onEndElement) : this(Encoding.UTF8.GetBytes (xmlString), onStartElement, onEndElement, false) {
 
 		}
 
@@ -413,7 +413,7 @@ namespace TBSharpXML
 		[Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 		[Il2CppSetOption(Option.DivideByZeroChecks, false)]
 		#endif
-		private void DecodeBytes(Action<TBXMLReader,TBXMLElement> onStartElement, Action<TBXMLReader,TBXMLElement> onEndElement) {
+		private void DecodeBytes(Action<TBXMLElement> onStartElement, Action<TBXMLElement> onEndElement) {
 
 			byte[] localBytes = bytes;
 			long localBytesLength = bytesLength;
@@ -524,7 +524,7 @@ namespace TBSharpXML
 
 					// end of an element
 					TBXMLElement closeElement = elementStack.Pop ();
-					onEndElement (this, closeElement);
+					onEndElement (closeElement);
 					closeElement.attributes.Clear ();
 					freeElementList.Push (closeElement);
 
@@ -690,11 +690,11 @@ namespace TBSharpXML
 					}
 				}
 
-				onStartElement (this, elementStack.Peek ());
+				onStartElement (elementStack.Peek ());
 
 				if (selfClosingElement) {
 					TBXMLElement closeElement = elementStack.Pop ();
-					onEndElement (this, closeElement);
+					onEndElement (closeElement);
 					closeElement.attributes.Clear ();
 					freeElementList.Push (closeElement);
 				}
@@ -705,7 +705,7 @@ namespace TBSharpXML
 			}
 
 			while (elementStack.Count > 0) {
-				onEndElement (this, elementStack.Pop ());
+				onEndElement (elementStack.Pop ());
 			}
 		}
 

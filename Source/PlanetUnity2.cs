@@ -15,86 +15,23 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Collections;
-using TBSharpXML;
+using TB;
 
 interface IPlanetUnity2
 {
-	void gaxb_load(TBXMLElement reader, object _parent, Hashtable args);
+	void gaxb_load(TBXMLElement element, object _parent, Hashtable args);
 	void gaxb_appendXML(StringBuilder sb);
 }
 
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
-	public enum ParticleEmitMode {
-		SystemNone,
-		SystemScaled,
-		Edge,
-		Fill,
-		Center,
-		Image,
-	};
-
-	public enum GridLayoutStartCorner {
-		upperLeft,
-		upperRight,
-		lowerLeft,
-		lowerRight,
-	};
-
 	public enum GridLayoutStartAxis {
 		horizontal,
 		vertical,
 	};
 
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
-	};
-
-	public enum SliderDirection {
-		LeftToRight,
-		RightToLeft,
-		BottomToTop,
-		TopToBottom,
-	};
-
-	public enum FontStyle {
-		normal,
-		bold,
-		italic,
-		boldAndItalic,
-	};
-
-	public enum TextOverflowHorizontal {
-		wrap,
-		overflow,
-	};
-
-	public enum CanvasRenderMode {
-		ScreenSpaceOverlay,
-		ScreenSpaceCamera,
-		WorldSpace,
-	};
-
-	public enum TextOverflowVertical {
-		truncate,
-		overflow,
-	};
-
-	public const string USERSTRINGINPUT = "UserStringInput";
-	public const string USERCHARINPUT = "UserCharInput";
-	public const string USERINPUTCANCELLED = "UserInputCancelled";
-	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
-	public const string BUTTONTOUCHUP = "ButtonTouchUp";
-	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
-	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
-	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
-
-	public enum TextAlignment {
+	public enum GridLayoutChildAlignment {
 		upperLeft,
 		upperCenter,
 		upperRight,
@@ -114,12 +51,23 @@ public class PlanetUnity2 {
 		RectContactPointRule,
 	};
 
-	public enum ImageType {
-		simple,
-		filled,
-		sliced,
-		tiled,
-		aspectFilled,
+	public enum TextAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
+	};
+
+	public enum FontStyle {
+		normal,
+		bold,
+		italic,
+		boldAndItalic,
 	};
 
 	public enum InputFieldContentType {
@@ -135,21 +83,73 @@ public class PlanetUnity2 {
 		custom,
 	};
 
+	public enum SliderDirection {
+		LeftToRight,
+		RightToLeft,
+		BottomToTop,
+		TopToBottom,
+	};
+
+	public enum TextOverflowHorizontal {
+		wrap,
+		overflow,
+	};
+
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
+	};
+
+	public enum ParticleEmitMode {
+		SystemNone,
+		SystemScaled,
+		Edge,
+		Fill,
+		Center,
+		Image,
+	};
+
+	public enum ImageType {
+		simple,
+		filled,
+		sliced,
+		tiled,
+		aspectFilled,
+	};
+
+	public enum TextOverflowVertical {
+		truncate,
+		overflow,
+	};
+
 	public enum InputFieldLineType {
 		single,
 		multiSubmit,
 		multiNewline,
 	};
 
-	public enum GridLayoutChildAlignment {
+	public const string USERSTRINGINPUT = "UserStringInput";
+	public const string USERCHARINPUT = "UserCharInput";
+	public const string USERINPUTCANCELLED = "UserInputCancelled";
+	public const string BUTTONTOUCHDOWN = "ButtonTouchDown";
+	public const string BUTTONTOUCHUP = "ButtonTouchUp";
+	public const string EVENTWITHUNREGISTEREDCOLLIDER = "EventWithUnregisteredCollider";
+	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
+	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
+
+	public enum CanvasRenderMode {
+		ScreenSpaceOverlay,
+		ScreenSpaceCamera,
+		WorldSpace,
+	};
+
+	public enum GridLayoutStartCorner {
 		upperLeft,
-		upperCenter,
 		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
 		lowerLeft,
-		lowerCenter,
 		lowerRight,
 	};
 
@@ -180,7 +180,7 @@ public class PlanetUnity2 {
 
 		Stack<string> xmlNamespaces = new Stack<string> ();
 
-		new TBXMLReader (xmlBytes, (reader, element) => {
+		new TBXMLReader (xmlBytes, (element) => {
 
 			string elementName = element.GetName ();
 
@@ -212,7 +212,7 @@ public class PlanetUnity2 {
 			} catch (TypeLoadException) {
 				// If we get here its not a valid PU class, throw it away
 			}
-		}, (reader, element) => {
+		}, (element) => {
 			try {
 				string elementName = element.GetName ();
 				string localXmlNamespace = xmlNamespaces.Peek ();

@@ -35,7 +35,7 @@ using TBSharpXML;
 
 interface I<%=CAP_NAME%>
 {
-	void gaxb_load(TBXMLElement reader, object _parent, Hashtable args);
+	void gaxb_load(TBXMLElement element, object _parent, Hashtable args);
 	void gaxb_appendXML(StringBuilder sb);
 }
 
@@ -129,7 +129,7 @@ end
 
 		Stack<string> xmlNamespaces = new Stack<string> ();
 
-		new TBXMLReader (xmlBytes, (reader, element) => {
+		new TBXMLReader (xmlBytes, (element) => {
 
 			string elementName = element.GetName ();
 
@@ -161,7 +161,7 @@ end
 			} catch (TypeLoadException) {
 				// If we get here its not a valid PU class, throw it away
 			}
-		}, (reader, element) => {
+		}, (element) => {
 			try {
 				string elementName = element.GetName ();
 				string localXmlNamespace = xmlNamespaces.Peek ();

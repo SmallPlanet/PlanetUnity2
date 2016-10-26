@@ -21,7 +21,7 @@ using UnityEngine.UI;
 using System.Reflection;
 using System;
 using System.Text.RegularExpressions;
-using TBSharpXML;
+using TB;
 
 
 public class MaskGraphic : Graphic, ICanvasRaycastFilter {

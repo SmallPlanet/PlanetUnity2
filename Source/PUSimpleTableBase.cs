@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
-using TBSharpXML;
+using TB;
 
 public partial class PUSimpleTable : PUSimpleTableBase {
 	
