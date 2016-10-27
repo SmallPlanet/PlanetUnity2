@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUScrollRect : PUScrollRectBase {
-	
+
 	public PUScrollRect()
 	{
 		string attr;
@@ -33,7 +33,7 @@ public partial class PUScrollRect : PUScrollRectBase {
 
 	}
 	
-	
+
 	public PUScrollRect(
 			bool inertia,
 			bool horizontal,
@@ -50,7 +50,7 @@ public partial class PUScrollRect : PUScrollRectBase {
 	}
 
 	
-	
+
 	public PUScrollRect(
 			bool inertia,
 			bool horizontal,
@@ -168,7 +168,7 @@ public class PUScrollRectBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -176,7 +176,7 @@ public class PUScrollRectBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("ScrollRect");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -184,7 +184,7 @@ public class PUScrollRectBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("ScrollRects");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -209,7 +209,7 @@ public class PUScrollRectBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -232,16 +232,16 @@ public class PUScrollRectBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUScrollRect ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("inertia");
@@ -266,13 +266,13 @@ public class PUScrollRectBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -283,23 +283,23 @@ public class PUScrollRectBase : PUGameObject {
 		if(scrollWheelSensitivity != null) { sb.AppendFormat (" {0}=\"{1}\"", "scrollWheelSensitivity", scrollWheelSensitivity.Value.ToString ("0.##")); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "ScrollRect");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -311,14 +311,14 @@ public class PUScrollRectBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

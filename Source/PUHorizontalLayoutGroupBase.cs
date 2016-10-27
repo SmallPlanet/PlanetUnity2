@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUHorizontalLayoutGroup : PUHorizontalLayoutGroupBase {
-	
+
 	public PUHorizontalLayoutGroup()
 	{
 		string attr;
@@ -29,7 +29,7 @@ public partial class PUHorizontalLayoutGroup : PUHorizontalLayoutGroupBase {
 
 	}
 	
-	
+
 	public PUHorizontalLayoutGroup(
 			float spacing,
 			Vector4 padding,
@@ -43,7 +43,7 @@ public partial class PUHorizontalLayoutGroup : PUHorizontalLayoutGroupBase {
 	}
 
 	
-	
+
 	public PUHorizontalLayoutGroup(
 			float spacing,
 			Vector4 padding,
@@ -157,7 +157,7 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -165,7 +165,7 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("HorizontalLayoutGroup");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -173,7 +173,7 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("HorizontalLayoutGroups");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -198,7 +198,7 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -221,16 +221,16 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUHorizontalLayoutGroup ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("spacing");
@@ -249,13 +249,13 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -265,23 +265,23 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 		if(childAlignment != null) { sb.AppendFormat (" {0}=\"{1}\"", "childAlignment", (int)childAlignment); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "HorizontalLayoutGroup");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -293,14 +293,14 @@ public class PUHorizontalLayoutGroupBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

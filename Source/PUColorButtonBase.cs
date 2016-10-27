@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PUColorButton : PUColorButtonBase {
-	
+
 	public PUColorButton()
 	{
 	}
 	
-	
+
 	public PUColorButton(
 			string onTouchUp,
 			Color pressedColor,
@@ -36,7 +36,7 @@ public partial class PUColorButton : PUColorButtonBase {
 	}
 
 	
-	
+
 	public PUColorButton(
 			string onTouchUp,
 			Color pressedColor,
@@ -149,7 +149,7 @@ public class PUColorButtonBase : PUColor {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -157,7 +157,7 @@ public class PUColorButtonBase : PUColor {
 		{
 			FieldInfo parentField = parent.GetType().GetField("ColorButton");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -165,7 +165,7 @@ public class PUColorButtonBase : PUColor {
 			else
 			{
 				parentField = parent.GetType().GetField("ColorButtons");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -190,7 +190,7 @@ public class PUColorButtonBase : PUColor {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -213,16 +213,16 @@ public class PUColorButtonBase : PUColor {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUColorButton ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("onTouchUp");
@@ -235,13 +235,13 @@ public class PUColorButtonBase : PUColor {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -250,23 +250,23 @@ public class PUColorButtonBase : PUColor {
 		if(pressedColor != null) { sb.AppendFormat (" {0}=\"{1}\"", "pressedColor", pressedColor.Value.PUToString()); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "ColorButton");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -278,14 +278,14 @@ public class PUColorButtonBase : PUColor {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUGridTable : PUGridTableBase {
-	
+
 	public PUGridTable()
 	{
 		string attr;
@@ -29,7 +29,7 @@ public partial class PUGridTable : PUGridTableBase {
 
 	}
 	
-	
+
 	public PUGridTable(
 			PlanetUnity2.GridTableHeuristic heuristic,
 			bool expandToFill ) : this()
@@ -40,7 +40,7 @@ public partial class PUGridTable : PUGridTableBase {
 	}
 
 	
-	
+
 	public PUGridTable(
 			PlanetUnity2.GridTableHeuristic heuristic,
 			bool expandToFill,
@@ -162,7 +162,7 @@ public class PUGridTableBase : PUTable {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -170,7 +170,7 @@ public class PUGridTableBase : PUTable {
 		{
 			FieldInfo parentField = parent.GetType().GetField("GridTable");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -178,7 +178,7 @@ public class PUGridTableBase : PUTable {
 			else
 			{
 				parentField = parent.GetType().GetField("GridTables");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -203,7 +203,7 @@ public class PUGridTableBase : PUTable {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -226,16 +226,16 @@ public class PUGridTableBase : PUTable {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUGridTable ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("heuristic");
@@ -250,13 +250,13 @@ public class PUGridTableBase : PUTable {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -265,23 +265,23 @@ public class PUGridTableBase : PUTable {
 		 sb.AppendFormat (" {0}=\"{1}\"", "expandToFill", expandToFill.ToString().ToLower()); 
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "GridTable");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -293,14 +293,14 @@ public class PUGridTableBase : PUTable {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

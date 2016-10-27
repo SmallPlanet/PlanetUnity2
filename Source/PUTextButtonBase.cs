@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PUTextButton : PUTextButtonBase {
-	
+
 	public PUTextButton()
 	{
 	}
 	
-	
+
 	public PUTextButton(
 			string onTouchUp,
 			string value ) : this()
@@ -33,7 +33,7 @@ public partial class PUTextButton : PUTextButtonBase {
 	}
 
 	
-	
+
 	public PUTextButton(
 			string onTouchUp,
 			string font,
@@ -178,7 +178,7 @@ public class PUTextButtonBase : PUText {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -186,7 +186,7 @@ public class PUTextButtonBase : PUText {
 		{
 			FieldInfo parentField = parent.GetType().GetField("TextButton");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -194,7 +194,7 @@ public class PUTextButtonBase : PUText {
 			else
 			{
 				parentField = parent.GetType().GetField("TextButtons");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -219,7 +219,7 @@ public class PUTextButtonBase : PUText {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -242,16 +242,16 @@ public class PUTextButtonBase : PUText {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUTextButton ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("onTouchUp");
@@ -260,13 +260,13 @@ public class PUTextButtonBase : PUText {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -274,23 +274,23 @@ public class PUTextButtonBase : PUText {
 		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "TextButton");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -302,14 +302,14 @@ public class PUTextButtonBase : PUText {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUSlider : PUSliderBase {
-	
+
 	public PUSlider()
 	{
 		string attr;
@@ -31,7 +31,7 @@ public partial class PUSlider : PUSliderBase {
 
 	}
 	
-	
+
 	public PUSlider(
 			string handleResourcePath,
 			Vector2 handleSize,
@@ -60,7 +60,7 @@ public partial class PUSlider : PUSliderBase {
 	}
 
 	
-	
+
 	public PUSlider(
 			string handleResourcePath,
 			Vector2 handleSize,
@@ -199,7 +199,7 @@ public class PUSliderBase : PUImage {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -207,7 +207,7 @@ public class PUSliderBase : PUImage {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Slider");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -215,7 +215,7 @@ public class PUSliderBase : PUImage {
 			else
 			{
 				parentField = parent.GetType().GetField("Sliders");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -240,7 +240,7 @@ public class PUSliderBase : PUImage {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -263,16 +263,16 @@ public class PUSliderBase : PUImage {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUSlider ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("handleResourcePath");
@@ -308,13 +308,13 @@ public class PUSliderBase : PUImage {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -328,23 +328,23 @@ public class PUSliderBase : PUImage {
 		if(direction != null) { sb.AppendFormat (" {0}=\"{1}\"", "direction", (int)direction); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Slider");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -356,14 +356,14 @@ public class PUSliderBase : PUImage {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

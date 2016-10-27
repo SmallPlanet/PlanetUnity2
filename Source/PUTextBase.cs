@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUText : PUTextBase {
-	
+
 	public PUText()
 	{
 		string attr;
@@ -31,7 +31,7 @@ public partial class PUText : PUTextBase {
 
 	}
 	
-	
+
 	public PUText(
 			string font,
 			int fontSize,
@@ -75,7 +75,7 @@ public partial class PUText : PUTextBase {
 	}
 
 	
-	
+
 	public PUText(
 			string font,
 			int fontSize,
@@ -229,7 +229,7 @@ public class PUTextBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -237,7 +237,7 @@ public class PUTextBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Text");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -245,7 +245,7 @@ public class PUTextBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("Texts");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -270,7 +270,7 @@ public class PUTextBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -293,16 +293,16 @@ public class PUTextBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUText ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("font");
@@ -362,13 +362,13 @@ public class PUTextBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -388,23 +388,23 @@ public class PUTextBase : PUGameObject {
 		if(onLinkClick != null) { sb.AppendFormat (" {0}=\"{1}\"", "onLinkClick", SecurityElement.Escape (onLinkClick)); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Text");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -416,14 +416,14 @@ public class PUTextBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

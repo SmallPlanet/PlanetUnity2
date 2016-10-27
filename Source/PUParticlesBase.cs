@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUParticles : PUParticlesBase {
-	
+
 	public PUParticles()
 	{
 		string attr;
@@ -31,7 +31,7 @@ public partial class PUParticles : PUParticlesBase {
 
 	}
 	
-	
+
 	public PUParticles(
 			string systemName,
 			bool limitToInside,
@@ -54,7 +54,7 @@ public partial class PUParticles : PUParticlesBase {
 	}
 
 	
-	
+
 	public PUParticles(
 			string systemName,
 			bool limitToInside,
@@ -180,7 +180,7 @@ public class PUParticlesBase : PUCustomGeometry {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -188,7 +188,7 @@ public class PUParticlesBase : PUCustomGeometry {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Particles");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -196,7 +196,7 @@ public class PUParticlesBase : PUCustomGeometry {
 			else
 			{
 				parentField = parent.GetType().GetField("Particless");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -221,7 +221,7 @@ public class PUParticlesBase : PUCustomGeometry {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -244,16 +244,16 @@ public class PUParticlesBase : PUCustomGeometry {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUParticles ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("systemName");
@@ -285,13 +285,13 @@ public class PUParticlesBase : PUCustomGeometry {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -304,23 +304,23 @@ public class PUParticlesBase : PUCustomGeometry {
 		if(imageMaskPath != null) { sb.AppendFormat (" {0}=\"{1}\"", "imageMaskPath", SecurityElement.Escape (imageMaskPath)); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Particles");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -332,14 +332,14 @@ public class PUParticlesBase : PUCustomGeometry {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

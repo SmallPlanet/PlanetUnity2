@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PURawImage : PURawImageBase {
-	
+
 	public PURawImage()
 	{
 	}
 	
-	
+
 	public PURawImage(
 			string resourcePath,
 			Color color,
@@ -36,7 +36,7 @@ public partial class PURawImage : PURawImageBase {
 	}
 
 	
-	
+
 	public PURawImage(
 			string resourcePath,
 			Color color,
@@ -150,7 +150,7 @@ public class PURawImageBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -158,7 +158,7 @@ public class PURawImageBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("RawImage");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -166,7 +166,7 @@ public class PURawImageBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("RawImages");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -191,7 +191,7 @@ public class PURawImageBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -214,16 +214,16 @@ public class PURawImageBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PURawImage ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("resourcePath");
@@ -240,13 +240,13 @@ public class PURawImageBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -256,23 +256,23 @@ public class PURawImageBase : PUGameObject {
 		if(uvRect != null) { sb.AppendFormat (" {0}=\"{1}\"", "uvRect", uvRect.Value.PUToString()); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "RawImage");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -284,14 +284,14 @@ public class PURawImageBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUVerticalLayoutGroup : PUVerticalLayoutGroupBase {
-	
+
 	public PUVerticalLayoutGroup()
 	{
 		string attr;
@@ -29,7 +29,7 @@ public partial class PUVerticalLayoutGroup : PUVerticalLayoutGroupBase {
 
 	}
 	
-	
+
 	public PUVerticalLayoutGroup(
 			float spacing,
 			Vector4 padding,
@@ -43,7 +43,7 @@ public partial class PUVerticalLayoutGroup : PUVerticalLayoutGroupBase {
 	}
 
 	
-	
+
 	public PUVerticalLayoutGroup(
 			float spacing,
 			Vector4 padding,
@@ -157,7 +157,7 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -165,7 +165,7 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("VerticalLayoutGroup");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -173,7 +173,7 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("VerticalLayoutGroups");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -198,7 +198,7 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -221,16 +221,16 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUVerticalLayoutGroup ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("spacing");
@@ -249,13 +249,13 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -265,23 +265,23 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 		if(childAlignment != null) { sb.AppendFormat (" {0}=\"{1}\"", "childAlignment", (int)childAlignment); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "VerticalLayoutGroup");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -293,14 +293,14 @@ public class PUVerticalLayoutGroupBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

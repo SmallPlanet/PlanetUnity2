@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PUClearButton : PUClearButtonBase {
-	
+
 	public PUClearButton()
 	{
 	}
 	
-	
+
 	public PUClearButton(
 			string onTouchUp ) : this()
 	{
@@ -30,7 +30,7 @@ public partial class PUClearButton : PUClearButtonBase {
 	}
 
 	
-	
+
 	public PUClearButton(
 			string onTouchUp,
 			Vector4 bounds,
@@ -136,7 +136,7 @@ public class PUClearButtonBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -144,7 +144,7 @@ public class PUClearButtonBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("ClearButton");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -152,7 +152,7 @@ public class PUClearButtonBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("ClearButtons");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -177,7 +177,7 @@ public class PUClearButtonBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -200,16 +200,16 @@ public class PUClearButtonBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUClearButton ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("onTouchUp");
@@ -218,13 +218,13 @@ public class PUClearButtonBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -232,23 +232,23 @@ public class PUClearButtonBase : PUGameObject {
 		if(onTouchUp != null) { sb.AppendFormat (" {0}=\"{1}\"", "onTouchUp", SecurityElement.Escape (onTouchUp)); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "ClearButton");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -260,14 +260,14 @@ public class PUClearButtonBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PUMovie : PUMovieBase {
-	
+
 	public PUMovie()
 	{
 	}
 	
-	
+
 	public PUMovie(
 			bool hasAlpha,
 			bool looping,
@@ -39,7 +39,7 @@ public partial class PUMovie : PUMovieBase {
 	}
 
 	
-	
+
 	public PUMovie(
 			bool hasAlpha,
 			bool looping,
@@ -157,7 +157,7 @@ public class PUMovieBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -165,7 +165,7 @@ public class PUMovieBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Movie");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -173,7 +173,7 @@ public class PUMovieBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("Movies");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -198,7 +198,7 @@ public class PUMovieBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -221,16 +221,16 @@ public class PUMovieBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUMovie ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("hasAlpha");
@@ -251,13 +251,13 @@ public class PUMovieBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -268,23 +268,23 @@ public class PUMovieBase : PUGameObject {
 		if(color != null) { sb.AppendFormat (" {0}=\"{1}\"", "color", color.Value.PUToString()); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Movie");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -296,14 +296,14 @@ public class PUMovieBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

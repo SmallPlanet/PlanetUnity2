@@ -1,15 +1,15 @@
 <%
 -- Copyright (c) 2014 Chimera Software, LLC
--- 
--- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files 
--- (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
--- publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+-- (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
+-- publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
 -- subject to the following conditions:
--- 
+--
 -- The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--- 
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
--- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
 -- FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  %>
@@ -32,28 +32,28 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
-using TBSharpXML;
+using TB;
 
 public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
-	
+
 	public <%= FULL_NAME_CAMEL %>()
 	{<%
 			didPrintAttr = false;
 			for k,v in pairs(this.attributes) do
 				if (v.default ~= nil) then
-				
+
 					if (didPrintAttr == false) then
 						didPrintAttr = true;
 						gaxb_print("\n\t\tstring attr;\n\n")
 					end
-					
+
 					if (v.default == "UUID_REGISTER") then
 						gaxb_print("\t\tattr = UUID.Generate ();\n")
 					else
 						gaxb_print('\t\tattr = "'..v.default..'";\n')
 					end
-					
-					
+
+
 					if (typeNameForItem(v)=="bool") then
 						gaxb_print("\t\tif(attr != null) { "..cleanedName(v.name).." = bool.Parse(attr); } \n")
 					elseif (typeNameForItem(v)=="string") then
@@ -83,8 +83,8 @@ public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 					else
 						gaxb_print("\t\tif(attr != null) { "..cleanedName(v.name).." = new "..typeForItem(v).."().PUParse(attr); } \n")
 					end
-					
-					
+
+
 				end
 			end
 		%>
@@ -92,9 +92,9 @@ public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 	<%
 	allAttributes = allAttributesForClass(this);
 	allRequiredAttributes = mixedAttributesForClass(this);
-	
+
 	if(#allRequiredAttributes > 0) then %>
-	
+
 	public <%= FULL_NAME_CAMEL %>(<%
 		gaxb_print("\n");
 		for i,v in ipairs(allRequiredAttributes) do
@@ -112,7 +112,7 @@ public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 <% end %>
 	<%
 	if(#allAttributes > 0 and #allAttributes ~= #allRequiredAttributes) then %>
-	
+
 	public <%= FULL_NAME_CAMEL %>(<%
 		gaxb_print("\n");
 		for i,v in ipairs(allAttributes) do
@@ -197,7 +197,7 @@ end
 		end
 %>
 	}
-	
+
 <%	if(hasSuperclass(this) == false) then
 		gaxb_print("\tpublic void gaxb_addToParent()\n")
 	else
@@ -208,7 +208,7 @@ end
 		{
 			FieldInfo parentField = parent.GetType().GetField("<%= CAP_NAME %>");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -216,7 +216,7 @@ end
 			else
 			{
 				parentField = parent.GetType().GetField("<%= PLURAL_NAME %>");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -241,7 +241,7 @@ end
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -266,25 +266,25 @@ end
 %>
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( <%= FULL_NAME_CAMEL_NON_BASE %> ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 <%
 		if (# this.attributes > 0) then
 			gaxb_print("\n\t\tstring attr;\n")
 		end
 		for k,v in pairs(this.attributes) do
 			gaxb_print("\t\tattr = element.GetAttribute(\""..v.originalName.."\");\n")
-			
+
 			gaxb_print('\t\tif(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }\n');
-			
+
 			if (v.default ~= nil) then
 				if (v.default == "UUID_REGISTER") then
 					gaxb_print("\t\tif(attr == null) { attr = UUID.Generate (); }\n")
@@ -292,7 +292,7 @@ end
 					gaxb_print("\t\tif(attr == null) { attr = \""..v.default.."\"; }\n")
 				end
 			end
-			
+
 			if (typeNameForItem(v)=="bool") then
 				gaxb_print("\t\tif(attr != null) { "..v.name.." = bool.Parse(attr); } \n")
 			elseif (typeNameForItem(v)=="string") then
@@ -322,18 +322,18 @@ end
 			else
 				gaxb_print("\t\tif(attr != null) { "..v.name.." = new "..typeForItem(v).."().PUParse(attr); } \n")
 			end
-			
+
 			gaxb_print("\t\t\n")
 		end
 		%>
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public <%=NEW_KEYWORD%>void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 <%		if(hasSuperclass(this)) then
@@ -366,13 +366,13 @@ end
 					gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", '..v.name..'.Value.PUToString()); }\n')
 				else
 					gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", '..v.name..'.PUToString()); }\n')
-				end				
+				end
 			else
 				gaxb_print('\t\tif('..v.name..' != null) { sb.AppendFormat (" {0}=\\"{1}\\"", "'..v.name..'", SecurityElement.Escape ('..v.name..')); }\n')
 			end
 		end %>
 	}
-	
+
 	public <%=NEW_KEYWORD%>void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 <%		if(hasSuperclass(this)) then
@@ -396,16 +396,16 @@ end
 		end
 %>
 	}
-	
+
 	public <%=NEW_KEYWORD%>void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "<%=this.name%>");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\\"{1}\\"", "xmlns", xmlns);
@@ -417,14 +417,14 @@ end
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

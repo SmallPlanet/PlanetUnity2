@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUSimpleTable : PUSimpleTableBase {
-	
+
 	public PUSimpleTable()
 	{
 		string attr;
@@ -31,7 +31,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 
 	}
 	
-	
+
 	public PUSimpleTable(
 			Vector2 cellSize,
 			Vector2 headerSize,
@@ -48,7 +48,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 	}
 
 	
-	
+
 	public PUSimpleTable(
 			Vector2 cellSize,
 			Vector2 headerSize,
@@ -178,7 +178,7 @@ public class PUSimpleTableBase : PUScrollRect {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -186,7 +186,7 @@ public class PUSimpleTableBase : PUScrollRect {
 		{
 			FieldInfo parentField = parent.GetType().GetField("SimpleTable");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -194,7 +194,7 @@ public class PUSimpleTableBase : PUScrollRect {
 			else
 			{
 				parentField = parent.GetType().GetField("SimpleTables");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -219,7 +219,7 @@ public class PUSimpleTableBase : PUScrollRect {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -242,16 +242,16 @@ public class PUSimpleTableBase : PUScrollRect {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUSimpleTable ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("cellSize");
@@ -275,13 +275,13 @@ public class PUSimpleTableBase : PUScrollRect {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -292,23 +292,23 @@ public class PUSimpleTableBase : PUScrollRect {
 		 sb.AppendFormat (" {0}=\"{1}\"", "expandCellWidth", expandCellWidth.ToString().ToLower()); 
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "SimpleTable");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -320,14 +320,14 @@ public class PUSimpleTableBase : PUScrollRect {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

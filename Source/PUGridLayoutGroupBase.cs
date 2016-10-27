@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUGridLayoutGroup : PUGridLayoutGroupBase {
-	
+
 	public PUGridLayoutGroup()
 	{
 		string attr;
@@ -29,7 +29,7 @@ public partial class PUGridLayoutGroup : PUGridLayoutGroupBase {
 
 	}
 	
-	
+
 	public PUGridLayoutGroup(
 			Vector2 cellSize,
 			Vector2 spacing,
@@ -55,7 +55,7 @@ public partial class PUGridLayoutGroup : PUGridLayoutGroupBase {
 	}
 
 	
-	
+
 	public PUGridLayoutGroup(
 			Vector2 cellSize,
 			Vector2 spacing,
@@ -185,7 +185,7 @@ public class PUGridLayoutGroupBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -193,7 +193,7 @@ public class PUGridLayoutGroupBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("GridLayoutGroup");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -201,7 +201,7 @@ public class PUGridLayoutGroupBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("GridLayoutGroups");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -226,7 +226,7 @@ public class PUGridLayoutGroupBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -249,16 +249,16 @@ public class PUGridLayoutGroupBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUGridLayoutGroup ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("cellSize");
@@ -293,13 +293,13 @@ public class PUGridLayoutGroupBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -313,23 +313,23 @@ public class PUGridLayoutGroupBase : PUGameObject {
 		if(fixedColumns != null) { sb.AppendFormat (" {0}=\"{1}\"", "fixedColumns", fixedColumns); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "GridLayoutGroup");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -341,14 +341,14 @@ public class PUGridLayoutGroupBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

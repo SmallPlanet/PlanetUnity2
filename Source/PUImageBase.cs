@@ -17,12 +17,12 @@ using System.Security;
 using TB;
 
 public partial class PUImage : PUImageBase {
-	
+
 	public PUImage()
 	{
 	}
 	
-	
+
 	public PUImage(
 			string resourcePath,
 			Color color ) : this()
@@ -33,7 +33,7 @@ public partial class PUImage : PUImageBase {
 	}
 
 	
-	
+
 	public PUImage(
 			string resourcePath,
 			Color color,
@@ -147,7 +147,7 @@ public class PUImageBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -155,7 +155,7 @@ public class PUImageBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Image");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -163,7 +163,7 @@ public class PUImageBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("Images");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -188,7 +188,7 @@ public class PUImageBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -211,16 +211,16 @@ public class PUImageBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUImage ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("resourcePath");
@@ -237,13 +237,13 @@ public class PUImageBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -253,23 +253,23 @@ public class PUImageBase : PUGameObject {
 		if(type != null) { sb.AppendFormat (" {0}=\"{1}\"", "type", (int)type); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Image");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -281,14 +281,14 @@ public class PUImageBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");

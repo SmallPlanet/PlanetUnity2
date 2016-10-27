@@ -26,11 +26,6 @@ interface IPlanetUnity2
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
-	public enum GridLayoutStartAxis {
-		horizontal,
-		vertical,
-	};
-
 	public enum GridLayoutChildAlignment {
 		upperLeft,
 		upperCenter,
@@ -41,94 +36,6 @@ public class PlanetUnity2 {
 		lowerLeft,
 		lowerCenter,
 		lowerRight,
-	};
-
-	public enum GridTableHeuristic {
-		RectBestShortSideFit,
-		RectBestLongSideFit,
-		RectBestAreaFit,
-		RectBottomLeftRule,
-		RectContactPointRule,
-	};
-
-	public enum TextAlignment {
-		upperLeft,
-		upperCenter,
-		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
-		lowerLeft,
-		lowerCenter,
-		lowerRight,
-	};
-
-	public enum FontStyle {
-		normal,
-		bold,
-		italic,
-		boldAndItalic,
-	};
-
-	public enum InputFieldContentType {
-		standard,
-		autocorrected,
-		integer,
-		number,
-		alphanumeric,
-		name,
-		email,
-		password,
-		pin,
-		custom,
-	};
-
-	public enum SliderDirection {
-		LeftToRight,
-		RightToLeft,
-		BottomToTop,
-		TopToBottom,
-	};
-
-	public enum TextOverflowHorizontal {
-		wrap,
-		overflow,
-	};
-
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
-	};
-
-	public enum ParticleEmitMode {
-		SystemNone,
-		SystemScaled,
-		Edge,
-		Fill,
-		Center,
-		Image,
-	};
-
-	public enum ImageType {
-		simple,
-		filled,
-		sliced,
-		tiled,
-		aspectFilled,
-	};
-
-	public enum TextOverflowVertical {
-		truncate,
-		overflow,
-	};
-
-	public enum InputFieldLineType {
-		single,
-		multiSubmit,
-		multiNewline,
 	};
 
 	public const string USERSTRINGINPUT = "UserStringInput";
@@ -146,11 +53,104 @@ public class PlanetUnity2 {
 		WorldSpace,
 	};
 
+	public enum ParticleEmitMode {
+		SystemNone,
+		SystemScaled,
+		Edge,
+		Fill,
+		Center,
+		Image,
+	};
+
+	public enum TextOverflowVertical {
+		truncate,
+		overflow,
+	};
+
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
+	};
+
+	public enum SliderDirection {
+		LeftToRight,
+		RightToLeft,
+		BottomToTop,
+		TopToBottom,
+	};
+
+	public enum TextOverflowHorizontal {
+		wrap,
+		overflow,
+	};
+
+	public enum FontStyle {
+		normal,
+		bold,
+		italic,
+		boldAndItalic,
+	};
+
+	public enum TextAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
+	};
+
+	public enum ImageType {
+		simple,
+		filled,
+		sliced,
+		tiled,
+		aspectFilled,
+	};
+
+	public enum InputFieldContentType {
+		standard,
+		autocorrected,
+		integer,
+		number,
+		alphanumeric,
+		name,
+		email,
+		password,
+		pin,
+		custom,
+	};
+
+	public enum GridTableHeuristic {
+		RectBestShortSideFit,
+		RectBestLongSideFit,
+		RectBestAreaFit,
+		RectBottomLeftRule,
+		RectContactPointRule,
+	};
+
 	public enum GridLayoutStartCorner {
 		upperLeft,
 		upperRight,
 		lowerLeft,
 		lowerRight,
+	};
+
+	public enum InputFieldLineType {
+		single,
+		multiSubmit,
+		multiNewline,
+	};
+
+	public enum GridLayoutStartAxis {
+		horizontal,
+		vertical,
 	};
 
 
@@ -159,11 +159,11 @@ public class PlanetUnity2 {
 	{
 		return Regex.Replace(xmlNamespace, "[^A-Z]", "")+name;
 	}
-	
+
 	static public T clone<T>(T root) {
 		return (T)loadXML( System.Text.Encoding.UTF8.GetBytes (writeXML (root)), null, null);
 	}
-	
+
 	static public string writeXML(object root) {
 		StringBuilder sb = new StringBuilder ();
 		MethodInfo mInfo = root.GetType().GetMethod("gaxb_appendXML");
@@ -184,13 +184,14 @@ public class PlanetUnity2 {
 
 			string elementName = element.GetName ();
 
-			string localXmlNamespace = element.GetAttribute ("xmlns");
+      string localXmlNamespace = element.GetAttribute ("xmlns");
 			if (localXmlNamespace != null) {
 				xmlNamespaces.Push (localXmlNamespace);
-			}else{
-				localXmlNamespace = xmlNamespaces.Peek();
+			} else if (xmlNamespaces.Count > 0) {
+				localXmlNamespace = xmlNamespaces.Peek ();
+			} else {
+				localXmlNamespace = "";
 			}
-
 
 			try {
 				Type entityClass = Type.GetType (ConvertClassName (localXmlNamespace, elementName), true);
@@ -215,7 +216,7 @@ public class PlanetUnity2 {
 		}, (element) => {
 			try {
 				string elementName = element.GetName ();
-				string localXmlNamespace = xmlNamespaces.Peek ();
+				string localXmlNamespace = xmlNamespaces.Count > 0 ? xmlNamespaces.Peek () : "";
 				if (element.GetAttribute ("xmlns") != null) {
 					xmlNamespaces.Pop ();
 				}
@@ -238,7 +239,7 @@ public class PlanetUnity2 {
 			} catch (TypeLoadException) {
 			}
 		});
-	
+
 		return returnEntity;
 	}
 

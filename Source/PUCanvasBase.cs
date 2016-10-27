@@ -17,7 +17,7 @@ using System.Security;
 using TB;
 
 public partial class PUCanvas : PUCanvasBase {
-	
+
 	public PUCanvas()
 	{
 		string attr;
@@ -31,7 +31,7 @@ public partial class PUCanvas : PUCanvasBase {
 
 	}
 	
-	
+
 	public PUCanvas(
 			PlanetUnity2.CanvasRenderMode renderMode,
 			bool pixelPerfect,
@@ -45,7 +45,7 @@ public partial class PUCanvas : PUCanvasBase {
 	}
 
 	
-	
+
 	public PUCanvas(
 			PlanetUnity2.CanvasRenderMode renderMode,
 			bool pixelPerfect,
@@ -159,7 +159,7 @@ public class PUCanvasBase : PUGameObject {
 		base.gaxb_unload();
 
 	}
-	
+
 	public new void gaxb_addToParent()
 
 	{
@@ -167,7 +167,7 @@ public class PUCanvasBase : PUGameObject {
 		{
 			FieldInfo parentField = parent.GetType().GetField("Canvas");
 			List<object> parentChildren = null;
-			
+
 			if(parentField != null)
 			{
 				parentField.SetValue(parent, this);
@@ -175,7 +175,7 @@ public class PUCanvasBase : PUGameObject {
 			else
 			{
 				parentField = parent.GetType().GetField("Canvass");
-				
+
 				if(parentField != null)
 				{
 					parentChildren = (List<object>)(parentField.GetValue(parent));
@@ -200,7 +200,7 @@ public class PUCanvasBase : PUGameObject {
 				{
 					parentChildren.Add(this);
 				}
-				
+
 			}
 		}
 	}
@@ -223,16 +223,16 @@ public class PUCanvasBase : PUGameObject {
 
 		if(element == null && _parent == null)
 			return;
-		
+
 		parent = _parent;
-		
+
 		if(this.GetType() == typeof( PUCanvas ))
 		{
 			gaxb_addToParent();
 		}
-		
+
 		//xmlns = element.GetAttribute("xmlns");
-		
+
 
 		string attr;
 		attr = element.GetAttribute("renderMode");
@@ -252,13 +252,13 @@ public class PUCanvasBase : PUGameObject {
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public override void gaxb_appendXMLAttributes(StringBuilder sb)
 	{
 		base.gaxb_appendXMLAttributes(sb);
@@ -268,23 +268,23 @@ public class PUCanvasBase : PUGameObject {
 		if(planeDistance != null) { sb.AppendFormat (" {0}=\"{1}\"", "planeDistance", planeDistance.Value.ToString ("0.##")); }
 
 	}
-	
+
 	public override void gaxb_appendXMLSequences(StringBuilder sb)
 	{
 		base.gaxb_appendXMLSequences(sb);
 
 
 	}
-	
+
 	public override void gaxb_appendXML(StringBuilder sb)
 	{
 		if(sb.Length == 0)
 		{
 			sb.AppendFormat ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		}
-		
+
 		sb.AppendFormat ("<{0}", "Canvas");
-		
+
 		if(xmlns != null) {
 			if(parent == null) {
 				sb.AppendFormat (" {0}=\"{1}\"", "xmlns", xmlns);
@@ -296,14 +296,14 @@ public class PUCanvasBase : PUGameObject {
 				}
 			}
 		}
-		
+
 		gaxb_appendXMLAttributes(sb);
-		
-		
+
+
 		StringBuilder seq = new StringBuilder();
 		seq.AppendFormat(" ");
 		gaxb_appendXMLSequences(seq);
-		
+
 		if(seq.Length == 1)
 		{
 			sb.AppendFormat (" />");
