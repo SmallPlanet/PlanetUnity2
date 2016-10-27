@@ -17,6 +17,7 @@ using System.Reflection;
 using System;
 using System.Xml;
 using System.Collections;
+using TB;
 
 public partial class PUObject : PUObjectBase {
 
@@ -29,9 +30,9 @@ public partial class PUObject : PUObjectBase {
 	public float UserFloat3;
 
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 	}
 
 	public override void gaxb_unload()
@@ -49,7 +50,7 @@ public partial class PUObject : PUObjectBase {
 
 	}
 
-	public virtual void gaxb_final(XmlReader reader, object _parent, Hashtable args)
+	public virtual void gaxb_final(TBXMLElement element, object _parent, Hashtable args)
 	{
 
 	}

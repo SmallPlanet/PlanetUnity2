@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TBSharpXML;
 
 public partial class <%= FULL_NAME_CAMEL %> : <%= FULL_NAME_CAMEL %>Base {
 	
@@ -257,13 +258,13 @@ end
 		return returnString;
 	}
 
-	public <%=NEW_KEYWORD%>void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public <%=NEW_KEYWORD%>void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
 <%		if(hasSuperclass(this)) then
-			gaxb_print("\t\tbase.gaxb_load(reader, _parent, args);\n")
+			gaxb_print("\t\tbase.gaxb_load(element, _parent, args);\n")
 		end
 %>
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -273,14 +274,14 @@ end
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 <%
 		if (# this.attributes > 0) then
 			gaxb_print("\n\t\tstring attr;\n")
 		end
 		for k,v in pairs(this.attributes) do
-			gaxb_print("\t\tattr = reader.GetAttribute(\""..v.originalName.."\");\n")
+			gaxb_print("\t\tattr = element.GetAttribute(\""..v.originalName.."\");\n")
 			
 			gaxb_print('\t\tif(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }\n');
 			

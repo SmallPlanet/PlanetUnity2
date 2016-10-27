@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TB;
 
 public partial class PUText : PUTextBase {
 	
@@ -286,11 +287,11 @@ public class PUTextBase : PUGameObject {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -300,62 +301,62 @@ public class PUTextBase : PUGameObject {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("font");
+		attr = element.GetAttribute("font");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { font = unescape(attr); } 
 		
-		attr = reader.GetAttribute("fontSize");
+		attr = element.GetAttribute("fontSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "12"; }
 		if(attr != null) { fontSize = (int)float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("fontStyle");
+		attr = element.GetAttribute("fontStyle");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { fontStyle = (PlanetUnity2.FontStyle)Enum.Parse(typeof(PlanetUnity2.FontStyle), attr); } 
 		
-		attr = reader.GetAttribute("fontColor");
+		attr = element.GetAttribute("fontColor");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0,0,0,1"; }
 		if(attr != null) { fontColor = new Color().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("lineSpacing");
+		attr = element.GetAttribute("lineSpacing");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { lineSpacing = float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("alignment");
+		attr = element.GetAttribute("alignment");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "middleCenter"; }
 		if(attr != null) { alignment = (PlanetUnity2.TextAlignment)Enum.Parse(typeof(PlanetUnity2.TextAlignment), attr); } 
 		
-		attr = reader.GetAttribute("value");
+		attr = element.GetAttribute("value");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { value = unescape(attr); } 
 		
-		attr = reader.GetAttribute("sizeToFit");
+		attr = element.GetAttribute("sizeToFit");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { sizeToFit = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("maxFontSize");
+		attr = element.GetAttribute("maxFontSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { maxFontSize = (int)float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("minFontSize");
+		attr = element.GetAttribute("minFontSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { minFontSize = (int)float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("vOverflow");
+		attr = element.GetAttribute("vOverflow");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { vOverflow = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("hOverflow");
+		attr = element.GetAttribute("hOverflow");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { hOverflow = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("onLinkClick");
+		attr = element.GetAttribute("onLinkClick");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onLinkClick = unescape(attr); } 
 		

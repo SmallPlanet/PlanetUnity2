@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TB;
 
 public partial class PUObject : PUObjectBase {
 	
@@ -144,10 +145,10 @@ public class PUObjectBase : IPlanetUnity2 {
 		return returnString;
 	}
 
-	public virtual void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public virtual void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -157,39 +158,39 @@ public class PUObjectBase : IPlanetUnity2 {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("title");
+		attr = element.GetAttribute("title");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { title = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag");
+		attr = element.GetAttribute("tag");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag1");
+		attr = element.GetAttribute("tag1");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag1 = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag2");
+		attr = element.GetAttribute("tag2");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag2 = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag3");
+		attr = element.GetAttribute("tag3");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag3 = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag4");
+		attr = element.GetAttribute("tag4");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag4 = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag5");
+		attr = element.GetAttribute("tag5");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag5 = unescape(attr); } 
 		
-		attr = reader.GetAttribute("tag6");
+		attr = element.GetAttribute("tag6");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { tag6 = unescape(attr); } 
 		

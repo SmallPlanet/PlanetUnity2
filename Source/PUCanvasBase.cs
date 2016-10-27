@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TB;
 
 public partial class PUCanvas : PUCanvasBase {
 	
@@ -216,11 +217,11 @@ public class PUCanvasBase : PUGameObject {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -230,21 +231,21 @@ public class PUCanvasBase : PUGameObject {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("renderMode");
+		attr = element.GetAttribute("renderMode");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "ScreenSpaceOverlay"; }
 		if(attr != null) { renderMode = (PlanetUnity2.CanvasRenderMode)Enum.Parse(typeof(PlanetUnity2.CanvasRenderMode), attr); } 
 		
-		attr = reader.GetAttribute("pixelPerfect");
+		attr = element.GetAttribute("pixelPerfect");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "false"; }
 		if(attr != null) { pixelPerfect = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("planeDistance");
+		attr = element.GetAttribute("planeDistance");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "100"; }
 		if(attr != null) { planeDistance = float.Parse(attr); } 

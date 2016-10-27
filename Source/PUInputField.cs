@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Collections;
+using TB;
 
 public partial class PUInputField : PUInputFieldBase {
 
@@ -41,13 +42,13 @@ public partial class PUInputField : PUInputFieldBase {
 		return "";
 	}
 	
-	public override void gaxb_final(XmlReader reader, object _parent, Hashtable args) {
-		base.gaxb_final (reader, _parent, args);
+	public override void gaxb_final(TBXMLElement element, object _parent, Hashtable args) {
+		base.gaxb_final (element, _parent, args);
 		
 		string attrib;
 		
-		if (reader != null) {
-			attrib = reader.GetAttribute ("regexValidation");
+		if (element != null) {
+			attrib = element.GetAttribute ("regexValidation");
 			if (attrib != null) {
 				regexValidation = attrib;
 			}

@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TB;
 
 public partial class PUSlider : PUSliderBase {
 	
@@ -256,11 +257,11 @@ public class PUSliderBase : PUImage {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -270,38 +271,38 @@ public class PUSliderBase : PUImage {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("handleResourcePath");
+		attr = element.GetAttribute("handleResourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { handleResourcePath = unescape(attr); } 
 		
-		attr = reader.GetAttribute("handleSize");
+		attr = element.GetAttribute("handleSize");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "32,32"; }
 		if(attr != null) { handleSize = new Vector2().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("fillResourcePath");
+		attr = element.GetAttribute("fillResourcePath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { fillResourcePath = unescape(attr); } 
 		
-		attr = reader.GetAttribute("onValueChanged");
+		attr = element.GetAttribute("onValueChanged");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { onValueChanged = unescape(attr); } 
 		
-		attr = reader.GetAttribute("minValue");
+		attr = element.GetAttribute("minValue");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "0"; }
 		if(attr != null) { minValue = float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("maxValue");
+		attr = element.GetAttribute("maxValue");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "1"; }
 		if(attr != null) { maxValue = float.Parse(attr); } 
 		
-		attr = reader.GetAttribute("direction");
+		attr = element.GetAttribute("direction");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { direction = (PlanetUnity2.SliderDirection)Enum.Parse(typeof(PlanetUnity2.SliderDirection), attr); } 
 		

@@ -21,7 +21,7 @@ using UnityEngine.UI;
 using System.Reflection;
 using System;
 using System.Text.RegularExpressions;
-
+using TB;
 
 
 public class MaskGraphic : Graphic, ICanvasRaycastFilter {
@@ -143,7 +143,7 @@ public partial class PUGameObject : PUGameObjectBase {
 		gameObject.transform.SetParent (p.transform, false);
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
 		if (stringToAnchorLookup == null) {
 			stringToAnchorLookup = new Dictionary<string, Vector4> ();
@@ -169,10 +169,10 @@ public partial class PUGameObject : PUGameObjectBase {
 			stringToAnchorLookup.Add ("stretch,stretch", new Vector4 (0, 0, 1, 1));
 		}
 
-		base.gaxb_load (reader, _parent, args);
+		base.gaxb_load (element, _parent, args);
 	}
 		
-	public override void gaxb_final(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_final(TBXMLElement element, object _parent, Hashtable args)
 	{
 		if (gameObject == null) {
 			gameObject = new GameObject ("<GameObject />", typeof(RectTransform));

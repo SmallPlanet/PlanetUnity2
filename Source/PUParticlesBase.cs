@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections;
 using System.Security;
+using TB;
 
 public partial class PUParticles : PUParticlesBase {
 	
@@ -237,11 +238,11 @@ public class PUParticlesBase : PUCustomGeometry {
 		return returnString;
 	}
 
-	public override void gaxb_load(XmlReader reader, object _parent, Hashtable args)
+	public override void gaxb_load(TBXMLElement element, object _parent, Hashtable args)
 	{
-		base.gaxb_load(reader, _parent, args);
+		base.gaxb_load(element, _parent, args);
 
-		if(reader == null && _parent == null)
+		if(element == null && _parent == null)
 			return;
 		
 		parent = _parent;
@@ -251,34 +252,34 @@ public class PUParticlesBase : PUCustomGeometry {
 			gaxb_addToParent();
 		}
 		
-		//xmlns = reader.GetAttribute("xmlns");
+		//xmlns = element.GetAttribute("xmlns");
 		
 
 		string attr;
-		attr = reader.GetAttribute("systemName");
+		attr = element.GetAttribute("systemName");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { systemName = unescape(attr); } 
 		
-		attr = reader.GetAttribute("limitToInside");
+		attr = element.GetAttribute("limitToInside");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "true"; }
 		if(attr != null) { limitToInside = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("emitMode");
+		attr = element.GetAttribute("emitMode");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "SystemScaled"; }
 		if(attr != null) { emitMode = (PlanetUnity2.ParticleEmitMode)Enum.Parse(typeof(PlanetUnity2.ParticleEmitMode), attr); } 
 		
-		attr = reader.GetAttribute("adjustToFPS");
+		attr = element.GetAttribute("adjustToFPS");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr == null) { attr = "true"; }
 		if(attr != null) { adjustToFPS = bool.Parse(attr); } 
 		
-		attr = reader.GetAttribute("customScale");
+		attr = element.GetAttribute("customScale");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { customScale = new Vector2().PUParse(attr); } 
 		
-		attr = reader.GetAttribute("imageMaskPath");
+		attr = element.GetAttribute("imageMaskPath");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { imageMaskPath = unescape(attr); } 
 		

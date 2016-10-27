@@ -263,7 +263,8 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	#region XML dynamic loading
 
 	static public PUGameObject LoadXML(string xmlPath, PUGameObject parent) {
-		PUGameObject loadedGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityOverride.xmlFromPath(xmlPath), parent, null);
+		
+		PUGameObject loadedGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityResourceCache.GetAsset<TextAsset>(xmlPath).bytes, parent, null);
 
 		#if UNITY_EDITOR
 		if(planetUnityContainer != null){
@@ -277,7 +278,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	}
 
 	static public PUGameObject LoadXML(string xmlPath, GameObject parent) {
-		PUGameObject loadedGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityOverride.xmlFromPath(xmlPath), parent, null);
+		PUGameObject loadedGameObject = (PUGameObject)PlanetUnity2.loadXML (PlanetUnityResourceCache.GetAsset<TextAsset>(xmlPath).bytes, parent, null);
 
 		#if UNITY_EDITOR
 		if(planetUnityContainer != null){
@@ -367,7 +368,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		}
 			
 		//UnityEngine.Debug.Log ("LoadCanvasXML");
-		PUGameObject rootObject = (PUGameObject)PlanetUnity2.loadXML (xml, planetUnityContainer, null);
+		PUGameObject rootObject = (PUGameObject)PlanetUnity2.loadXML (System.Text.Encoding.UTF8.GetBytes (xml), planetUnityContainer, null);
 
 		if (rootObject is PUCanvas) {
 			canvas = rootObject as PUCanvas;
