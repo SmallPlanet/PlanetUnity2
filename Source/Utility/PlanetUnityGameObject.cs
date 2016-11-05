@@ -40,6 +40,14 @@ public class PlanetUnityOverride {
 	public static int minFPS = 10;
 	public static int maxFPS = 60;
 
+	public static Func<string, byte[]> bytesFromPath = (path) => {
+		TextAsset t = PlanetUnityResourceCache.GetAsset<TextAsset>(path);
+		if(t == null){
+			return null;
+		}
+		return t.bytes;
+	};
+
 	public static Func<string, string> xmlFromPath = (path) => {
 		return PlanetUnityResourceCache.GetTextFile(path);
 	};
