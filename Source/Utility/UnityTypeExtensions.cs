@@ -335,6 +335,29 @@ public static class IntExtension
 	}
 }
 
+public static class FloatExtension
+{
+	static public bool GrowValueTowardsValueLinear(this float n, ref float current, float target, float velocity)
+	{
+		// animate one turbo size per second
+		float v = velocity * Time.deltaTime;
+		if (current < target) {
+			current += v;
+			if (current > target) {
+				current = target;
+			}
+			return true;
+		} else if (current > target) {
+			current -= v;
+			if (current < target) {
+				current = target;
+			}
+			return true;
+		}
+		return false;
+	}
+}
+
 
 public static class StringExtension
 {
@@ -409,6 +432,42 @@ public static class Vector2Extension
 		ry = t * sina + ry * cosa;
 		return new Vector2(rx + pivot.x, ry + pivot.y);
 	}
+
+	public static bool GrowValueTowardsValueLinear(this Vector2 x, ref Vector2 current, Vector2 target, float velocity) {
+
+		bool didChangeSomething = false;
+
+		if (current.x < target.x) {
+			current.x += velocity;
+			if (current.x > target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		} else if (current.x > target.x) {
+			current.x -= velocity;
+			if (current.x < target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.y < target.y) {
+			current.y += velocity;
+			if (current.y > target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		} else if (current.y > target.y) {
+			current.y -= velocity;
+			if (current.y < target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		}
+
+		return didChangeSomething;
+	}
+
 }
 
 public static class Vector3Extension
@@ -484,6 +543,56 @@ public static class Vector3Extension
 	{
 		return Vector3.Angle (a, b);
 	}
+
+	public static bool GrowValueTowardsValueLinear(this Vector3 x, ref Vector3 current, Vector3 target, float velocity) {
+
+		bool didChangeSomething = false;
+
+		if (current.x < target.x) {
+			current.x += velocity;
+			if (current.x > target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		} else if (current.x > target.x) {
+			current.x -= velocity;
+			if (current.x < target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.y < target.y) {
+			current.y += velocity;
+			if (current.y > target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		} else if (current.y > target.y) {
+			current.y -= velocity;
+			if (current.y < target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.z < target.z) {
+			current.z += velocity;
+			if (current.z > target.z) {
+				current.z = target.z;
+			}
+			didChangeSomething = true;
+		} else if (current.z > target.z) {
+			current.z -= velocity;
+			if (current.z < target.z) {
+				current.z = target.z;
+			}
+			didChangeSomething = true;
+		}
+			
+		return didChangeSomething;
+	}
+
 }
 
 public static class Vector4Extension
@@ -516,6 +625,70 @@ public static class Vector4Extension
 	{
 		return v.w;
 	}
+
+	public static bool GrowValueTowardsValueLinear(this Vector4 x, ref Vector4 current, Vector4 target, float velocity) {
+
+		bool didChangeSomething = false;
+
+		if (current.x < target.x) {
+			current.x += velocity;
+			if (current.x > target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		} else if (current.x > target.x) {
+			current.x -= velocity;
+			if (current.x < target.x) {
+				current.x = target.x;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.y < target.y) {
+			current.y += velocity;
+			if (current.y > target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		} else if (current.y > target.y) {
+			current.y -= velocity;
+			if (current.y < target.y) {
+				current.y = target.y;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.z < target.z) {
+			current.z += velocity;
+			if (current.z > target.z) {
+				current.z = target.z;
+			}
+			didChangeSomething = true;
+		} else if (current.z > target.z) {
+			current.z -= velocity;
+			if (current.z < target.z) {
+				current.z = target.z;
+			}
+			didChangeSomething = true;
+		}
+
+		if (current.w < target.w) {
+			current.w += velocity;
+			if (current.w > target.w) {
+				current.w = target.w;
+			}
+			didChangeSomething = true;
+		} else if (current.w > target.w) {
+			current.w -= velocity;
+			if (current.w < target.w) {
+				current.w = target.w;
+			}
+			didChangeSomething = true;
+		}
+
+		return didChangeSomething;
+	}
+
 }
 
 public static class ColorExtension
