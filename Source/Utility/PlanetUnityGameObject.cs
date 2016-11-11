@@ -176,7 +176,7 @@ public class PlanetUnityOverride {
 
 public class PlanetUnityGameObject : MonoBehaviour {
 
-	static int mainThreadId;
+	static Thread mainThread;
 
 	public static float desiredFPS;
 	public static void RequestFPS(float f) {
@@ -226,7 +226,10 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	public static bool IsMainThread()
 	{
-		return System.Threading.Thread.CurrentThread.ManagedThreadId == mainThreadId;
+		if (mainThread == null) {
+			return true;
+		}
+		return mainThread.Equals (System.Threading.Thread.CurrentThread);
 	}
 
 	#region XML navigation
@@ -306,7 +309,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+		mainThread = System.Threading.Thread.CurrentThread;
 
 		Application.targetFrameRate = 60;
 
