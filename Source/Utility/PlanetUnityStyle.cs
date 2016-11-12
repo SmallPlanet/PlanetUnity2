@@ -151,8 +151,6 @@ public class PlanetUnityStyle
 			sb.Replace (key, languageDict [key]);
 		}
 		sb.Replace ("\\n", "\n");
-		sb.Replace ("\\x0c", "\x0c");
-		sb.Replace ("\\x0b", "\x0b");
 
 		sb.Replace ("FONTSIZE_MINUS_8", (GlobalFontSize - 8).ToString());
 		sb.Replace ("FONTSIZE_MINUS_6", (GlobalFontSize - 6).ToString());

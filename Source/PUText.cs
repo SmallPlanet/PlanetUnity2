@@ -19,111 +19,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class DetectTextClick : MonoBehaviour, IPointerClickHandler, IPointerUpHandler, IPointerDownHandler, ICanvasRaycastFilter {
-
-	public PUText entity;
-
-
-	public bool TestForHit(Vector2 screenPoint, Camera eventCamera, Action<string, int> block) {
-
-		Text t = gameObject.GetComponent<Text> ();
-		TextGenerator tGen = t.cachedTextGenerator;
-
-		RectTransform rectTransform = gameObject.transform as RectTransform;
-
-		Vector2 touchPos;
-		RectTransformUtility.ScreenPointToLocalPointInRectangle (rectTransform, screenPoint, eventCamera, out touchPos);
-
-		UIVertex[] vArray = tGen.GetVerticesArray ();
-
-		string value = t.text;
-
-		float minDistance = 999999;
-		int minChar = -1;
-		int numVertices = tGen.vertexCount;
-		int linkID = 0;
-		int clickedLinkID = -1;
-
-		for (int i = 0; i < tGen.characterCount; i++) {
-			int idx = i * 4 + 2;
-			if(idx >= numVertices)
-				break;
-
-			UIVertex c = vArray [idx];
-
-			if (i < value.Length && value [i] == '\x0c') {
-				linkID++;
-			}
-
-			float d = Vector2.Distance (touchPos, c.position);
-			if (d < minDistance) {
-				clickedLinkID = linkID;
-				minDistance = d;
-				minChar = i;
-			}
-		}
-
-
-		if (minChar >= 0 && minDistance < 20 && minChar < value.Length) {
-			// i is the index into the string which we clicked.  Determine a "link" by finding the previous '['
-			// and the ending ']'
-			int startIndex = -1;
-			int endIndex = -1;
-			for (int k = minChar; k >= 0; k--) {
-				if (value [k] == '\x0b') {
-					startIndex = k;
-					break;
-				}
-				if (value [k] == '\x0c') {
-					endIndex = -1;
-					break;
-				}
-			}
-			for (int k = minChar; k < value.Length; k++) {
-				if (value [k] == '\x0c') {
-					endIndex = k;
-					break;
-				}
-				if (value [k] == '\x0b') {
-					endIndex = -1;
-					break;
-				}
-			}
-
-			if (startIndex >= 0 && endIndex >= 0) {
-				if (block != null) {
-					string linkText = value.Substring (startIndex + 1, endIndex - startIndex - 1).Trim ();
-					block (linkText, clickedLinkID);
-				}
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera) {
-		bool b = TestForHit(screenPoint, eventCamera, null);
-		return b;
-	}
-		
-	public void OnPointerClick(PointerEventData eventData) {
-		TestForHit (Input.mousePosition, eventData.pressEventCamera, (linkText, clickedLinkID) => {
-			if(entity != null){
-				entity.LinkClicked (linkText, clickedLinkID);
-			}
-		});
-	}
-
-	public void OnPointerDown(PointerEventData data) {
-
-	}
-
-	public void OnPointerUp(PointerEventData data) {
-
-	}
-}
-
 public partial class PUText : PUTextBase {
 
 	static public Action<string, int, PUGameObject> GlobalOnLinkClickAction;
@@ -156,12 +51,6 @@ public partial class PUText : PUTextBase {
 
 		canvasRenderer = gameObject.AddComponent<CanvasRenderer> ();
 		text = gameObject.AddComponent<Text> ();
-
-		if (onLinkClick != null || OnLinkClickAction != null || GlobalOnLinkClickAction != null) {
-			gameObject.AddComponent<DetectTextClick> ();
-			DetectTextClick script = gameObject.GetComponent<DetectTextClick> ();
-			script.entity = this;
-		}
 
 		if (title == null && value != null) {
 			gameObject.name = string.Format("\"{0}\"", value);
