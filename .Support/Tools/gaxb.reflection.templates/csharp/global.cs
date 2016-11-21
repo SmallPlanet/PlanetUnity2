@@ -180,9 +180,9 @@ end
 				} catch (TypeLoadException) {
 					string elementName = element.GetName ();
 					string localXmlNamespace = xmlNamespaces.Count > 0 ? xmlNamespaces.Peek () : "";
-					if (element.GetAttribute ("xmlns") != null) {
-						xmlNamespaces.Pop ();
-					}
+					//if (element.GetAttribute ("xmlns") != null) {
+					//	xmlNamespaces.Pop ();
+					//}
 
 					try {
 						// is this the closing end of a valid PU object?
