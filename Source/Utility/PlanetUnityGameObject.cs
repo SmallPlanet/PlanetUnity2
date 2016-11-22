@@ -530,6 +530,27 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		currentGameObject.PrivateScheduleTask(new Task(block));
 	}
 
+	public static void PerformTask(Action block)
+	{
+		if (System.Object.ReferenceEquals(currentGameObject, null)) {
+			return;
+		}
+
+		if (PlanetUnityGameObject.IsMainThread ()) {
+			block ();
+			return;
+		}
+
+		AutoResetEvent autoEvent = new AutoResetEvent (false);
+
+		PlanetUnityGameObject.ScheduleTask (() => {
+			block ();
+			autoEvent.Set ();
+		});
+
+		autoEvent.WaitOne ();
+	}
+
 	public static bool HasTasks()
 	{
 		if (System.Object.ReferenceEquals(currentGameObject, null)) {

@@ -31,6 +31,25 @@ public class PlanetUnityResourceCache
 		fonts.Clear ();
 	}
 
+	// safe to call on a background thread
+	static public byte[] GetRawBytesSafe(string s) {
+		if (PlanetUnityGameObject.IsMainThread ()) {
+			return ((TextAsset)PlanetUnityOverride.LoadResource (typeof(TextAsset), s)).bytes;
+		}
+
+		// Note: if we get here, we're being called on a background thread.  As such, we need to do a little hairy stuff to make this work
+		byte[] loadedBytes = null;
+		AutoResetEvent autoEvent = new AutoResetEvent (false);
+
+		PlanetUnityGameObject.ScheduleTask (() => {
+			loadedBytes = ((TextAsset)PlanetUnityOverride.LoadResource (typeof(TextAsset), s)).bytes;
+			autoEvent.Set ();
+		});
+
+		autoEvent.WaitOne ();
+		return loadedBytes;
+	}
+
 	static public Texture2D GetTexture(string s)
 	{
 		if (s == null) {
