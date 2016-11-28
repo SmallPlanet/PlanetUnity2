@@ -409,7 +409,9 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 	}
 
-
+	public int VerticalScrollOffset() {
+		return currentScrollY;
+	}
 
 
 
