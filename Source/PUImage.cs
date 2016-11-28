@@ -56,14 +56,6 @@ public partial class PUImage : PUImageBase {
 			return;
 		}
 
-		image.sprite = sp;
-		if (image.sprite != null) {
-			Vector4 border = image.sprite.border;
-			if (!border.x.Equals (0) || !border.y.Equals (0) || !border.z.Equals (0) || !border.w.Equals (0)) {
-				image.type = Image.Type.Sliced;
-			}
-		}
-
 		if (type != null) {
 			if (type == PlanetUnity2.ImageType.filled) {
 				image.type = Image.Type.Filled;
@@ -80,6 +72,14 @@ public partial class PUImage : PUImageBase {
 			}
 			if (type == PlanetUnity2.ImageType.tiled) {
 				image.type = Image.Type.Tiled;
+			}
+		}
+
+		image.sprite = sp;
+		if (image.sprite != null) {
+			Vector4 border = image.sprite.border;
+			if (!border.x.Equals (0) || !border.y.Equals (0) || !border.z.Equals (0) || !border.w.Equals (0)) {
+				image.type = Image.Type.Sliced;
 			}
 		}
 	}
