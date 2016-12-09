@@ -347,8 +347,12 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count > 0)
-				TaskQueue.Dequeue()();
+			// allow us to process tasks for a number of milliseconds before holding off until later
+			Stopwatch sw = new Stopwatch();
+			sw.Start ();
+			while (TaskQueue.Count > 0 && sw.ElapsedMilliseconds < 60) {
+				TaskQueue.Dequeue () ();
+			}
 		}
 	}
 
@@ -495,9 +499,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count < 100) {
-				TaskQueue.Enqueue (newTask);
-			}
+			TaskQueue.Enqueue (newTask);
 		}
 	}
 
