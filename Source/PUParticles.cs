@@ -538,7 +538,12 @@ public partial class PUParticles : PUParticlesBase {
 
 					int vIdx = i * 4;
 
+					#if UNITY_5_5_OR_NEWER
 					float frameProgress = (p.remainingLifetime / p.startLifetime);
+					#else
+					float frameProgress = (p.lifetime / p.startLifetime);
+					#endif
+
 					int lutIdx = (int)(frameProgress * (lutMax - 1));
 
 					Vector3 pos = new Vector3 (p.position.x, p.position.z, p.position.y);
