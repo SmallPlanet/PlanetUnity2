@@ -23,6 +23,10 @@ using System;
 using System.Text.RegularExpressions;
 using TB;
 
+#if UNITY_5_5_OR_NEWER
+using UnityEngine.Profiling;
+#endif
+
 
 public class MaskGraphic : Graphic, ICanvasRaycastFilter {
 
