@@ -69,22 +69,24 @@ public partial class PUGridTable : PUGridTableBase {
 
 		float maxHeight = 0;
 
-		// If we have headers, we want to layout the cells in header-to-header chuncks of cells
-		if (allCells [0].IsHeader () == false) {
-			SubLayoutCells (ref maxHeight, allCells.GetRange(0, allCells.Count), heuristic);
-		} else {
-			int lastHeaderIdx = 0;
+		if (allCells.Count > 0) {
+			// If we have headers, we want to layout the cells in header-to-header chuncks of cells
+			if (allCells [0].IsHeader () == false) {
+				SubLayoutCells (ref maxHeight, allCells.GetRange (0, allCells.Count), heuristic);
+			} else {
+				int lastHeaderIdx = 0;
 
-			for (int i = 1; i < allCells.Count; i++) {
-				if (allCells [i].IsHeader ()) {
-					SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (i - lastHeaderIdx)), heuristic);
-					lastHeaderIdx = i;
+				for (int i = 1; i < allCells.Count; i++) {
+					if (allCells [i].IsHeader ()) {
+						SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (i - lastHeaderIdx)), heuristic);
+						lastHeaderIdx = i;
+					}
 				}
-			}
-			if (lastHeaderIdx != allCells.Count - 1) {
-				SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (allCells.Count - lastHeaderIdx)), heuristic);
-			}
+				if (lastHeaderIdx != allCells.Count - 1) {
+					SubLayoutCells (ref maxHeight, allCells.GetRange (lastHeaderIdx, (allCells.Count - lastHeaderIdx)), heuristic);
+				}
 
+			}
 		}
 
 		contentRectTransform.sizeDelta = new Vector2 (rectTransform.rect.width, maxHeight);
