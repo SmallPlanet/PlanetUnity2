@@ -7,10 +7,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.Remoting.Messaging;
 using UnityEngine.EventSystems;
+using System;
 
 
 
 public partial class PlanetUnityButtonHelper {
+
+	public static Action<PUGameObject> GlobalButtonOnTouchUp = null;
+
+	public static void HandleGlobalButtonOnTouchUp (PUGameObject btn) {
+		if (GlobalButtonOnTouchUp != null) {
+			GlobalButtonOnTouchUp (btn);
+		}
+	}
 
 	public static void SetNormalColor (Button btn, string ncStr) {
 		if (btn != null && ncStr != null)
@@ -64,12 +73,13 @@ public partial class PlanetUnityButtonHelper {
 		if (btn != null && newNote != null) {
 			btn.onClick.RemoveAllListeners();
 
-			btn.onClick.AddListener(() => {
+			btn.onClick.AddListener (() => {
+				HandleGlobalButtonOnTouchUp (gmObj);
 				if (gmObj != null)
-					NotificationCenter.postNotification (gmObj.Scope(), newNote, NotificationCenter.Args("sender", gmObj));
+					NotificationCenter.postNotification (gmObj.Scope (), newNote, NotificationCenter.Args ("sender", gmObj));
 				else
 					NotificationCenter.postNotification (null, newNote);
-			}); 
+			});
 		}
 	}
 

@@ -176,7 +176,7 @@ public class PlanetUnityOverride {
 
 public class PlanetUnityGameObject : MonoBehaviour {
 
-	static int mainThreadId;
+	static Thread mainThread;
 
 	public static float desiredFPS;
 	public static void RequestFPS(float f) {
@@ -226,7 +226,10 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 	public static bool IsMainThread()
 	{
-		return System.Threading.Thread.CurrentThread.ManagedThreadId == mainThreadId;
+		if (mainThread == null) {
+			return true;
+		}
+		return mainThread.Equals (System.Threading.Thread.CurrentThread);
 	}
 
 	#region XML navigation
@@ -306,7 +309,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+		mainThread = System.Threading.Thread.CurrentThread;
 
 		Application.targetFrameRate = 60;
 
@@ -344,8 +347,12 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count > 0)
-				TaskQueue.Dequeue()();
+			// allow us to process tasks for a number of milliseconds before holding off until later
+			Stopwatch sw = new Stopwatch();
+			sw.Start ();
+			while (TaskQueue.Count > 0 && sw.ElapsedMilliseconds < 60) {
+				TaskQueue.Dequeue () ();
+			}
 		}
 	}
 
@@ -492,9 +499,7 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count < 100) {
-				TaskQueue.Enqueue (newTask);
-			}
+			TaskQueue.Enqueue (newTask);
 		}
 	}
 
@@ -525,6 +530,27 @@ public class PlanetUnityGameObject : MonoBehaviour {
 			return;
 		}
 		currentGameObject.PrivateScheduleTask(new Task(block));
+	}
+
+	public static void PerformTask(Action block)
+	{
+		if (System.Object.ReferenceEquals(currentGameObject, null)) {
+			return;
+		}
+
+		if (PlanetUnityGameObject.IsMainThread ()) {
+			block ();
+			return;
+		}
+
+		AutoResetEvent autoEvent = new AutoResetEvent (false);
+
+		PlanetUnityGameObject.ScheduleTask (() => {
+			block ();
+			autoEvent.Set ();
+		});
+
+		autoEvent.WaitOne ();
 	}
 
 	public static bool HasTasks()

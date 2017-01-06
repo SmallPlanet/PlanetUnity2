@@ -148,10 +148,6 @@ public partial class PUInputField : PUInputFieldBase {
 				NotificationCenter.postNotification (Scope (), this.onValueChanged, NotificationCenter.Args("sender", this));
 			}
 		});
-			
-		foreach (Object obj in gameObject.GetComponentsInChildren<DetectTextClick>()) {
-			GameObject.Destroy (obj);
-		}
 
 		field.Rebuild (CanvasUpdate.LatePreRender);
 
