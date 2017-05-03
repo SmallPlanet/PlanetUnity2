@@ -71,6 +71,19 @@ public class InvisibleHitGraphic : Graphic, ICanvasRaycastFilter {
 
 public partial class PUScrollRect : PUScrollRectBase {
 
+	private Vector2 _contentMin = Vector2.zero;
+	public Vector2 ContentMin {
+		get {
+			return _contentMin;
+		}
+	}
+	private Vector2 _contentMax = Vector2.zero;
+	public Vector2 ContentMax {
+		get {
+			return _contentMax;
+		}
+	}
+
 	public Vector2 _ContentOffset = Vector2.zero;
 	public Vector2 ContentOffset {
 		get {
@@ -154,6 +167,9 @@ public partial class PUScrollRect : PUScrollRectBase {
 			maxY = ((RectTransform)myRectTransform.parent).rect.height;
 			//maxX = 0;
 		}
+
+		_contentMin = new Vector2 (minX - _ContentOffset.x, minY - _ContentOffset.y);
+		_contentMax = new Vector2 (maxX, maxY);
 
 		myRectTransform.sizeDelta = new Vector2 (Mathf.Abs(maxX - minX) + _ContentOffset.x, Mathf.Abs(maxY - minY) + _ContentOffset.y);
 	}

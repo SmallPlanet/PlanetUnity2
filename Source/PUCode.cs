@@ -112,39 +112,7 @@ public partial class PUCode : PUCodeBase {
 			try {
 				controller = (MonoBehaviour)gameObject.AddComponent(Type.GetType (_class, true));
 
-				PUGameObject scene = Scope() as PUGameObject;
-				if(scene != null)
-				{
-					FieldInfo field = controller.GetType ().GetField ("scene");
-					if (field != null)
-					{
-						field.SetValue (controller, scene);
-					}
-
-					field = controller.GetType ().GetField ("puGameObject");
-					if (field != null)
-					{
-						field.SetValue (controller, this);
-					}
-
-					scene.PerformOnChildren(val =>
-						{
-							PUGameObject oo = val as PUGameObject;
-							if(oo != null && oo.title != null)
-							{
-								field = controller.GetType ().GetField (oo.title);
-								if (field != null)
-								{
-									try{
-										field.SetValue (controller, oo);
-									}catch(Exception e) {
-										UnityEngine.Debug.Log ("Controller error: " + e);
-									}
-								}
-							}
-							return true;
-						});
-				}
+				AttachAllElements(controller, Scope());
 
 				if(singleton){
 					Debug.Log("Saving instance class for: "+_class);
@@ -196,6 +164,35 @@ public partial class PUCode : PUCodeBase {
 	public override void Start() {
 		if (controller is IPUSingletonCode) {
 			((IPUSingletonCode)controller).SingletonStart ();
+		}
+	}
+
+	public static void AttachAllElements(object controller, PUObject scene) {
+		if(scene != null)
+		{
+			FieldInfo field = controller.GetType ().GetField ("scene");
+			if (field != null)
+			{
+				field.SetValue (controller, scene);
+			}
+
+			scene.PerformOnChildren(val =>
+				{
+					PUGameObject oo = val as PUGameObject;
+					if(oo != null && oo.title != null)
+					{
+						field = controller.GetType ().GetField (oo.title);
+						if (field != null)
+						{
+							try{
+								field.SetValue (controller, oo);
+							}catch(Exception e) {
+								UnityEngine.Debug.Log ("Controller error: " + e);
+							}
+						}
+					}
+					return true;
+				});
 		}
 	}
 
