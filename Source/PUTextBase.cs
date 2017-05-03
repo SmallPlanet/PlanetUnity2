@@ -98,6 +98,7 @@ public partial class PUText : PUTextBase {
 			Vector2 pivot,
 			string anchor,
 			bool active,
+			bool rectMask2D,
 			bool mask,
 			bool showMaskGraphic,
 			Vector4 maskInset,
@@ -157,6 +158,8 @@ public partial class PUText : PUTextBase {
 		this.anchor = anchor;
 
 		this.active = active;
+
+		this.rectMask2D = rectMask2D;
 
 		this.mask = mask;
 

@@ -49,6 +49,7 @@ public partial class PURawImage : PURawImageBase {
 			Vector2 pivot,
 			string anchor,
 			bool active,
+			bool rectMask2D,
 			bool mask,
 			bool showMaskGraphic,
 			Vector4 maskInset,
@@ -88,6 +89,8 @@ public partial class PURawImage : PURawImageBase {
 		this.anchor = anchor;
 
 		this.active = active;
+
+		this.rectMask2D = rectMask2D;
 
 		this.mask = mask;
 

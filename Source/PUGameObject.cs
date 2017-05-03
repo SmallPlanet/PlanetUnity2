@@ -204,6 +204,10 @@ public partial class PUGameObject : PUGameObjectBase {
 
 		gameObject.layer = LayerMask.NameToLayer ("UI");
 
+		if (rectMask2D) {
+			gameObject.AddComponent<RectMask2D> ();
+		}
+
 		if (mask) {
 			Mask maskComponent = gameObject.AddComponent<Mask> ();
 			maskComponent.showMaskGraphic = showMaskGraphic;
