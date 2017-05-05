@@ -66,6 +66,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 			Vector2 pivot,
 			string anchor,
 			bool active,
+			bool rectMask2D,
 			bool mask,
 			bool showMaskGraphic,
 			Vector4 maskInset,
@@ -115,6 +116,8 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		this.anchor = anchor;
 
 		this.active = active;
+
+		this.rectMask2D = rectMask2D;
 
 		this.mask = mask;
 

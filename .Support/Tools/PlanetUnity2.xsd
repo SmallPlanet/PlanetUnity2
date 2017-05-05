@@ -82,6 +82,9 @@
 				<attribute name="anchor" type="string" use="optional" default="bottom,left"/>
 				
 				<attribute name="active" type="boolean" use="optional" default="true" />
+				
+				<attribute name="rectMask2D" type="boolean" use="optional" />
+				
 				<attribute name="mask" type="boolean" use="optional" />
 				<attribute name="showMaskGraphic" type="boolean" use="optional" default="false" />
 				<attribute name="maskInset" type="planet:vec4" use="optional" />

@@ -51,6 +51,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			Vector2 pivot,
 			string anchor,
 			bool active,
+			bool rectMask2D,
 			bool mask,
 			bool showMaskGraphic,
 			Vector4 maskInset,
@@ -76,6 +77,8 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.anchor = anchor;
 
 		this.active = active;
+
+		this.rectMask2D = rectMask2D;
 
 		this.mask = mask;
 
@@ -107,6 +110,7 @@ public partial class PUGameObject : PUGameObjectBase {
 			Vector2 pivot,
 			string anchor,
 			bool active,
+			bool rectMask2D,
 			bool mask,
 			bool showMaskGraphic,
 			Vector4 maskInset,
@@ -140,6 +144,8 @@ public partial class PUGameObject : PUGameObjectBase {
 		this.anchor = anchor;
 
 		this.active = active;
+
+		this.rectMask2D = rectMask2D;
 
 		this.mask = mask;
 
@@ -198,6 +204,7 @@ public class PUGameObjectBase : PUObject {
 	public Vector2? pivot;
 	public string anchor;
 	public bool active;
+	public bool rectMask2D;
 	public bool mask;
 	public bool showMaskGraphic;
 	public Vector4? maskInset;
@@ -331,6 +338,10 @@ public class PUGameObjectBase : PUObject {
 		if(attr == null) { attr = "true"; }
 		if(attr != null) { active = bool.Parse(attr); } 
 		
+		attr = element.GetAttribute("rectMask2D");
+		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
+		if(attr != null) { rectMask2D = bool.Parse(attr); } 
+		
 		attr = element.GetAttribute("mask");
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { mask = bool.Parse(attr); } 
@@ -389,6 +400,7 @@ public class PUGameObjectBase : PUObject {
 		if(pivot != null) { sb.AppendFormat (" {0}=\"{1}\"", "pivot", pivot.Value.PUToString()); }
 		if(anchor != null) { sb.AppendFormat (" {0}=\"{1}\"", "anchor", SecurityElement.Escape (anchor)); }
 		 sb.AppendFormat (" {0}=\"{1}\"", "active", active.ToString().ToLower()); 
+		 sb.AppendFormat (" {0}=\"{1}\"", "rectMask2D", rectMask2D.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "mask", mask.ToString().ToLower()); 
 		 sb.AppendFormat (" {0}=\"{1}\"", "showMaskGraphic", showMaskGraphic.ToString().ToLower()); 
 		if(maskInset != null) { sb.AppendFormat (" {0}=\"{1}\"", "maskInset", maskInset.Value.PUToString()); }

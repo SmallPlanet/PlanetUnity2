@@ -23,6 +23,10 @@ using System;
 using System.Text.RegularExpressions;
 using TB;
 
+#if UNITY_5_5_OR_NEWER
+using UnityEngine.Profiling;
+#endif
+
 
 public class MaskGraphic : Graphic, ICanvasRaycastFilter {
 
@@ -199,6 +203,10 @@ public partial class PUGameObject : PUGameObjectBase {
 		UpdateRectTransform ();
 
 		gameObject.layer = LayerMask.NameToLayer ("UI");
+
+		if (rectMask2D) {
+			gameObject.AddComponent<RectMask2D> ();
+		}
 
 		if (mask) {
 			Mask maskComponent = gameObject.AddComponent<Mask> ();

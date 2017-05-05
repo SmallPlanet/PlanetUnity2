@@ -484,7 +484,11 @@ public partial class PUParticles : PUParticlesBase {
 				for (int i = 0; i < liveParticleCount; i++) {
 					ParticleSystem.Particle p = particleArray [i];
 
+					#if UNITY_5_5_OR_NEWER
 					lutIdx = (int)((p.remainingLifetime / p.startLifetime) * ((float)lutMax - 1.0f));
+					#else
+					lutIdx = (int)((p.lifetime / p.startLifetime) * ((float)lutMax - 1.0f));
+					#endif
 
 					UIVertex a = particlesFromThread [vIdx + 0];
 					UIVertex b = particlesFromThread [vIdx + 1];
@@ -534,7 +538,12 @@ public partial class PUParticles : PUParticlesBase {
 
 					int vIdx = i * 4;
 
+					#if UNITY_5_5_OR_NEWER
 					float frameProgress = (p.remainingLifetime / p.startLifetime);
+					#else
+					float frameProgress = (p.lifetime / p.startLifetime);
+					#endif
+
 					int lutIdx = (int)(frameProgress * (lutMax - 1));
 
 					Vector3 pos = new Vector3 (p.position.x, p.position.z, p.position.y);

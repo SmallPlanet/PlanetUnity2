@@ -347,8 +347,22 @@ public class PlanetUnityGameObject : MonoBehaviour {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count > 0)
-				TaskQueue.Dequeue()();
+			// allow us to process tasks for a number of milliseconds before holding off until later
+			Stopwatch sw = new Stopwatch();
+			sw.Start ();
+
+			// make a copy of the queue and process the copy; this will allow callee's to queue tasks correctly
+			List<Task> currentQueue = new List<Task> (TaskQueue);
+			TaskQueue.Clear ();
+			while (currentQueue.Count > 0 && sw.ElapsedMilliseconds < 60) {
+				currentQueue [0] ();
+				currentQueue.RemoveAt (0);
+			}
+
+			// for any tasks which did not get executed, add them back to the front of the task queue
+			for (int i = currentQueue.Count - 1; i >= 0; i--) {
+				TaskQueue.Insert (0, currentQueue [i]);
+			}
 		}
 	}
 
@@ -488,16 +502,14 @@ public class PlanetUnityGameObject : MonoBehaviour {
 		SafeRemoveAllChildren ();
 	}
 
-	private Queue<Task> TaskQueue = new Queue<Task>();
+	private List<Task> TaskQueue = new List<Task>();
 	private object _queueLock = new object();
 
 	public void PrivateScheduleTask(Task newTask) {
 
 		lock (_queueLock)
 		{
-			if (TaskQueue.Count < 100) {
-				TaskQueue.Enqueue (newTask);
-			}
+			TaskQueue.Add (newTask);
 		}
 	}
 
@@ -528,6 +540,27 @@ public class PlanetUnityGameObject : MonoBehaviour {
 			return;
 		}
 		currentGameObject.PrivateScheduleTask(new Task(block));
+	}
+
+	public static void PerformTask(Action block)
+	{
+		if (System.Object.ReferenceEquals(currentGameObject, null)) {
+			return;
+		}
+
+		if (PlanetUnityGameObject.IsMainThread ()) {
+			block ();
+			return;
+		}
+
+		AutoResetEvent autoEvent = new AutoResetEvent (false);
+
+		PlanetUnityGameObject.ScheduleTask (() => {
+			block ();
+			autoEvent.Set ();
+		});
+
+		autoEvent.WaitOne ();
 	}
 
 	public static bool HasTasks()
