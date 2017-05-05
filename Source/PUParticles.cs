@@ -323,8 +323,8 @@ public partial class PUParticles : PUParticlesBase {
 					emitMode == PlanetUnity2.ParticleEmitMode.Image ||
 					emitMode == PlanetUnity2.ParticleEmitMode.Center) {
 					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
-						shapeSizeXForThread = particleSystem.shape.box.x;
-						shapeSizeYForThread = particleSystem.shape.box.y;
+						shapeSizeXForThread = particleSystem.shape.scale.x;
+						shapeSizeYForThread = particleSystem.shape.scale.y;
 					} else if (particleSystem.shape.shapeType == ParticleSystemShapeType.Sphere ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.SphereShell ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.Hemisphere ||
@@ -484,7 +484,7 @@ public partial class PUParticles : PUParticlesBase {
 				for (int i = 0; i < liveParticleCount; i++) {
 					ParticleSystem.Particle p = particleArray [i];
 
-					lutIdx = (int)((p.lifetime / p.startLifetime) * ((float)lutMax - 1.0f));
+					lutIdx = (int)((p.remainingLifetime / p.startLifetime) * ((float)lutMax - 1.0f));
 
 					UIVertex a = particlesFromThread [vIdx + 0];
 					UIVertex b = particlesFromThread [vIdx + 1];
@@ -534,7 +534,7 @@ public partial class PUParticles : PUParticlesBase {
 
 					int vIdx = i * 4;
 
-					float frameProgress = (p.lifetime / p.startLifetime);
+					float frameProgress = (p.remainingLifetime / p.startLifetime);
 					int lutIdx = (int)(frameProgress * (lutMax - 1));
 
 					Vector3 pos = new Vector3 (p.position.x, p.position.z, p.position.y);

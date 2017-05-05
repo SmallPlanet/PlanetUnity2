@@ -609,9 +609,9 @@ public class GameObjectUpdateScript : MonoBehaviour {
 
 	public void Update() {
 		if (entity != null) {
-			Profiler.BeginSample((entity.title != null ? entity.title : entity.ToString()));
+			UnityEngine.Profiling.Profiler.BeginSample((entity.title != null ? entity.title : entity.ToString()));
 			entity.Update ();
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 		}
 	}
 }
