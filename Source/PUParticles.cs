@@ -271,7 +271,7 @@ public partial class PUParticles : PUParticlesBase {
 					frameCount = 0;
 					dt -= 1.0f / updateRate;
 				
-					int particleAdjust = Mathf.CeilToInt (particleSystem.maxParticles * 0.02f);
+					int particleAdjust = Mathf.CeilToInt (particleSystem.main.maxParticles * 0.02f);
 
 					if (fps < fpsCutoff) {
 						particleSystem.maxParticles -= particleAdjust;
@@ -297,14 +297,14 @@ public partial class PUParticles : PUParticlesBase {
 			// to be
 			if (particleArrayThreadCommState == 0) {
 				if (particleArray == null) {
-					particleArray = new ParticleSystem.Particle[particleSystem.maxParticles];
+					particleArray = new ParticleSystem.Particle[particleSystem.main.maxParticles];
 				}
 				if (particleArray.Length < particleSystem.maxParticles) {
-					Array.Resize (ref particleArray, particleSystem.maxParticles);
+					Array.Resize (ref particleArray, particleSystem.main.maxParticles);
 				}
 
 				liveParticleCount = particleSystem.GetParticles (particleArray);
-				maxParticleCount = particleSystem.maxParticles;
+				maxParticleCount = particleSystem.main.maxParticles;
 				
 				usesOptimizedShader = shim.material.shader.name.StartsWith ("PlanetUnity/Mobile/Particles/");
 
@@ -323,8 +323,8 @@ public partial class PUParticles : PUParticlesBase {
 					emitMode == PlanetUnity2.ParticleEmitMode.Image ||
 					emitMode == PlanetUnity2.ParticleEmitMode.Center) {
 					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
-						shapeSizeXForThread = particleSystem.shape.scale.x;
-						shapeSizeYForThread = particleSystem.shape.scale.y;
+						shapeSizeXForThread = particleSystem.shape.box.x;
+						shapeSizeYForThread = particleSystem.shape.box.y;
 					} else if (particleSystem.shape.shapeType == ParticleSystemShapeType.Sphere ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.SphereShell ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.Hemisphere ||
