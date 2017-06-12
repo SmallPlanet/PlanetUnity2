@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Planet Unity:
 // - Position, rotation, and size computed in vertex shader
 
@@ -82,7 +84,7 @@ Properties
 				// texcoord1 y contains rotation in radians
 				float c = cos (IN.texcoord1.y * 0.01745329);
 				float s = sin (IN.texcoord1.y * 0.01745329);
-				OUT.vertex = mul(UNITY_MATRIX_MVP, (IN.vertex + float4(IN.normal.x * IN.texcoord1.x * c - IN.normal.y * IN.texcoord1.x * s, IN.normal.x * IN.texcoord1.x * s + IN.normal.y * IN.texcoord1.x * c, 0, 0) * (_ScaleInfo.x + _ScaleInfo.y) * 0.5));
+				OUT.vertex = UnityObjectToClipPos((IN.vertex + float4(IN.normal.x * IN.texcoord1.x * c - IN.normal.y * IN.texcoord1.x * s, IN.normal.x * IN.texcoord1.x * s + IN.normal.y * IN.texcoord1.x * c, 0, 0) * (_ScaleInfo.x + _ScaleInfo.y) * 0.5));
 
 				OUT.texcoord = IN.texcoord0;
 				OUT.color = IN.color * _Color;
