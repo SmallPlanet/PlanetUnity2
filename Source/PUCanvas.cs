@@ -29,6 +29,11 @@ public partial class PUCanvas : PUCanvasBase {
 		canvas = gameObject.AddComponent<Canvas>();
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
 
+		ScheduleForStart ();
+	}
+
+	public override void Start () {
+
 		if (renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceOverlay)
 			canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 		if (renderMode == PlanetUnity2.CanvasRenderMode.ScreenSpaceCamera) {
@@ -44,8 +49,7 @@ public partial class PUCanvas : PUCanvasBase {
 			canvas.renderMode = RenderMode.WorldSpace;
 
 		canvas.pixelPerfect = pixelPerfect;
-
-		rectTransform = gameObject.transform as RectTransform;
+		canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.None;
 
 		SetFrame (0, 0, 0, 0, 0, 0, "stretch,stretch");
 	}

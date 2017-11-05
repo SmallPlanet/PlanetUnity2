@@ -323,8 +323,8 @@ public partial class PUParticles : PUParticlesBase {
 					emitMode == PlanetUnity2.ParticleEmitMode.Image ||
 					emitMode == PlanetUnity2.ParticleEmitMode.Center) {
 					if (particleSystem.shape.shapeType == ParticleSystemShapeType.Box) {
-						shapeSizeXForThread = particleSystem.shape.box.x;
-						shapeSizeYForThread = particleSystem.shape.box.y;
+						shapeSizeXForThread = particleSystem.shape.scale.x;
+						shapeSizeYForThread = particleSystem.shape.scale.y;
 					} else if (particleSystem.shape.shapeType == ParticleSystemShapeType.Sphere ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.SphereShell ||
 						particleSystem.shape.shapeType == ParticleSystemShapeType.Hemisphere ||
