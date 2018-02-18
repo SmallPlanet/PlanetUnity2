@@ -549,6 +549,13 @@ public partial class PUGameObject : PUGameObjectBase {
 		}
 	}
 
+	public void ScheduleForOnEnable() {
+		if (gameObject != null) {
+			GameObjectOnEnableScript script = gameObject.AddComponent<GameObjectOnEnableScript> ();
+			script.entity = this;
+		}
+	}
+
 	public virtual void Start() {
 
 	}
@@ -566,6 +573,14 @@ public partial class PUGameObject : PUGameObjectBase {
 	}
 
 	public virtual void OnLevelWasLoaded(int i) {
+
+	}
+
+	public virtual void OnEnable() {
+
+	}
+
+	public virtual void OnDisable() {
 
 	}
 
@@ -664,6 +679,23 @@ public class GameObjectOnLevelWasLoadedScript : MonoBehaviour {
 	public void OnLevelWasLoaded(int i) {
 		if (entity != null) {
 			entity.OnLevelWasLoaded (i);
+		}
+	}
+}
+
+
+public class GameObjectOnEnableScript : MonoBehaviour {
+	public PUGameObject entity;
+
+	public void OnEnable() {
+		if (entity != null) {
+			entity.OnEnable ();
+		}
+	}
+
+	public void OnDisable() {
+		if (entity != null) {
+			entity.OnDisable ();
 		}
 	}
 }
