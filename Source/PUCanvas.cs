@@ -29,6 +29,8 @@ public partial class PUCanvas : PUCanvasBase {
 		canvas = gameObject.AddComponent<Canvas>();
 		graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
 
+		SetFrame (0, 0, 0, 0, 0, 0, "stretch,stretch");
+
 		ScheduleForStart ();
 	}
 
@@ -50,8 +52,6 @@ public partial class PUCanvas : PUCanvasBase {
 
 		canvas.pixelPerfect = pixelPerfect;
 		canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.None;
-
-		SetFrame (0, 0, 0, 0, 0, 0, "stretch,stretch");
 	}
 
 }
