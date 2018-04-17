@@ -121,6 +121,10 @@ public partial class PUScrollRect : PUScrollRectBase {
 		}
 	}
 
+    public float GetContentHeight() {
+        return _contentMax.y - _contentMin.y;
+    }
+
 	public void CalculateContentSize()
 	{
 		RectTransform myRectTransform = (RectTransform)contentObject.transform;
