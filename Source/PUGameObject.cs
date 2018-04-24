@@ -22,6 +22,7 @@ using System.Reflection;
 using System;
 using System.Text.RegularExpressions;
 using TB;
+using System.Text;
 
 #if UNITY_5_5_OR_NEWER
 using UnityEngine.Profiling;
@@ -141,6 +142,23 @@ public partial class PUGameObject : PUGameObjectBase {
 	public CanvasGroup canvasGroup = null;
 
 	private static Dictionary<string, Vector4> stringToAnchorLookup = null;
+
+    public string HeirarchyPath()
+    {
+        StringBuilder sb = new StringBuilder();
+        PUGameObject t = this;
+        while (t != null)
+        {
+            PUGameObject p = t.parent as PUGameObject;
+            sb.AppendFormat("{0}.", t.GetType().Name);
+            if (p != null)
+            {
+                sb.AppendFormat("{0}.", p.children.IndexOf(t));
+            }
+            t = p;
+        }
+        return sb.ToString();
+    }
 
 	public void SetParentGameObject(GameObject p)
 	{

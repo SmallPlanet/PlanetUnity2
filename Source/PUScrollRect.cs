@@ -100,6 +100,14 @@ public partial class PUScrollRect : PUScrollRectBase {
 		}
 	}
 
+    public Vector2 GetScrollingOffset() {
+        return (contentObject.transform as RectTransform).anchoredPosition;
+    }
+
+    public void SetScrollingOffset(Vector2 v)
+    {
+        (contentObject.transform as RectTransform).anchoredPosition = v;
+    }
 
 	public GameObject contentObject;
 	public ScrollRect scroll;
