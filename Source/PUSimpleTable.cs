@@ -269,7 +269,7 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 
 
-		if (TableHeader != null) {
+        if (TableHeader != null && TableHeader.rectTransform != null && contentObject != null) {
 			TableHeader.rectTransform.SetParent(contentObject.transform, false);
 			TableHeader.rectTransform.anchoredPosition = new Vector2(0,0);
 
