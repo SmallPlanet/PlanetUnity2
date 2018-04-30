@@ -12,16 +12,19 @@ public partial class PUSwitcher : PUSwitcherBase {
 	public override void gaxb_complete() {
 
 		HideAnimation = (x, idx, direction) => {
+            x.CheckCanvasGroup();
 			x.canvasGroup.alpha = 0;
 			x.gameObject.SetActive (false);
 		};
 
 		ShowAnimation = (x, idx, direction) => {
+            x.CheckCanvasGroup();
 			x.canvasGroup.alpha = 1;
 			x.gameObject.SetActive (true);
 		};
 
 		CloseAnimation = (x, idx, block) => {
+            x.CheckCanvasGroup();
 			x.canvasGroup.alpha = 0;
 			x.gameObject.SetActive (false);
 			block();
