@@ -337,14 +337,15 @@ public partial class PUSimpleTable : PUSimpleTableBase {
 		}
 
 		// Can I skip a known quantity in the beginning and end?
+		float scrollDelta = Mathf.Max(0.0f, contentRectTransform.anchoredPosition.y);
+		
 		int totalVisibleCells = (Mathf.CeilToInt((rectTransform.rect.height + cellHeight) / cellHeight) * cellsPerRow) + cellsPerRow;
-		int firstVisibleCell = Mathf.FloorToInt((Mathf.Abs (contentRectTransform.anchoredPosition.y) + currentLayoutY - cellHeight) / cellHeight) * cellsPerRow;
-
+		int firstVisibleCell = Mathf.FloorToInt((scrollDelta + currentLayoutY - cellHeight) / cellHeight) * cellsPerRow;
+		
 		if (firstVisibleCell < 0) {
 			totalVisibleCells += firstVisibleCell;
 			firstVisibleCell = 0;
 		}
-
 
 		if (hasHeader == 1) {
 			object myCellData = subtableObjects [0];
