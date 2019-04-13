@@ -30,7 +30,7 @@ public partial class PUCode : PUCodeBase {
 
 	MonoBehaviour controller;
 
-	private static Hashtable instances = new Hashtable ();
+	private static Hashtable singletonInstances = new Hashtable ();
 	private static Hashtable normalInstances = new Hashtable ();
 
 	public object GetObject()
@@ -42,11 +42,16 @@ public partial class PUCode : PUCodeBase {
 	{
 		controller = null;
 	}
+
+	private bool isSingleton()
+	{
+		return controller is IPUSingletonCode;
+	}
 		
 	public override void unload(){
 
 		// If we are a singleton, we need to not delete our gameobject...
-		if (singleton) {
+		if (isSingleton()) {
 			gameObject = null;
 		}
 
@@ -59,7 +64,7 @@ public partial class PUCode : PUCodeBase {
 
 		normalInstances.Remove (_class);
 
-		if (singleton == false) {
+		if (isSingleton() == false) {
 			NotificationCenter.removeObserver (controller);
 		}
 	}
@@ -72,18 +77,15 @@ public partial class PUCode : PUCodeBase {
 
 	public static T GetSingletonByName<T>(){
 		string name = typeof(T).FullName;
-		T c = (T)instances [name];
+		T c = (T)singletonInstances [name];
 		if (c != null) {
 			return c;
 		}
 		return (T)normalInstances [name];
 	}
-
+	
 	public override void gaxb_complete()
 	{
-		ScheduleForStart ();
-
-		bool shouldCallSingletonStart = false;
 		// If we're in live editor mode, we don't want to load controllers
 		if (Application.isPlaying == false) {
 			base.gaxb_complete ();
@@ -94,15 +96,19 @@ public partial class PUCode : PUCodeBase {
 			gameObject.name = _class;
 		}
 
-		if (singleton) {
-			MonoBehaviour tempClassInstance = (MonoBehaviour)instances [_class];
-			if (tempClassInstance != null && !tempClassInstance.Equals(this)) {
+		// check if there is another singleton of the same class as us, if so we exit early and destroy ourself
+		MonoBehaviour existingSingleton = (MonoBehaviour)singletonInstances [_class];
+		if (existingSingleton != null) {
+			if (!existingSingleton.Equals(this)) {
 				GameObject.DestroyImmediate (this.gameObject);
-				controller = (MonoBehaviour)tempClassInstance;
-				shouldCallSingletonStart = true;
-			} else {
-				MonoBehaviour.DontDestroyOnLoad(this.gameObject);
-				this.gameObject.transform.SetParent (null);
+				//Debug.LogFormat("existing singleton detected for {0}", _class);
+				
+				GameObject singletonGameObject = GameObject.Find (_class);
+				if (singletonGameObject != null) {
+					singletonGameObject.SendMessage ("MarkForCallStart");
+				}
+				
+				return;
 			}
 		}
 
@@ -114,9 +120,14 @@ public partial class PUCode : PUCodeBase {
 
 				AttachAllElements(controller, Scope());
 
-				if(singleton){
-					Debug.Log("Saving instance class for: "+_class);
-					instances[_class] = controller;
+				if(isSingleton()){
+					//Debug.Log("Saving instance class for: "+_class);
+					singletonInstances[_class] = controller;
+					
+					gameObject.transform.SetParent(null);
+					UnityEngine.Object.DontDestroyOnLoad(gameObject);
+					
+					ScheduleForStart();
 				}else{
 					normalInstances[_class] = controller;
 				}
@@ -151,22 +162,15 @@ public partial class PUCode : PUCodeBase {
 			}
 		}
 
-		if (shouldCallSingletonStart) {
-			GameObject singletonGameObject = GameObject.Find (_class);
-			if (singletonGameObject != null) {
-				singletonGameObject.SendMessage ("MarkForCallStart");
-			}
-		}
-
 		base.gaxb_complete ();
 	}
 
 	public override void Start() {
-		if (controller is IPUSingletonCode) {
+		if (isSingleton()) {
 			((IPUSingletonCode)controller).SingletonStart ();
 		}
 	}
-
+	
 	public static void AttachAllElements(object controller, PUObject scene) {
 		if(scene != null)
 		{

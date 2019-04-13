@@ -26,18 +26,14 @@ interface IPlanetUnity2
 public class PlanetUnity2 {
 	public int baseRenderQueue = 0;
 
-	public enum CanvasRenderMode {
-		ScreenSpaceOverlay,
-		ScreenSpaceCamera,
-		WorldSpace,
+	public enum GridLayoutStartCorner {
+		upperLeft,
+		upperRight,
+		lowerLeft,
+		lowerRight,
 	};
 
-	public enum TextOverflowVertical {
-		truncate,
-		overflow,
-	};
-
-	public enum TextAlignment {
+	public enum GridLayoutChildAlignment {
 		upperLeft,
 		upperCenter,
 		upperRight,
@@ -49,11 +45,41 @@ public class PlanetUnity2 {
 		lowerRight,
 	};
 
+	public enum ParticleEmitMode {
+		SystemNone,
+		SystemScaled,
+		Edge,
+		Fill,
+		Center,
+		Image,
+	};
+
 	public enum FontStyle {
 		normal,
 		bold,
 		italic,
 		boldAndItalic,
+	};
+
+	public enum InputFieldLineType {
+		single,
+		multiSubmit,
+		multiNewline,
+	};
+
+	public enum SliderDirection {
+		LeftToRight,
+		RightToLeft,
+		BottomToTop,
+		TopToBottom,
+	};
+
+	public enum GridTableHeuristic {
+		RectBestShortSideFit,
+		RectBestLongSideFit,
+		RectBestAreaFit,
+		RectBottomLeftRule,
+		RectContactPointRule,
 	};
 
 	public enum InputFieldContentType {
@@ -69,65 +95,10 @@ public class PlanetUnity2 {
 		custom,
 	};
 
-	public enum AspectFitMode {
-		None,
-		WidthControlsHeight,
-		HeightControlsWidth,
-		FitInParent,
-		EnvelopeParent,
-	};
-
-	public enum ParticleEmitMode {
-		SystemNone,
-		SystemScaled,
-		Edge,
-		Fill,
-		Center,
-		Image,
-	};
-
-	public enum GridLayoutChildAlignment {
-		upperLeft,
-		upperCenter,
-		upperRight,
-		middleLeft,
-		middleCenter,
-		middleRight,
-		lowerLeft,
-		lowerCenter,
-		lowerRight,
-	};
-
-	public enum InputFieldLineType {
-		single,
-		multiSubmit,
-		multiNewline,
-	};
-
-	public enum GridLayoutStartAxis {
-		horizontal,
-		vertical,
-	};
-
-	public enum TextOverflowHorizontal {
-		wrap,
-		overflow,
-	};
-
-	public enum GridTableHeuristic {
-		RectBestShortSideFit,
-		RectBestLongSideFit,
-		RectBestAreaFit,
-		RectBottomLeftRule,
-		RectContactPointRule,
-	};
-
-	public enum ImageType {
-		simple,
-		filled,
-		sliced,
-		tiled,
-		aspectFilled,
+	public enum CanvasRenderMode {
+		ScreenSpaceOverlay,
+		ScreenSpaceCamera,
+		WorldSpace,
 	};
 
 	public const string USERSTRINGINPUT = "UserStringInput";
@@ -139,18 +110,47 @@ public class PlanetUnity2 {
 	public const string EVENTWITHNOCOLLIDER = "EventWithNoCollider";
 	public const string EDITORFILEDIDCHANGE = "EditorFileDidChange";
 
-	public enum SliderDirection {
-		LeftToRight,
-		RightToLeft,
-		BottomToTop,
-		TopToBottom,
+	public enum TextAlignment {
+		upperLeft,
+		upperCenter,
+		upperRight,
+		middleLeft,
+		middleCenter,
+		middleRight,
+		lowerLeft,
+		lowerCenter,
+		lowerRight,
 	};
 
-	public enum GridLayoutStartCorner {
-		upperLeft,
-		upperRight,
-		lowerLeft,
-		lowerRight,
+	public enum TextOverflowHorizontal {
+		wrap,
+		overflow,
+	};
+
+	public enum TextOverflowVertical {
+		truncate,
+		overflow,
+	};
+
+	public enum AspectFitMode {
+		None,
+		WidthControlsHeight,
+		HeightControlsWidth,
+		FitInParent,
+		EnvelopeParent,
+	};
+
+	public enum ImageType {
+		simple,
+		filled,
+		sliced,
+		tiled,
+		aspectFilled,
+	};
+
+	public enum GridLayoutStartAxis {
+		horizontal,
+		vertical,
 	};
 
 

@@ -541,7 +541,6 @@
 					<element ref="planet:Notification" minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
 				<attribute name="class" type="string" use="required" />
-				<attribute name="singleton" type="boolean" use="optional" default="false" />
 			</extension>
 		</complexContent>
 	</complexType>

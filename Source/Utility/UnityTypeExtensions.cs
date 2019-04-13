@@ -10,6 +10,34 @@ using System.Collections.Specialized;
 using System.Collections;
 
 
+
+static class ArrayExtension
+{
+	public static void Shuffle<T>(this IList<T> list)  
+	{  
+		int n = 5000;
+		for(int i = 0; i < n; i++) {
+			int k = UnityEngine.Random.Range(0, list.Count);
+			int j = UnityEngine.Random.Range(0, list.Count);
+
+			T value = list[k];  
+			list[k] = list[j];  
+			list[j] = value;  
+		}
+	}
+
+	public static T Random<T>(this IList<T> list)  
+	{  
+		int k = UnityEngine.Random.Range(0, list.Count);
+		return list[k];  
+	}
+	public static T Random<T>(this IList<T> list, System.Random r)  
+	{  
+		int k = r.Next () % (list.Count);
+		return list[k];  
+	}
+}
+
 public class MathR
 {
 	public static float DegreeToRadian(float angle)

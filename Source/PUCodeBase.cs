@@ -20,28 +20,19 @@ public partial class PUCode : PUCodeBase {
 
 	public PUCode()
 	{
-		string attr;
-
-		attr = "false";
-		if(attr != null) { singleton = bool.Parse(attr); } 
-
 	}
 	
 
 	public PUCode(
-			string _class,
-			bool singleton ) : this()
+			string _class ) : this()
 	{
 		this._class = _class;
-
-		this.singleton = singleton;
 	}
 
 	
 
 	public PUCode(
 			string _class,
-			bool singleton,
 			Vector4 bounds,
 			Vector3 position,
 			Vector2 size,
@@ -70,8 +61,6 @@ public partial class PUCode : PUCodeBase {
 			string tag6 ) : this()
 	{
 		this._class = _class;
-
-		this.singleton = singleton;
 
 		this.bounds = bounds;
 
@@ -141,7 +130,6 @@ public class PUCodeBase : PUGameObject {
 
 	// XML Attributes
 	public string _class;
-	public bool singleton;
 
 
 
@@ -235,11 +223,6 @@ public class PUCodeBase : PUGameObject {
 		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
 		if(attr != null) { _class = unescape(attr); } 
 		
-		attr = element.GetAttribute("singleton");
-		if(attr != null) { attr = PlanetUnityOverride.processString(_parent, attr); }
-		if(attr == null) { attr = "false"; }
-		if(attr != null) { singleton = bool.Parse(attr); } 
-		
 
 	}
 
@@ -254,7 +237,6 @@ public class PUCodeBase : PUGameObject {
 		base.gaxb_appendXMLAttributes(sb);
 
 		if(_class != null) { sb.AppendFormat (" {0}=\"{1}\"", "_class", SecurityElement.Escape (_class)); }
-		 sb.AppendFormat (" {0}=\"{1}\"", "singleton", singleton.ToString().ToLower()); 
 
 	}
 
