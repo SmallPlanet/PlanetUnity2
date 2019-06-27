@@ -22,9 +22,8 @@ public partial class PUClearButton : PUClearButtonBase {
 
 		button = gameObject.AddComponent<Button> ();
 
-		if (onTouchUp != null) {
-			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
-		}
+		PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
+		PlanetUnityButtonHelper.SetOnTouchDown (this, button, null);
 	}
 
 }

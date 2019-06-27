@@ -70,21 +70,27 @@ public partial class PlanetUnityButtonHelper {
 	}
 	
 	public static void SetOnTouchUp (PUGameObject gmObj, Button btn, string newNote) {
-		if (btn != null && newNote != null) {
+
+		if (btn != null) {
 			btn.onClick.RemoveAllListeners();
 
 			btn.onClick.AddListener (() => {
+
+				NotificationCenter.postNotification (null, PlanetUnity2.BUTTONTOUCHUP, NotificationCenter.Args ("sender", gmObj));
+
 				HandleGlobalButtonOnTouchUp (gmObj);
-				if (gmObj != null)
-					NotificationCenter.postNotification (gmObj.Scope (), newNote, NotificationCenter.Args ("sender", gmObj));
-				else
-					NotificationCenter.postNotification (null, newNote);
+				if (newNote != null) {
+					if (gmObj != null)
+						NotificationCenter.postNotification (gmObj.Scope (), newNote, NotificationCenter.Args ("sender", gmObj));
+					else
+						NotificationCenter.postNotification (null, newNote);
+				}
 			});
 		}
 	}
 
 	public static void SetOnTouchDown (PUGameObject gmObj, Button btn, string newNote) {
-		if (btn != null && newNote != null) {
+		if (btn != null) {
 			
 			// check if the ButtonOnDownBehaviour component exists
 			ButtonOnDownBehaviour onDownBehavior = btn.GetComponent<ButtonOnDownBehaviour> ();
@@ -105,10 +111,15 @@ public partial class PlanetUnityButtonHelper {
 		public string note = null;
 
 		public void OnPointerDown(PointerEventData data) {
-			if (scopeObj != null && scopeObj is PUGameObject)
-				NotificationCenter.postNotification ((scopeObj as PUGameObject).Scope(), note, NotificationCenter.Args("sender", scopeObj));
-			else
-				NotificationCenter.postNotification (null, note);
+
+			NotificationCenter.postNotification (null, PlanetUnity2.BUTTONTOUCHDOWN, NotificationCenter.Args ("sender", scopeObj));
+
+			if (note != null) {
+				if (scopeObj != null && scopeObj is PUGameObject)
+					NotificationCenter.postNotification ((scopeObj as PUGameObject).Scope (), note, NotificationCenter.Args ("sender", scopeObj));
+				else
+					NotificationCenter.postNotification (null, note);
+			}
 		}
 
 	}

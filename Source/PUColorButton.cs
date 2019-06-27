@@ -35,9 +35,8 @@ public partial class PUColorButton : PUColorButtonBase {
 			PlanetUnityButtonHelper.SetPressedColor(button, pressedColor.Value);
 		}
 
-		if (onTouchUp != null) {
-			PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
-		}
+		PlanetUnityButtonHelper.SetOnTouchUp(this, button, onTouchUp);
+		PlanetUnityButtonHelper.SetOnTouchDown (this, button, null);
 	}
 
 }
