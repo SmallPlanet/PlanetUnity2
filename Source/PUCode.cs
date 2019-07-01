@@ -17,6 +17,8 @@ using UnityEngine;
 using System;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using TB;
 
 public interface IPUCode {
 
@@ -32,6 +34,8 @@ public partial class PUCode : PUCodeBase {
 
 	private static Hashtable singletonInstances = new Hashtable ();
 	private static Hashtable normalInstances = new Hashtable ();
+
+	private Dictionary<String,String> attributes = new Dictionary<String, String> ();
 
 	public object GetObject()
 	{
@@ -56,6 +60,13 @@ public partial class PUCode : PUCodeBase {
 		}
 
 		base.unload ();
+	}
+
+	public override void gaxb_load (TBXMLElement element, object _parent, Hashtable args) {
+		base.gaxb_load (element, _parent, args);
+		foreach (TBXMLAttribute attribute in element.attributes) {
+			attributes [attribute.GetName(element.tbxml)] = attribute.GetValue(element.tbxml);
+		}
 	}
 
 	public override void gaxb_unload()
@@ -83,9 +94,8 @@ public partial class PUCode : PUCodeBase {
 		}
 		return (T)normalInstances [name];
 	}
-	
-	public override void gaxb_complete()
-	{
+
+	public override void gaxb_complete () {
 		// If we're in live editor mode, we don't want to load controllers
 		if (Application.isPlaying == false) {
 			base.gaxb_complete ();
@@ -99,15 +109,19 @@ public partial class PUCode : PUCodeBase {
 		// check if there is another singleton of the same class as us, if so we exit early and destroy ourself
 		MonoBehaviour existingSingleton = (MonoBehaviour)singletonInstances [_class];
 		if (existingSingleton != null) {
-			if (!existingSingleton.Equals(this)) {
+			if (!existingSingleton.Equals (this)) {
 				GameObject.DestroyImmediate (this.gameObject);
 				//Debug.LogFormat("existing singleton detected for {0}", _class);
-				
+
 				GameObject singletonGameObject = GameObject.Find (_class);
 				if (singletonGameObject != null) {
 					singletonGameObject.SendMessage ("MarkForCallStart");
 				}
-				
+
+				if (_class != null) {
+					AttachAllAttributes (attributes, existingSingleton.GetComponent (Type.GetType (_class, true)));
+				}
+
 				return;
 			}
 		}
@@ -116,23 +130,23 @@ public partial class PUCode : PUCodeBase {
 		if (controller == null && _class != null) {
 			// Attach all of the PlanetUnity objects
 			try {
-				controller = (MonoBehaviour)gameObject.AddComponent(Type.GetType (_class, true));
+				controller = (MonoBehaviour)gameObject.AddComponent (Type.GetType (_class, true));
 
-				AttachAllElements(controller, Scope());
+				AttachAllElements (controller, Scope ());
+				AttachAllAttributes (attributes, controller);
 
-				if(isSingleton()){
+				if (isSingleton ()) {
 					//Debug.Log("Saving instance class for: "+_class);
-					singletonInstances[_class] = controller;
-					
-					gameObject.transform.SetParent(null);
-					UnityEngine.Object.DontDestroyOnLoad(gameObject);
-					
-					ScheduleForStart();
-				}else{
-					normalInstances[_class] = controller;
+					singletonInstances [_class] = controller;
+
+					gameObject.transform.SetParent (null);
+					UnityEngine.Object.DontDestroyOnLoad (gameObject);
+
+					ScheduleForStart ();
+				} else {
+					normalInstances [_class] = controller;
 				}
-			}
-			catch(Exception e) {
+			} catch (Exception e) {
 				UnityEngine.Debug.Log ("Controller error: " + e);
 			}
 		}
@@ -140,11 +154,11 @@ public partial class PUCode : PUCodeBase {
 		if (controller != null) {
 			try {
 				// Attach all of the named GameObjects
-				FieldInfo[] fields = controller.GetType ().GetFields ();
+				FieldInfo [] fields = controller.GetType ().GetFields ();
 				foreach (FieldInfo field in fields) {
-					if (field.FieldType == typeof(GameObject)) {
+					if (field.FieldType == typeof (GameObject)) {
 
-						GameObject[] pAllObjects = (GameObject[])Resources.FindObjectsOfTypeAll (typeof(GameObject));
+						GameObject [] pAllObjects = (GameObject [])Resources.FindObjectsOfTypeAll (typeof (GameObject));
 
 						foreach (GameObject pObject in pAllObjects) {
 							if (pObject.name.Equals (field.Name)) {
@@ -156,7 +170,7 @@ public partial class PUCode : PUCodeBase {
 			} catch (Exception e) {
 				UnityEngine.Debug.Log ("Controller error: " + e);
 			}
-		
+
 			foreach (PUNotification subscribe in Notifications) {
 				NotificationCenter.addObserver (controller, subscribe.name, Scope (), subscribe.name);
 			}
@@ -197,6 +211,19 @@ public partial class PUCode : PUCodeBase {
 					}
 					return true;
 				});
+		}
+	}
+
+	public static void AttachAllAttributes (Dictionary<String, String> attributes, object controller) {
+		foreach (string name in attributes.Keys) {
+			FieldInfo field = controller.GetType ().GetField (name);
+			if (field != null) {
+				try {
+					field.SetValue (controller, attributes[name]);
+				} catch (Exception e) {
+					UnityEngine.Debug.Log ("Controller error: " + e);
+				}
+			}
 		}
 	}
 

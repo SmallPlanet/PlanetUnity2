@@ -23,6 +23,14 @@ namespace TB
 	public struct TBXMLAttribute {
 		public long nameIdx;
 		public long valueIdx;
+
+		public string GetName(TBXMLReader tbxml) {
+			return System.Text.UTF8Encoding.Default.GetString (tbxml.bytes, (int)nameIdx, (int)tbxml.strlen (nameIdx));
+		}
+
+		public string GetValue(TBXMLReader tbxml) {
+			return System.Text.UTF8Encoding.Default.GetString (tbxml.bytes, (int)valueIdx, (int)tbxml.strlen (valueIdx));
+		}
 	}
 
 	public class TBXMLElement {
